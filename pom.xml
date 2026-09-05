@@ -241,10 +241,11 @@
                 </executions>
             </plugin>
 
-				<!-- Code Coverage -->
-				<plugin>
+			<!-- Code Coverage -->
+			<plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.12</version>
                 <configuration>
                     <excludes>
                         <exclude>edu/br/resource/resourcesystem/ResourceSystemApplication.class</exclude>
@@ -258,7 +259,7 @@
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>prepare-package</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
@@ -266,8 +267,8 @@
                 </executions>
             </plugin>
 
-				<!-- Mutation Testing -->
-				<plugin>
+			<!-- Mutation Testing -->
+			<plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
                 <version>1.22.1</version>
@@ -279,9 +280,11 @@
                     </dependency>
                 </dependencies>
                 <configuration>
+					<targetClasses>
+						<param>edu.br.resource.resourcesystem.*</param>
+					</targetClasses>
                     <targetTests>
-                        <param>edu.br.resource.resourcesystem.*Test</param>
-								<param>edu.br.resource.resourcesystem.*IT</param>
+                        <param>edu.br.resource.resourcesystem.*Test</param> <!-- Foca apenas nos testes unitários e nos IT mais simples-->
                     </targetTests>
                 </configuration>
             </plugin>
