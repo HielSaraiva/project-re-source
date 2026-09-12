@@ -105,11 +105,12 @@ Com a aplicação em execução, a documentação interativa estará disponível
 
 A documentação de negócio e arquitetura está centralizada na pasta [`docs/`](docs/README.md):
 
-| Artefato                | Localização                  |
-|-------------------------|------------------------------|
-| Regras de negócio       | `docs/regras-de-negocio/`    |
-| Casos de uso            | `docs/casos-de-uso/`         |
-| Arquitetura             | `docs/arquitetura/`          |
+| Artefato                | Localização                     |
+|-------------------------|---------------------------------|
+| Requisitos funcionais   | `docs/requisitos-funcionais/`   |
+| Regras de negócio       | `docs/regras-de-negocio/`       |
+| Casos de uso            | `docs/casos-de-uso/`            |
+| Arquitetura             | `docs/arquitetura/`             |
 
 ---
 

@@ -7,6 +7,8 @@ Bem-vindo à documentação do projeto. Aqui você encontra todos os artefatos d
 ```
 docs/
 ├── README.md                        # Este arquivo
+├── requisitos-funcionais/           # Requisitos funcionais do sistema
+│   └── RF-00X-TEMPLATE.md
 ├── regras-de-negocio/               # Regras de negócio do sistema
 │   └── RN-00X-TEMPLATE.md
 ├── casos-de-uso/                    # Casos de uso do sistema
@@ -17,5 +19,6 @@ docs/
 
 ## Convenções de Nomenclatura
 
+- **Requisitos Funcionais:** `RF-001-nome-do-requisito.md`
 - **Regras de Negócio:** `RN-001-nome-da-regra.md`
 - **Casos de Uso:** `UC-001-nome-do-caso-de-uso.md`
