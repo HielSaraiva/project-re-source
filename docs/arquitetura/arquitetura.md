@@ -1,63 +1,60 @@
-# Arquitetura do Sistema
+# Arquitetura do Sistema ReSource
 
 ## Estilo Arquitetural
 
-O projeto adota o estilo de um Monólito Modular baseado no padrão MVC (Model-View-Controller) clássico, com Server-Side Rendering (SSR).
+O sistema adota o estilo **Monólito Modular** baseado no padrão **MVC (Model-View-Controller)** clássico com **Server-Side Rendering (SSR)** utilizando **Thymeleaf**. 
 
-## Diagrama de Componentes
+A solução é empacotada e orquestrada via **Docker Compose**, executando dentro de uma Virtual Private Server (VPS) na **Oracle Cloud Infrastructure (OCI)**.
 
-```mermaid
-flowchart TD
-    %% Estilização UML
-    classDef component fill:#e9ecef,stroke:#495057,stroke-width:2px,color:#212529;
-    classDef infra fill:#0052CC,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef external fill:#FF9900,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef actor fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#155724;
+---
 
-    Browser((Navegador Web)):::actor
+## Diagrama de Arquitetura
 
-    subgraph ReSourceApp [«System» Aplicação ReSource]
-        direction TB
-        Web["«Component»<br/>Web (Controllers)"]:::component
-        View["«Component»<br/>Thymeleaf (Views)"]:::component
-        Business["«Component»<br/>Business Logic (Services)"]:::component
-        DataAccess["«Component»<br/>Data Access (JPA / Hibernate)"]:::component
-        FileStorage["«Component»<br/>File Management (NIO)"]:::component
-        Messaging["«Component»<br/>Async Messaging (AMQP)"]:::component
-    end
+![Arquitetura ReSource](ReSource-Arquitetura.png)
 
-    subgraph Infraestrutura [Infraestrutura Local / Docker]
-        Postgres["«Component»<br/>PostgreSQL"]:::infra
-        RabbitMQ["«Component»<br/>RabbitMQ"]:::infra
-        Volume["«Component»<br/>Docker Volume"]:::infra
-    end
+> **Nota:** O arquivo fonte editável do diagrama está disponível em [`ReSource-Arquitetura.drawio`](ReSource-Arquitetura.drawio).
 
-    subgraph ServicosExternos [APIs Externas]
-        BrasilAPI["«Component»<br/>BrasilAPI"]:::external
-        SMTP["«Component»<br/>Servidor SMTP"]:::external
-    end
+---
 
-    %% Relacionamentos de Dependência (UML: <<use>>)
-    Browser -. "«use» HTTP" .-> Web
-    Web -. "renderiza" .-> View
-    Web -. "«use»" .-> Business
-    
-    Business -. "«use»" .-> DataAccess
-    Business -. "«use»" .-> FileStorage
-    Business -. "«use»" .-> Messaging
-    
-    %% Interfaces com Banco e Arquivos
-    DataAccess -. "«use» JDBC" .-> Postgres
-    FileStorage -. "«use» I/O" .-> Volume
-    
-    %% Interfaces de Mensageria e APIs
-    Business -. "«use» HTTP/REST" .-> BrasilAPI
-    Messaging -. "«use» AMQP" .-> RabbitMQ
-    Messaging -. "«use» SMTP" .-> SMTP
-```
+## Atores do Sistema
+
+| Ator | Tipo | Papel no Sistema |
+|---|---|---|
+| **Doador** | Pessoa Física | Consulta ONGs, projetos e realiza doações/apoio. |
+| **ONG** | Instituição | Cadastra a instituição, submete documentos sensíveis e gerencia demandas. |
+| **Administrador** | Controle interno | Valida cadastros de ONGs, audita documentos e gerencia a plataforma. |
+
+---
+
+## Detalhamento dos Componentes
+
+### Borda e Segurança Perimetral
+* **Firewall & Security Lists:** Controla o tráfego de entrada na VPS, expondo apenas as portas seguras `80` (HTTP) e `443` (HTTPS).
+* **Nginx (Reverse Proxy):** Atua como ponto de terminação TLS/SSL e roteia o tráfego externo para a porta interna `8080` da aplicação monolítica.
+
+### Aplicação Monolítica (Spring Boot / Java)
+A aplicação está organizada em camadas bem delimitadas:
+* **Spring Security:** Intercepta as requisições para autenticação e autorização via filtros, suporte a OAuth2 e controle de acesso baseado em papéis (RBAC).
+* **Controllers (Roteamento HTTP / Thymeleaf SSR):** Controladores MVC que recebem as requisições do usuário, acionam as regras de negócio e renderizam as páginas HTML via Thymeleaf.
+* **Services (Regras de Negócio):** Concentra a lógica de negócio, orquestração de transações e comunicação com serviços externos e mensageria.
+* **Repositories (Spring Data JPA / ORM):** Camada de persistência que gerencia as entidades e operações de banco de dados via Hibernate/JPA.
+
+### Infraestrutura e Serviços de Apoio (Rede Virtual Docker)
+* **Message Broker (RabbitMQ):** Responsável pela mensageria assíncrona (envio de e-mails, processamento de documentos em background e notificações).
+* **Banco de Dados (PostgreSQL):** Armazenamento relacional principal para persistência de dados transacionais, entidades e auditoria.
+
+---
+
+## Ambiente de Hospedagem e Execução
+
+* **Provedor:** Oracle Cloud Infrastructure (OCI - VPS).
+* **Orquestração Local:** Docker & Docker Compose em rede virtual isolada para comunicação interna entre Nginx, Aplicação, PostgreSQL e RabbitMQ.
+
+---
 
 ## Histórico de Alterações
 
-| Versão | Data       | Autor                 | Descrição            |
-|--------|------------|-----------------------|----------------------|
-| 1.0    | 2026-09-05 | Hiel Saraiva          | Criação do documento |
+| Versão | Data       | Autor        | Descrição                                            |
+|--------|------------|--------------|------------------------------------------------------|
+| 1.0    | 2026-09-05 | Hiel Saraiva | Criação inicial do documento de arquitetura.         |
+| 1.1    | 2026-09-13 | Hiel Saraiva | Inclusão do diagrama oficial e detalhamento das camadas e infraestrutura. |

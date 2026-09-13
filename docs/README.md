@@ -14,7 +14,9 @@ docs/
 ├── casos-de-uso/                    # Casos de uso do sistema
 │   └── UC-00X-TEMPLATE.md
 └── arquitetura/                     # Decisões e diagramas de arquitetura
-    └── arquitetura.md
+    ├── ReSource-Arquitetura.drawio  # Arquivo fonte do diagrama (Draw.io)
+    ├── ReSource-Arquitetura.png     # Imagem exportada da arquitetura
+    └── arquitetura.md               # Documentação detalhada da arquitetura
 ```
 
 ## Convenções de Nomenclatura
