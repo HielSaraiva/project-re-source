@@ -26,11 +26,8 @@ jobs:
       - name: Tornar mvnw executável
         run: chmod +x ./mvnw
 
-      - name: Rodar testes unitários
-        run: ./mvnw test -B
-
-      - name: Rodar testes de integração e cobertura
-        run: ./mvnw verify -Dtest=none -B
+      - name: Executar testes (Unitários, Integração e Cobertura)
+        run: ./mvnw verify -B
 
   build-and-push:
     needs: test
