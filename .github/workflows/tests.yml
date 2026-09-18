@@ -20,8 +20,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Rodar testes unitários
-        run: mvn test -B
+      - name: Tornar mvnw executável
+        run: chmod +x ./mvnw
 
-      - name: Rodar testes de integração
-        run: mvn verify -B
+      - name: Rodar testes unitários
+        run: ./mvnw test -B
+
+      - name: Rodar testes de integração e cobertura
+        run: ./mvnw verify -Dtest=none -B
