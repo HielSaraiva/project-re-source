@@ -55,8 +55,8 @@ Os seguintes serviços serão iniciados automaticamente:
 
 | Serviço    | Imagem                        | Porta  |
 |------------|-------------------------------|--------|
-| PostgreSQL | `postgres:18.6`               | 5432   |
-| RabbitMQ   | `rabbitmq:4.3.5-management`   | 5672   |
+| PostgreSQL | `postgres:18.6-alpine`               | 5432   |
+| RabbitMQ   | `rabbitmq:4.3.5-management-alpine`   | 5672   |
 
 A interface de gerenciamento do RabbitMQ estará disponível em `http://localhost:15672`.
 
