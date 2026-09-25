@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
@@ -20,8 +20,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Rodar testes unitários
-        run: mvn test -B
+      - name: Tornar mvnw executável
+        run: chmod +x ./mvnw
 
-      - name: Rodar testes de integração
-        run: mvn verify -B
+      - name: Executar testes (Unitários, Integração e Cobertura)
+        run: ./mvnw verify -B
