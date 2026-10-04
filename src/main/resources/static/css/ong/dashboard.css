@@ -1,0 +1,452 @@
+:root {
+    --green: #10b981;
+    --ink: #111827;
+    --slate: #475569;
+    --border: #e2e8f0;
+    --surface: #fff;
+    --page: #f9fafb;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    color: var(--ink);
+    background: var(--page);
+    font-family: Inter, sans-serif;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+}
+
+.navbar {
+    height: 80px;
+    padding: 0 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 4px rgba(15, 23, 42, .04);
+}
+
+.brand,
+.nav-links,
+.nav-actions,
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.brand {
+    gap: 12px;
+    font: 800 28px Outfit, sans-serif;
+}
+
+.brand__mark {
+    width: 32px;
+    height: 32px;
+}
+
+.nav-links {
+    height: 100%;
+    gap: 32px;
+}
+
+.nav-link {
+    height: 100%;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    color: var(--slate);
+    border-bottom: 3px solid transparent;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.nav-link--active {
+    color: var(--green);
+    border-color: var(--green);
+}
+
+.nav-actions {
+    gap: 24px;
+}
+
+.icon-button,
+.profile {
+    position: relative;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.icon-button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.icon-button img {
+    width: 40px;
+    height: 40px;
+}
+
+.nav-divider {
+    width: 24px;
+    height: 1px;
+    display: block;
+    transform: rotate(90deg);
+}
+
+.profile {
+    gap: 12px;
+    padding: 0;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.profile__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile__identity {
+    display: flex;
+    min-width: 82px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.profile__identity strong {
+    font-size: 14px;
+    line-height: 1.1;
+}
+
+.profile__identity small {
+    color: #64748b;
+    font-size: 8px;
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+.profile__chevron {
+    width: 16px;
+    height: 16px;
+}
+
+.page-content {
+    width: 100%;
+    padding: 40px 80px 80px;
+}
+
+.summary-grid,
+.needs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.summary-card {
+    min-height: 110px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, .02);
+}
+
+.summary-card span {
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.summary-card strong {
+    display: block;
+    margin-top: auto;
+    font-size: 36px;
+    line-height: 1;
+}
+
+.summary-card strong>span {
+    color: var(--ink);
+    font-size: inherit;
+    font-weight: 800;
+}
+
+.pending-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-left: 7px;
+    border-radius: 50%;
+    background: #fbbf24;
+    vertical-align: middle;
+}
+
+.section-block {
+    margin-top: 40px;
+}
+
+.section-heading {
+    margin-bottom: 20px;
+}
+
+.section-heading h1,
+.section-heading h2 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.3;
+}
+
+.section-heading p {
+    margin: 4px 0 0;
+    color: #4b5563;
+    font-size: 14px;
+}
+
+.intentions-list {
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, .02);
+}
+
+.intention-row {
+    min-height: 72px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.intention-row:last-child {
+    border-bottom: 0;
+}
+
+.intention-icon,
+.need-icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #f3f4f6;
+    flex: 0 0 auto;
+}
+
+.intention-icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.intention-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.intention-info strong {
+    display: block;
+    font-size: 15px;
+}
+
+.intention-info span {
+    color: #4b5563;
+    font-size: 12px;
+}
+
+.logistics-pill,
+.priority {
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.logistics-pill {
+    padding: 5px 10px;
+    color: #4b5563;
+    background: #f3f4f6;
+}
+
+.intention-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.button {
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.button--accept {
+    padding: 9px 16px;
+    color: #fff;
+    background: var(--green);
+}
+
+.button--decline {
+    padding: 8px 14px;
+    color: var(--slate);
+    border: 1px solid var(--border);
+    background: #fff;
+}
+
+.section-heading--needs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.button--new {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    background: var(--green);
+}
+
+.button--new img {
+    width: 16px;
+    height: 16px;
+}
+
+.needs-grid {
+    margin-top: 0;
+}
+
+.need-card {
+    min-height: 152px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, .02);
+}
+
+.need-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.need-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+.priority {
+    padding: 6px 10px;
+}
+
+.priority--high {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+.priority--medium {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.need-card>strong {
+    margin-top: 12px;
+    font-size: 16px;
+}
+
+.need-card>a {
+    margin-top: auto;
+    padding-top: 10px;
+    color: var(--green);
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.need-card>a span {
+    font-size: 16px;
+}
+
+@media (max-width: 900px) {
+    .navbar {
+        padding: 0 28px;
+    }
+
+    .page-content {
+        padding: 32px 28px 60px;
+    }
+}
+
+@media (max-width: 680px) {
+    .navbar {
+        height: 68px;
+        padding: 0 16px;
+    }
+
+    .brand {
+        font-size: 22px;
+    }
+
+    .nav-links {
+        gap: 4px;
+    }
+
+    .nav-link {
+        padding: 0 5px;
+        font-size: 11px;
+    }
+
+    .profile__identity,
+    .profile__chevron,
+    .nav-divider {
+        display: none;
+    }
+
+    .nav-actions {
+        gap: 10px;
+    }
+
+    .summary-grid,
+    .needs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .intention-row {
+        flex-wrap: wrap;
+    }
+
+    .logistics-pill {
+        margin-left: 40px;
+    }
+
+    .intention-actions {
+        margin-left: auto;
+    }
+}

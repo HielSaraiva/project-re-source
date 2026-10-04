@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" th:href="@{/images/donor/shared/leaf.svg}">
+    <title>ReSource | Painel da ONG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/ong/dashboard.css}">
+</head>
+<body>
+<header th:replace="~{fragments/ong-header :: header('dashboard')}"></header>
+
+<main class="page-content">
+    <section class="summary-grid" aria-label="Resumo da ONG">
+        <article class="summary-card">
+            <span>Doações Recebidas</span>
+            <strong th:text="${receivedDonations}">124</strong>
+        </article>
+        <article class="summary-card">
+            <span>Aguardando Aceite</span>
+            <strong><span th:text="${pendingAcceptances}">3</span><i class="pending-dot"></i></strong>
+        </article>
+        <article class="summary-card">
+            <span>Necessidades Ativas</span>
+            <strong th:text="${activeNeeds}">5</strong>
+        </article>
+    </section>
+
+    <section class="section-block">
+        <div class="section-heading">
+            <div>
+                <h1>Novas intenções de doação</h1>
+                <p>Avalie as ofertas de doação enviadas pela comunidade antes de aceitar.</p>
+            </div>
+        </div>
+        <div class="intentions-list">
+            <article class="intention-row" th:each="intention : ${intentions}">
+                <div class="intention-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${intention.icon})}" alt=""></div>
+                <div class="intention-info">
+                    <strong th:text="${intention.item}">Monitor Dell 24"</strong>
+                    <span>Doador: <span th:text="${intention.donor}">João Silva</span></span>
+                </div>
+                <span class="logistics-pill" th:text="${intention.logistics}">Presencial</span>
+                <div class="intention-actions">
+                    <button class="button button--accept" type="button">Aceitar</button>
+                    <button class="button button--decline" type="button">Recusar</button>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="section-block needs-section">
+        <div class="section-heading section-heading--needs">
+            <div>
+                <h2>Necessidades Cadastradas</h2>
+                <p>Itens atualmente ativos na sua lista de desejos institucional.</p>
+            </div>
+            <button class="button button--new" type="button"><img src="/images/ong/dashboard/plus.svg" alt="">Nova Necessidade</button>
+        </div>
+        <div class="needs-grid">
+            <article class="need-card" th:each="need : ${needs}">
+                <div class="need-card__top">
+                    <div class="need-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${need.icon})}" alt=""></div>
+                    <span class="priority" th:classappend="' priority--' + ${need.priorityClass}" th:text="${need.priority}">Alta Prioridade</span>
+                </div>
+                <strong th:text="${need.item}">50 Cadeiras escolares</strong>
+                <a href="#edit">Editar necessidade <span aria-hidden="true">→</span></a>
+            </article>
+        </div>
+    </section>
+</main>
+</body>
+</html>
