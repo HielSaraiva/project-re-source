@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" th:href="@{/images/donor/shared/leaf.svg}">
+    <title>ReSource | Início</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/donor/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/donor/header.css}">
+</head>
+<body>
+<header th:replace="~{fragments/donor-header :: header('dashboard')}"></header>
+
+<main>
+    <section class="hero">
+        <div>
+            <h1>Olá, <span th:text="${donorName.substring(0, donorName.indexOf(' '))}">João</span>! Pronto para fazer a diferença hoje?</h1>
+            <p>Suas doações ajudam a sustentar iniciativas sociais e promovem a economia circular.</p>
+        </div>
+        <a class="button button--primary" href="#new-donation">
+            <img src="/images/donor/dashboard/plus.svg" alt="">
+            Nova Doação
+        </a>
+    </section>
+
+    <div class="dashboard-body">
+        <section id="urgencies" class="section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h2>Urgências na sua região</h2>
+                    <span class="counter-badge" th:text="${urgencies.size() + ' Novas'}">3 Novas</span>
+                </div>
+                <a class="text-link" th:href="@{/donor/needs}">Ver todas as necessidades</a>
+            </div>
+            <div class="cards-grid">
+                <article class="urgency-card" th:each="urgency : ${urgencies}">
+                    <div class="card-header">
+                        <h3 th:text="${urgency.institution}">Instituto Esperança</h3>
+                        <span class="priority-badge" th:classappend="${' priority--' + urgency.priorityClass}" th:text="${urgency.priority}">Alta Prioridade</span>
+                    </div>
+                    <div class="need">
+                        <span class="need__icon"><img th:src="@{'/images/donor/dashboard/' + ${urgency.icon}}" alt=""></span>
+                        <span>
+                            <small>Necessidade urgente:</small>
+                            <strong th:text="${urgency.item}">50 Cadeiras escolares</strong>
+                        </span>
+                    </div>
+                    <a class="button button--card" href="#new-donation">Ajudar Agora</a>
+                </article>
+            </div>
+        </section>
+
+        <section id="shipments" class="section">
+            <div class="section-header">
+                <h2>Acompanhe seus envios</h2>
+                <a class="text-link" href="#shipments">Ver histórico completo</a>
+            </div>
+            <div class="shipment-table" role="table" aria-label="Acompanhe seus envios">
+                <div class="shipment-row shipment-row--header" role="row">
+                    <span>Item Doador</span><span>Destinatário</span><span>Status do Envio</span><span>Ações</span>
+                </div>
+                <div class="shipment-row" role="row" th:each="shipment : ${shipments}">
+                    <div class="shipment-item">
+                        <span class="item-icon"><img th:src="@{'/images/donor/dashboard/' + ${shipment.icon}}" alt=""></span>
+                        <strong th:text="${shipment.item}">Monitor Dell 24"</strong>
+                    </div>
+                    <span class="recipient" th:text="${shipment.recipient}">Associação Vida</span>
+                    <span class="status-badge" th:classappend="${' status--' + shipment.statusClass}" th:text="${shipment.status}">Aguardando Aceite</span>
+                    <a class="text-link" th:href="${shipment.detailsPath}">Ver detalhes</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+</body>
+</html>

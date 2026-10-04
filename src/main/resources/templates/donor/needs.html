@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" th:href="@{/images/donor/shared/leaf.svg}">
+    <title>ReSource | Necessidades</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/donor/needs.css}">
+    <link rel="stylesheet" th:href="@{/css/donor/header.css}">
+</head>
+<body>
+<header th:replace="~{fragments/donor-header :: header('needs')}"></header>
+
+<main>
+    <section class="search-hero">
+        <a class="back-link" th:href="@{/donor/dashboard}">
+            <img src="/images/donor/needs/arrow-left.svg" alt=""> Voltar ao painel
+        </a>
+        <div class="heading">
+            <h1>Todas as necessidades</h1>
+            <p>Explore as demandas de ONGs parceiras e encontre o match perfeito para a sua doação. Sua ajuda chega diretamente a quem mais precisa.</p>
+        </div>
+        <form class="filters" action="#" method="get">
+            <label class="search-field">
+                <img src="/images/donor/needs/search.svg" alt="">
+                <input type="search" name="query" placeholder="Buscar item ou ONG...">
+            </label>
+            <label class="filter-select">
+                <span><small>Categoria</small><strong>Todas as categorias</strong></span>
+                <img src="/images/donor/needs/filter-chevron.svg" alt="">
+            </label>
+            <label class="filter-select">
+                <span><small>Distância</small><strong>Até 15 km</strong></span>
+                <img src="/images/donor/needs/filter-chevron.svg" alt="">
+            </label>
+            <label class="filter-select">
+                <span><small>Ordenar por</small><strong>Mais urgentes</strong></span>
+                <img src="/images/donor/needs/filter-chevron.svg" alt="">
+            </label>
+        </form>
+    </section>
+
+    <section class="results">
+        <div class="results-meta">
+            <div class="result-count">
+                <img src="/images/donor/needs/city.svg" alt="">
+                <strong>Exibindo 156 necessidades encontradas</strong>
+            </div>
+            <span class="verified-pill">
+                <img src="/images/donor/needs/shield.svg" alt="">
+                ONGs 100% Verificadas com auditoria ativa
+            </span>
+        </div>
+        <div class="needs-grid">
+            <article class="need-card" th:each="need : ${needs}">
+                <div class="card-top">
+                    <div class="organization-row">
+                        <strong th:text="${need.organization}">Instituto Esperança</strong>
+                        <span class="priority-badge" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta Prioridade</span>
+                    </div>
+                    <div class="location">
+                        <span class="location__icon" aria-hidden="true">
+                            <img src="/images/donor/needs/map-pin.svg" alt="">
+                        </span>
+                        <span th:text="${need.city + ' • '}">Curitiba, PR • </span><strong th:text="${'A ' + need.distance}">A 4.2 km</strong>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="item-visual"><img th:src="@{'/images/donor/needs/' + ${need.icon}}" alt=""></div>
+                    <div class="item-info">
+                        <h2 th:text="${need.item}">Cadeira de Rodas</h2>
+                        <p th:text="${need.description}">Necessitamos de cadeiras de rodas para atendimento.</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="metrics"><span th:text="${need.category}">Saúde &amp; Mobilidade</span><strong th:text="${'Qtd: ' + need.quantity}">Qtd: 3 unidades</strong></div>
+                    <a class="button" href="#donation">Ajudar Agora</a>
+                </div>
+            </article>
+        </div>
+        <nav class="pagination" aria-label="Paginação">
+            <a href="#" aria-label="Página anterior">‹</a>
+            <a class="current" href="#">1</a><a href="#">2</a><a href="#">3</a><span>...</span><a href="#">26</a><a href="#" aria-label="Próxima página">›</a>
+        </nav>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" th:href="@{/images/donor/shared/leaf.svg}">
+    <title>ReSource | Doação concluída</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/donor/donation-completed.css}">
+    <link rel="stylesheet" th:href="@{/css/donor/header.css}">
+</head>
+<body>
+<header th:replace="~{fragments/donor-header :: header('dashboard')}"></header>
+
+<main class="main-content">
+    <div class="header-area">
+        <a class="back-link" th:href="@{/donor/dashboard}">
+            <img src="/images/donor/donation-completed/arrow-left.svg" alt=""> Voltar ao painel
+        </a>
+        <div class="heading-row">
+            <div class="titles">
+                <h1>Doação Concluída</h1>
+                <p>Você doou <strong th:text="${donation.item}">1x Notebook Lenovo</strong> para a
+                    <strong th:text="${donation.organization}">ONG Recomeço</strong>. A doação foi recebida e confirmada com sucesso.</p>
+            </div>
+            <span class="status-badge">Concluído</span>
+        </div>
+    </div>
+
+    <section class="details-grid" aria-label="Detalhes da doação concluída">
+        <article class="details-card">
+            <div class="card-header">
+                <div class="icon-frame"><img src="/images/donor/donation-completed/monitor.svg" alt=""></div>
+                <span class="card-badge">Especificações</span>
+            </div>
+            <div class="title-block">
+                <h2>Detalhes da Doação</h2>
+                <p>Informações declaradas no ato da abertura do fluxo de doação.</p>
+            </div>
+            <img class="section-divider" src="/images/donor/donation-completed/details-divider.svg" alt="">
+            <div class="details-list">
+                <div class="detail-item" th:each="detail : ${donationDetails}">
+                    <img th:src="@{'/images/donor/donation-completed/' + ${detail.icon}}" alt="">
+                    <div class="detail-text">
+                        <strong th:text="${detail.label}">Item Doado</strong>
+                        <span th:text="${detail.value}">1x Notebook Lenovo</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="details-card">
+            <div class="card-header">
+                <div class="icon-frame"><img src="/images/donor/donation-completed/home.svg" alt=""></div>
+                <span class="card-badge card-badge--blue">Dados da Instituição</span>
+            </div>
+            <div class="title-block">
+                <h2>Informações da ONG</h2>
+                <p>Detalhes de contato e confirmação do recebimento.</p>
+            </div>
+            <img class="section-divider" src="/images/donor/donation-completed/details-divider.svg" alt="">
+            <div class="details-list">
+                <div class="detail-item" th:each="detail : ${organizationDetails}">
+                    <img th:src="@{'/images/donor/donation-completed/' + ${detail.icon}}" alt="">
+                    <div class="detail-text">
+                        <strong th:text="${detail.label}">Destinatário</strong>
+                        <span th:classappend="${detail.label == 'Data de Aceite' ? ' detail-text--success' : ''}"
+                              th:text="${detail.value}">ONG Recomeço</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <div class="action-wrapper">
+        <a class="receipt-button" href="#receipt">Baixar Comprovante</a>
+    </div>
+
+    <aside class="help-info-banner">
+        <img src="/images/donor/donation-completed/info.svg" alt="">
+        <p>Todas as doações efetuadas através do ReSource geram impacto social auditado e contam para suas estatísticas de sustentabilidade.</p>
+    </aside>
+</main>
+</body>
+</html>
