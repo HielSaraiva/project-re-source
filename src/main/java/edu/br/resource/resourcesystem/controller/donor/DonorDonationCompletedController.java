@@ -17,7 +17,7 @@ public class DonorDonationCompletedController {
         model.addAttribute("donationDetails", List.of(
                 new Detail("gift.svg", "Item Doado", "1x Notebook Lenovo"),
                 new Detail("tag.svg", "Categoria", "Eletrônicos"),
-                new Detail("check-circle.svg", "Condição", "Usado - Bom estado"),
+                new Detail("check-circle.svg", "Condição", "Usado (Bom estado)"),
                 new Detail("calendar.svg", "Data da Doação", "15/07/2026")));
         model.addAttribute("organizationDetails", List.of(
                 new Detail("user.svg", "Destinatário", "ONG Recomeço"),

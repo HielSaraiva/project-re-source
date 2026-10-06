@@ -12,9 +12,9 @@ public class DonorDashboardService {
         return Map.of(
                 "donorName", "João Silva",
                 "urgencies", List.of(
-                        new Urgency("Instituto Esperança", "Alta Prioridade", "50 Cadeiras escolares", "shirt.svg", "high"),
-                        new Urgency("Casa do Menor", "Média Prioridade", "20 Cobertores macios", "armchair.svg", "medium"),
-                        new Urgency("ONG Recomeço", "Alta Prioridade", "10 Notebooks usados", "cpu.svg", "high")),
+                        new Urgency("school-chairs", "Instituto Esperança", "Alta Prioridade", "50 Cadeiras escolares", "shirt.svg", "high"),
+                        new Urgency("soft-blankets", "Casa do Menor", "Média Prioridade", "20 Cobertores macios", "armchair.svg", "medium"),
+                        new Urgency("notebooks", "ONG Recomeço", "Alta Prioridade", "10 Notebooks usados", "cpu.svg", "high")),
                 "shipments", List.of(
                         new Shipment("Monitor Dell 24\"", "Associação Vida", "Aguardando Aceite", "monitor.svg", "waiting",
                                 "/donor/donation/status"),
@@ -24,7 +24,7 @@ public class DonorDashboardService {
                                 "/donor/donation/completed")));
     }
 
-    public record Urgency(String institution, String priority, String item, String icon, String priorityClass) {
+    public record Urgency(String needId, String institution, String priority, String item, String icon, String priorityClass) {
     }
 
     public record Shipment(

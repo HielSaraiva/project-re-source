@@ -213,11 +213,6 @@ h1 {
     white-space: nowrap;
 }
 
-.priority--low {
-    color: #10b981;
-    background: #d1fae5;
-}
-
 .location {
     gap: 6px;
     color: var(--slate);

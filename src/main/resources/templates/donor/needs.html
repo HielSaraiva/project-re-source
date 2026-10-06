@@ -72,7 +72,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="metrics"><span th:text="${need.category}">Saúde &amp; Mobilidade</span><strong th:text="${'Qtd: ' + need.quantity}">Qtd: 3 unidades</strong></div>
-                    <a class="button" href="#donation">Ajudar Agora</a>
+                    <a class="button" th:href="@{/donor/donation/proposal(need=${need.id})}">Ajudar Agora</a>
                 </div>
             </article>
         </div>

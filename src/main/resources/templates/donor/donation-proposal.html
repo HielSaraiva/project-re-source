@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Propor doação', ~{::pageStyles}, 'donor')}">
+    <th:block th:fragment="pageStyles">
+        <link rel="stylesheet" th:href="@{/css/donor/donation-flow.css}">
+        <link rel="stylesheet" th:href="@{/css/donor/priority-badges.css}">
+        <link rel="stylesheet" th:href="@{/css/donor/donation-proposal.css}">
+        <script th:src="@{/js/donation-proposal.js}" defer></script>
+    </th:block>
+</head>
+<body>
+<header th:replace="~{fragments/donor-header :: header('needs')}"></header>
+
+<main class="main-content proposal-page">
+    <div class="header-area">
+        <a class="back-link" th:href="@{/donor/needs}">
+            <img th:src="@{/images/donor/needs/arrow-left.svg}" alt=""> Voltar às necessidades
+        </a>
+        <div class="titles">
+            <h1>Sua ajuda começa aqui</h1>
+            <p>Escolha uma das suas doações para <strong th:text="${need.organization}">Instituto Esperança</strong>.
+                A ONG analisará sua proposta antes de combinar a entrega.</p>
+        </div>
+    </div>
+
+    <div class="proposal-grid">
+        <aside class="proposal-card need-summary" aria-labelledby="need-title">
+            <div class="proposal-card__header">
+                <span class="icon-frame"><img th:src="@{/images/donor/needs/{icon}(icon=${need.icon})}" alt=""></span>
+                <span class="proposal-priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta Prioridade</span>
+            </div>
+            <div class="title-block">
+                <span class="proposal-eyebrow">Necessidade escolhida</span>
+                <h2 id="need-title" th:text="${need.item}">Cadeira de Rodas</h2>
+                <p th:text="${need.description}">Itens para apoiar as pessoas atendidas pela instituição.</p>
+            </div>
+            <dl class="proposal-summary">
+                <div><dt>ONG beneficiada</dt><dd th:text="${need.organization}">Instituto Esperança</dd></div>
+                <div><dt>Localização</dt><dd th:text="${need.city + ' • A ' + need.distance}">Curitiba, PR • A 4.2 km</dd></div>
+                <div><dt>Categoria</dt><dd th:text="${need.category}">Saúde &amp; Mobilidade</dd></div>
+                <div><dt>Quantidade ainda necessária</dt><dd data-need-remaining aria-live="polite" th:text="${need.quantity}">3 unidades</dd></div>
+            </dl>
+            <div class="proposal-note">
+                <img th:src="@{/images/donor/shipping/info.svg}" alt="">
+                <p>Você pode contribuir com parte da quantidade solicitada. Cada doação faz a diferença.</p>
+            </div>
+        </aside>
+
+        <section class="proposal-card" aria-labelledby="proposal-title">
+            <div class="title-block">
+                <h2 id="proposal-title">Selecione sua doação</h2>
+                <p>Use uma doação registrada na categoria <strong th:text="${need.category}">Saúde &amp; Mobilidade</strong> e escolha quantas unidades oferecer.</p>
+            </div>
+            <div id="need-fulfilled" class="proposal-empty" hidden>
+                <span class="icon-frame"><img th:src="@{/images/donor/donation-completed/check-circle.svg}" alt=""></span>
+                <h3 tabindex="-1">Necessidade atendida</h3>
+                <p>Todas as unidades necessárias já foram destinadas em propostas. Esta necessidade não aceita novas doações.</p>
+                <a class="proposal-button proposal-button--primary" th:href="@{/donor/needs}">Ver outras necessidades</a>
+            </div>
+            <div id="inventory-empty" class="proposal-empty" th:hidden="${!inventoryDonations.isEmpty()}">
+                <span class="icon-frame"><img th:src="@{/images/donor/shipping/package.svg}" alt=""></span>
+                <h3>Você ainda não tem uma doação disponível nesta categoria</h3>
+                <p>Cadastre os itens que possui em <strong th:text="${need.category}">Saúde &amp; Mobilidade</strong>. Eles ficam disponíveis em Minhas Doações com o status <strong>Registrado</strong> e podem ser selecionados aqui.</p>
+                <button class="proposal-button proposal-button--primary" type="button" data-open-registration disabled>Cadastrar doação</button>
+            </div>
+            <p id="inventory-feedback" class="proposal-inventory-feedback" role="status" hidden></p>
+            <form id="donation-proposal-form" class="proposal-form" th:action="@{/donor/donation/proposal}" method="get" th:hidden="${inventoryDonations.isEmpty()}" th:attr="data-remaining-quantity=${need.requestedQuantity()}">
+                <input type="hidden" name="need" th:value="${need.id}">
+                <div class="proposal-field">
+                    <label for="inventory-donation">Doação em Minhas Doações <span aria-hidden="true">*</span></label>
+                    <select id="inventory-donation" name="donation" required aria-describedby="inventory-hint">
+                        <option value="">Selecione uma doação registrada</option>
+                        <option th:each="donation : ${inventoryDonations}" th:value="${donation.id}"
+                                th:attr="data-item=${donation.item},data-quantity=${donation.quantity},data-condition=${donation.condition},data-description=${donation.description},data-status=${donation.status}"
+                                th:text="${donation.item + ' • ' + donation.quantity + (donation.quantity == 1 ? ' unidade' : ' unidades')}"></option>
+                    </select>
+                    <small id="inventory-hint">Apenas doações registradas, com unidades disponíveis e da mesma categoria da necessidade.</small>
+                </div>
+                <div id="selected-donation" class="proposal-selected" hidden aria-live="polite">
+                    <div class="proposal-card__header"><h3 data-selected-item></h3><span class="proposal-inventory-status" data-selected-status>Registrado</span></div>
+                    <dl class="proposal-summary">
+                        <div><dt>Condição cadastrada</dt><dd data-selected-condition></dd></div>
+                        <div><dt>Unidades disponíveis</dt><dd data-selected-stock></dd></div>
+                    </dl>
+                    <p data-selected-description></p>
+                </div>
+                <div class="proposal-field">
+                    <label for="donation-quantity">Quantidade para esta ONG <span aria-hidden="true">*</span></label>
+                    <div class="proposal-quantity-row">
+                        <input id="donation-quantity" name="quantity" type="number" min="1" step="1" required inputmode="numeric" disabled aria-describedby="quantity-hint">
+                        <button class="proposal-button proposal-button--secondary" type="button" data-use-all disabled>Doar todas</button>
+                    </div>
+                    <small id="quantity-hint">Selecione uma doação para consultar a quantidade disponível.</small>
+                </div>
+                <div class="proposal-field">
+                    <label for="donation-description">Mensagem para a ONG <span class="proposal-optional">(opcional)</span></label>
+                    <textarea id="donation-description" name="description" rows="3" maxlength="1000" placeholder="Acrescente informações sobre sua proposta." aria-describedby="description-hint"></textarea>
+                    <small id="description-hint">A condição e a descrição dos itens são as informadas no cadastro da doação.</small>
+                </div>
+                <div class="proposal-next-step">
+                    <span class="icon-frame"><img th:src="@{/images/donor/shipping/clock.svg}" alt=""></span>
+                    <div><strong>O que acontece depois?</strong><p>Ao enviar a proposta, a doação passa de <strong>Registrado</strong> para <strong>Aguardando Aceite</strong> em Minhas Doações. Após o aceite da ONG, você combina a entrega.</p></div>
+                </div>
+                <div class="proposal-actions">
+                    <a class="proposal-button proposal-button--secondary" th:href="@{/donor/needs}">Cancelar</a>
+                    <button class="proposal-button proposal-button--primary" type="submit" disabled>Enviar proposta</button>
+                </div>
+                <button class="proposal-register-link" type="button" data-open-registration disabled>Cadastrar outra doação nesta categoria</button>
+            </form>
+            <noscript><p class="proposal-noscript">Ative o JavaScript para cadastrar uma doação e enviar sua proposta.</p></noscript>
+        </section>
+    </div>
+</main>
+
+<dialog id="proposal-confirmation" class="proposal-dialog" aria-labelledby="confirmation-title" aria-describedby="confirmation-description">
+    <div class="proposal-confirmation">
+        <span class="icon-frame"><img th:src="@{/images/donor/shipping/file-text.svg}" alt=""></span>
+        <div class="title-block">
+            <h2 id="confirmation-title" tabindex="-1" autofocus>Confira sua proposta</h2>
+            <p id="confirmation-description">Revise as informações antes de enviar. A ONG analisará sua proposta e, após o aceite, você poderá combinar a entrega.</p>
+        </div>
+        <dl class="proposal-summary">
+            <div><dt>ONG beneficiada</dt><dd th:text="${need.organization}">Instituto Esperança</dd></div>
+            <div><dt>Doação selecionada</dt><dd data-confirmation-item></dd></div>
+            <div><dt>Quantidade oferecida</dt><dd data-confirmation-quantity></dd></div>
+            <div><dt>Condição cadastrada</dt><dd data-confirmation-condition></dd></div>
+            <div><dt>Unidades não incluídas na proposta</dt><dd data-confirmation-remaining></dd></div>
+            <div><dt>Descrição dos itens</dt><dd data-confirmation-item-description></dd></div>
+            <div data-confirmation-message-row hidden><dt>Mensagem para a ONG</dt><dd data-confirmation-message></dd></div>
+        </dl>
+        <div class="proposal-actions">
+            <button class="proposal-button proposal-button--secondary" type="button" data-close-confirmation>Voltar e editar</button>
+            <button class="proposal-button proposal-button--primary" type="button" data-confirm-proposal>Confirmar envio</button>
+        </div>
+    </div>
+</dialog>
+<dialog id="proposal-result" class="proposal-dialog" aria-labelledby="result-title" aria-describedby="result-description">
+    <div class="proposal-confirmation">
+        <span class="icon-frame"><img th:src="@{/images/donor/donation-completed/check-circle.svg}" alt=""></span>
+        <div class="title-block">
+            <span class="proposal-inventory-status proposal-inventory-status--waiting">Aguardando Aceite</span>
+            <h2 id="result-title" tabindex="-1" autofocus>Proposta enviada com sucesso</h2>
+            <p id="result-description">Sua proposta para <strong th:text="${need.organization}">Instituto Esperança</strong> foi enviada. Aguarde o aceite da ONG para combinar a entrega.</p>
+        </div>
+        <dl class="proposal-summary">
+            <div><dt>Quantidade oferecida</dt><dd data-result-quantity></dd></div>
+            <div><dt>Quantidade ainda necessária</dt><dd data-result-remaining></dd></div>
+        </dl>
+        <p class="proposal-inventory-feedback" data-result-message></p>
+        <div class="proposal-actions">
+            <button class="proposal-button proposal-button--secondary" type="button" data-close-result>Continuar doando</button>
+            <a class="proposal-button proposal-button--primary" th:href="@{/donor/dashboard}">Ir para o painel</a>
+        </div>
+    </div>
+</dialog>
+<dialog id="inventory-registration" class="proposal-dialog" aria-labelledby="registration-title" aria-describedby="registration-description">
+    <div class="proposal-confirmation">
+        <div class="title-block">
+            <span class="proposal-eyebrow">Minhas Doações</span>
+            <h2 id="registration-title">Cadastrar doação</h2>
+            <p id="registration-description">Cadastre os itens que você possui. A doação ficará com o status <strong>Registrado</strong> para você montar a proposta.</p>
+        </div>
+        <form id="inventory-registration-form" class="proposal-form" th:action="@{/donor/donation/proposal}" method="get">
+            <input type="hidden" name="need" th:value="${need.id}">
+            <div class="proposal-field">
+                <label for="registration-category">Categoria</label>
+                <input id="registration-category" type="text" th:value="${need.category}" readonly>
+            </div>
+            <div class="proposal-field">
+                <label for="registration-item">Nome do item <span aria-hidden="true">*</span></label>
+                <input id="registration-item" name="item" type="text" maxlength="120" required th:placeholder="${'Ex.: ' + need.item}" autofocus>
+            </div>
+            <div class="proposal-fields-row">
+                <div class="proposal-field">
+                    <label for="registration-quantity">Quantidade que possui <span aria-hidden="true">*</span></label>
+                    <input id="registration-quantity" name="quantity" type="number" min="1" step="1" value="1" required inputmode="numeric">
+                </div>
+                <div class="proposal-field">
+                    <label for="registration-condition">Condição <span aria-hidden="true">*</span></label>
+                    <select id="registration-condition" name="condition" required>
+                        <option value="">Selecione</option>
+                        <option value="new">Novo</option>
+                        <option value="good">Usado (Bom estado)</option>
+                        <option value="used">Com marcas de uso</option>
+                    </select>
+                </div>
+            </div>
+            <div class="proposal-field">
+                <label for="registration-description-input">Descrição <span class="proposal-optional">(opcional)</span></label>
+                <textarea id="registration-description-input" name="description" rows="3" maxlength="1000" placeholder="Informe características, conservação e outros detalhes dos itens."></textarea>
+            </div>
+            <div class="proposal-actions">
+                <button class="proposal-button proposal-button--secondary" type="button" data-close-registration>Cancelar</button>
+                <button class="proposal-button proposal-button--primary" type="submit" disabled>Cadastrar e selecionar</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+</body>
+</html>

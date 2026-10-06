@@ -43,7 +43,7 @@
                             <strong th:text="${urgency.item}">50 Cadeiras escolares</strong>
                         </span>
                     </div>
-                    <a class="button button--card" href="#new-donation">Ajudar Agora</a>
+                    <a class="button button--card" th:href="@{/donor/donation/proposal(need=${urgency.needId})}">Ajudar Agora</a>
                 </article>
             </div>
         </section>

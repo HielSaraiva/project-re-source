@@ -17,7 +17,7 @@ public class DonorDonationStatusController {
         model.addAttribute("donationDetails", List.of(
                 new Detail("gift.svg", "Item Doado", "1x Monitor Dell 24\""),
                 new Detail("tag.svg", "Categoria", "Eletrônicos"),
-                new Detail("check-circle.svg", "Condição", "Usado - Bom estado"),
+                new Detail("check-circle.svg", "Condição", "Usado (Bom estado)"),
                 new Detail("calendar.svg", "Data da Doação", "28/08/2026")));
         model.addAttribute("organizationDetails", List.of(
                 new Detail("user.svg", "Destinatário", "Associação Vida"),

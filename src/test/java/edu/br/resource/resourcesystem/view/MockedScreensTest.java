@@ -3,6 +3,8 @@ package edu.br.resource.resourcesystem.view;
 import edu.br.resource.resourcesystem.controller.donor.*;
 import edu.br.resource.resourcesystem.controller.ong.OngDashboardController;
 import edu.br.resource.resourcesystem.service.donor.DonorDashboardService;
+import edu.br.resource.resourcesystem.service.donor.DonorNeedsService;
+import edu.br.resource.resourcesystem.service.donor.DonorInventoryService;
 import edu.br.resource.resourcesystem.service.ong.OngDashboardService;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,7 +32,7 @@ class MockedScreensTest {
         return Stream.of(
                 new Screen(model -> new DonorDashboardController(new DonorDashboardService()).dashboard(model),
                         "Início", "Instituto Esperança"),
-                new Screen(model -> new DonorNeedsController().needs(model),
+                new Screen(model -> new DonorNeedsController(new DonorNeedsService()).needs(model),
                         "Necessidades", "Cadeira de Rodas"),
                 new Screen(model -> new DonorShippingController().shipping(model),
                         "Envio da doação", "Confirmar Entrega Presencial"),
@@ -39,7 +41,13 @@ class MockedScreensTest {
                 new Screen(model -> new DonorDonationCompletedController().completed(model),
                         "Doação concluída", "detail-text--success"),
                 new Screen(model -> new OngDashboardController(new OngDashboardService()).dashboard(model),
-                        "Painel da ONG", "ONG EcoVida"));
+                        "Painel da ONG", "ONG EcoVida"),
+                new Screen(model -> new DonorDonationProposalController(new DonorNeedsService(), new DonorInventoryService()).proposal("wheelchairs", model),
+                        "Propor doação", "Cadeira de Rodas"),
+                new Screen(model -> new DonorDonationProposalController(new DonorNeedsService(), new DonorInventoryService()).proposal("notebooks", model),
+                        "Propor doação", "Notebooks usados"),
+                new Screen(model -> new DonorDonationProposalController(new DonorNeedsService(), new DonorInventoryService()).proposal("textbooks", model),
+                        "Propor doação", "Você ainda não tem uma doação disponível nesta categoria"));
     }
 
     static Stream<Arguments> screensWithContextPath() {
