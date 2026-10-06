@@ -1,27 +1,16 @@
 <header class="navbar" th:fragment="header(activePage)">
-    <a class="brand" th:href="@{/ong/dashboard}" aria-label="ReSource - painel da ONG">
-        <img src="/images/donor/shared/leaf.svg" alt="" class="brand__mark">
-        <span>ReSource</span>
-    </a>
-    <nav class="nav-links" aria-label="Navegação da ONG">
-        <a class="nav-link" th:classappend="${activePage == 'dashboard' ? ' nav-link--active' : ''}"
-           th:href="@{/ong/dashboard}">Painel</a>
-        <a class="nav-link" th:classappend="${activePage == 'needs' ? ' nav-link--active' : ''}"
-           th:href="@{/ong/needs}">Minhas Necessidades</a>
-        <a class="nav-link" href="#logistics">Perfil Logístico</a>
-    </nav>
-    <div class="nav-actions">
-        <button class="icon-button" type="button" aria-label="Notificações">
-            <img src="/images/donor/shared/notification.svg" alt="">
-        </button>
-        <img class="nav-divider" src="/images/donor/shared/divider.svg" alt="">
-        <button class="profile" type="button" aria-label="Abrir menu da ONG">
-            <img class="profile__avatar" src="/images/donor/shared/avatar.png" alt="">
-            <span class="profile__identity">
-                <strong th:text="${ongName}">ONG EcoVida</strong>
-                <small th:text="${ongRole}">Administrador</small>
-            </span>
-            <img class="profile__chevron" src="/images/donor/shared/chevron.svg" alt="">
-        </button>
+    <a th:replace="~{fragments/header-components :: brand('/ong/dashboard', 'ReSource - painel da ONG')}"></a>
+    <button th:replace="~{fragments/navigation-toggle :: toggle}"></button>
+    <div class="navigation-panel">
+        <div class="navigation-panel__content">
+            <nav id="primary-navigation" class="nav-links" aria-label="Navegação da ONG">
+                <a class="nav-link" th:classappend="${activePage == 'dashboard' ? ' nav-link--active' : ''}"
+                   th:href="@{/ong/dashboard}">Painel</a>
+                <a class="nav-link" th:classappend="${activePage == 'needs' ? ' nav-link--active' : ''}"
+                   th:href="@{/ong/needs}">Minhas Necessidades</a>
+                <a class="nav-link" href="#logistics">Perfil Logístico</a>
+            </nav>
+        </div>
     </div>
+    <div th:replace="~{fragments/header-components :: actions(${ongName}, ${ongRole}, 'Abrir menu da ONG')}"></div>
 </header>

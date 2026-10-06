@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/svg+xml" th:href="@{/images/donor/shared/leaf.svg}">
-    <title>ReSource | Início</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/donor/dashboard.css}">
-    <link rel="stylesheet" th:href="@{/css/donor/header.css}">
+<head th:replace="~{fragments/head :: head('Início', ~{::pageStyles}, 'donor')}">
+    <th:block th:fragment="pageStyles">
+        <link rel="stylesheet" th:href="@{/css/donor/priority-badges.css}">
+        <link rel="stylesheet" th:href="@{/css/donor/dashboard.css}">
+    </th:block>
 </head>
 <body>
 <header th:replace="~{fragments/donor-header :: header('dashboard')}"></header>
@@ -21,7 +16,7 @@
             <p>Suas doações ajudam a sustentar iniciativas sociais e promovem a economia circular.</p>
         </div>
         <a class="button button--primary" href="#new-donation">
-            <img src="/images/donor/dashboard/plus.svg" alt="">
+            <img th:src="@{/images/donor/dashboard/plus.svg}" alt="">
             Nova Doação
         </a>
     </section>
@@ -42,7 +37,7 @@
                         <span class="priority-badge" th:classappend="${' priority--' + urgency.priorityClass}" th:text="${urgency.priority}">Alta Prioridade</span>
                     </div>
                     <div class="need">
-                        <span class="need__icon"><img th:src="@{'/images/donor/dashboard/' + ${urgency.icon}}" alt=""></span>
+                        <span class="need__icon"><img th:src="@{/images/donor/dashboard/{icon}(icon=${urgency.icon})}" alt=""></span>
                         <span>
                             <small>Necessidade urgente:</small>
                             <strong th:text="${urgency.item}">50 Cadeiras escolares</strong>
@@ -64,12 +59,12 @@
                 </div>
                 <div class="shipment-row" role="row" th:each="shipment : ${shipments}">
                     <div class="shipment-item">
-                        <span class="item-icon"><img th:src="@{'/images/donor/dashboard/' + ${shipment.icon}}" alt=""></span>
+                        <span class="item-icon"><img th:src="@{/images/donor/dashboard/{icon}(icon=${shipment.icon})}" alt=""></span>
                         <strong th:text="${shipment.item}">Monitor Dell 24"</strong>
                     </div>
                     <span class="recipient" th:text="${shipment.recipient}">Associação Vida</span>
                     <span class="status-badge" th:classappend="${' status--' + shipment.statusClass}" th:text="${shipment.status}">Aguardando Aceite</span>
-                    <a class="text-link" th:href="${shipment.detailsPath}">Ver detalhes</a>
+                    <a class="text-link" th:href="@{${shipment.detailsPath}}">Ver detalhes</a>
                 </div>
             </div>
         </section>

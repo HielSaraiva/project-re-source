@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="details-list" th:fragment="details(items, assetBase, highlightedLabel, highlightClass)">
+    <div class="detail-item" th:each="detail : ${items}">
+        <img th:src="@{${assetBase + '/' + detail.icon}}" alt="">
+        <div class="detail-text">
+            <strong th:text="${detail.label}">Item Doado</strong>
+            <span th:classappend="${detail.label == highlightedLabel ? ' ' + highlightClass : ''}"
+                  th:text="${detail.value}">1x Monitor Dell 24&quot;</span>
+        </div>
+    </div>
+</div>
+<aside class="help-info-banner" th:fragment="impactBanner(assetBase)">
+    <img th:src="@{${assetBase + '/info.svg'}}" alt="">
+    <p>Todas as doações efetuadas através do ReSource geram impacto social auditado e contam para suas estatísticas de sustentabilidade.</p>
+</aside>
+</body>
+</html>

@@ -1,14 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/svg+xml" th:href="@{/images/donor/shared/leaf.svg}">
-    <title>ReSource | Painel da ONG</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/ong/dashboard.css}">
+<head th:replace="~{fragments/head :: head('Painel da ONG', ~{::pageStyles}, 'ong')}">
+    <th:block th:fragment="pageStyles">
+        <link rel="stylesheet" th:href="@{/css/ong/dashboard.css}">
+    </th:block>
 </head>
 <body>
 <header th:replace="~{fragments/ong-header :: header('dashboard')}"></header>
@@ -58,13 +53,13 @@
                 <h2>Necessidades Cadastradas</h2>
                 <p>Itens atualmente ativos na sua lista de desejos institucional.</p>
             </div>
-            <button class="button button--new" type="button"><img src="/images/ong/dashboard/plus.svg" alt="">Nova Necessidade</button>
+            <button class="button button--new" type="button"><img th:src="@{/images/ong/dashboard/plus.svg}" alt="">Nova Necessidade</button>
         </div>
         <div class="needs-grid">
             <article class="need-card" th:each="need : ${needs}">
                 <div class="need-card__top">
                     <div class="need-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${need.icon})}" alt=""></div>
-                    <span class="priority" th:classappend="' priority--' + ${need.priorityClass}" th:text="${need.priority}">Alta Prioridade</span>
+                    <span class="priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta Prioridade</span>
                 </div>
                 <strong th:text="${need.item}">50 Cadeiras escolares</strong>
                 <a href="#edit">Editar necessidade <span aria-hidden="true">→</span></a>

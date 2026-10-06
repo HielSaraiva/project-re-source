@@ -1,135 +1,9 @@
-:root {
-    --green: #10b981;
-    --ink: #0f172a;
-    --slate: #475569;
-    --muted: #94a3b8;
-    --border: #e2e8f0;
-    --surface: #ffffff;
-    --background: #f8fafc;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    background: var(--background);
-    color: var(--ink);
-    font-family: Inter, sans-serif;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-button {
-    font: inherit;
-}
-
-.navbar {
-    height: 80px;
-    padding: 0 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    box-shadow: 0 2px 4px rgba(15, 23, 42, .04);
-}
-
-.brand,
-.nav-actions,
-.profile,
-.nav-links,
 .section-title,
 .card-header,
 .need,
 .shipment-item {
     display: flex;
     align-items: center;
-}
-
-.brand {
-    gap: 12px;
-    font: 800 28px Outfit, sans-serif;
-}
-
-.brand__mark {
-    width: 32px;
-    height: 32px;
-}
-
-.nav-links {
-    height: 100%;
-    gap: 32px;
-}
-
-.nav-link {
-    height: 100%;
-    padding: 0 8px;
-    display: flex;
-    align-items: center;
-    color: var(--slate);
-    font-size: 15px;
-    font-weight: 600;
-    border-bottom: 3px solid transparent;
-}
-
-.nav-link--active {
-    color: var(--green);
-    border-color: var(--green);
-}
-
-.nav-actions {
-    gap: 24px;
-}
-
-.icon-button,
-.profile {
-    position: relative;
-    display: flex;
-    align-items: center;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-}
-
-.icon-button {
-    padding: 0;
-    width: 40px;
-    height: 40px;
-}
-
-.icon-button img {
-    width: 40px;
-    height: 40px;
-}
-
-.nav-divider {
-    height: 24px;
-    border-left: 1px solid var(--border);
-}
-
-.profile {
-    gap: 12px;
-    padding: 0;
-    color: var(--ink);
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.profile__avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.profile__chevron {
-    width: 16px;
-    height: 16px;
 }
 
 .hero {
@@ -266,16 +140,6 @@ h2 {
     white-space: nowrap;
 }
 
-.priority--high {
-    color: #ef4444;
-    background: #fee2e2;
-}
-
-.priority--medium {
-    color: #f59e0b;
-    background: #fef3c7;
-}
-
 .need {
     gap: 16px;
 }
@@ -381,9 +245,8 @@ h2 {
     color: var(--slate);
 }
 
-.status--waiting,
-.status--shipping,
-.status--completed {
+.status-badge {
+    justify-self: start;
     padding: 6px 12px;
 }
 
@@ -403,19 +266,9 @@ h2 {
 }
 
 @media (max-width: 900px) {
-
-    .navbar,
     .hero {
         padding-left: 24px;
         padding-right: 24px;
-    }
-
-    .nav-links {
-        gap: 8px;
-    }
-
-    .nav-actions {
-        gap: 12px;
     }
 
     .dashboard-body {
@@ -434,35 +287,6 @@ h2 {
 }
 
 @media (max-width: 680px) {
-    .navbar {
-        height: auto;
-        min-height: 72px;
-        flex-wrap: wrap;
-        gap: 16px;
-        padding-top: 16px;
-        padding-bottom: 16px;
-    }
-
-    .nav-links {
-        order: 3;
-        width: 100%;
-        height: 42px;
-        justify-content: space-between;
-        overflow-x: auto;
-    }
-
-    .nav-link {
-        padding: 0 4px;
-        font-size: 13px;
-        white-space: nowrap;
-    }
-
-    .profile span,
-    .profile__chevron,
-    .nav-divider {
-        display: none;
-    }
-
     .hero {
         height: auto;
         gap: 24px;
@@ -494,4 +318,8 @@ h2 {
     .shipment-row {
         min-width: 680px;
     }
+}
+
+.nav-divider {
+    border-left: 1px solid var(--border);
 }

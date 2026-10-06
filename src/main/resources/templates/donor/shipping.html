@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/svg+xml" th:href="@{/images/donor/shared/leaf.svg}">
-    <title>ReSource | Envio da doação</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/donor/shipping.css}">
-    <link rel="stylesheet" th:href="@{/css/donor/header.css}">
+<head th:replace="~{fragments/head :: head('Envio da doação', ~{::pageStyles}, 'donor')}">
+    <th:block th:fragment="pageStyles">
+        <link rel="stylesheet" th:href="@{/css/donor/donation-flow.css}">
+        <link rel="stylesheet" th:href="@{/css/donor/shipping.css}">
+    </th:block>
 </head>
 <body>
 <header th:replace="~{fragments/donor-header :: header('dashboard')}"></header>
@@ -17,7 +12,7 @@
 <main class="main-content">
     <div class="header-area">
         <a class="back-link" th:href="@{/donor/dashboard}">
-            <img src="/images/donor/shipping/arrow-left.svg" alt=""> Voltar ao painel
+            <img th:src="@{/images/donor/shipping/arrow-left.svg}" alt=""> Voltar ao painel
         </a>
         <div class="titles">
             <h1>Como você prefere enviar sua doação?</h1>
@@ -31,7 +26,7 @@
             <div class="card-content-top">
                 <div class="badge-icon-header">
                     <div class="icon-frame">
-                        <img th:src="@{'/images/donor/shipping/' + ${option.icon}}" alt="">
+                        <img th:src="@{/images/donor/shipping/{icon}(icon=${option.icon})}" alt="">
                     </div>
                     <span class="option-badge"
                           th:classappend="${option == mail ? ' option-badge--shipping' : ''}"
@@ -41,16 +36,8 @@
                     <h2 th:text="${option.title}">Entrega Presencial</h2>
                     <p th:text="${option.description}">Leve a doação diretamente ao local da instituição.</p>
                 </div>
-                <img class="section-divider" src="/images/donor/shipping/line.svg" alt="">
-                <div class="details-list">
-                    <div class="detail-item" th:each="detail : ${option.details}">
-                        <img th:src="@{'/images/donor/shipping/' + ${detail.icon}}" alt="">
-                        <div class="detail-text">
-                            <strong th:text="${detail.label}">Endereço de Entrega</strong>
-                            <span th:text="${detail.value}">Rua das Flores, 123</span>
-                        </div>
-                    </div>
-                </div>
+                <img class="section-divider" th:src="@{/images/donor/shipping/line.svg}" alt="">
+                <div th:replace="~{fragments/donation :: details(${option.details}, '/images/donor/shipping', '', '')}"></div>
             </div>
             <div class="card-action-wrapper">
                 <a class="action-button"
@@ -60,10 +47,7 @@
         </article>
     </section>
 
-    <aside class="help-info-banner">
-        <img src="/images/donor/shipping/info.svg" alt="">
-        <p>Todas as doações efetuadas através do ReSource geram impacto social auditado e contam para suas estatísticas de sustentabilidade.</p>
-    </aside>
+    <aside th:replace="~{fragments/donation :: impactBanner('/images/donor/shipping')}"></aside>
 </main>
 </body>
 </html>

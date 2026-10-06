@@ -28,6 +28,7 @@
 }
 
 .nav-links {
+    --nav-hover-background: #ecfdf5;
     height: 100%;
     gap: 32px;
 }
@@ -41,6 +42,19 @@
     border-bottom: 3px solid transparent;
     font-size: 15px;
     font-weight: 600;
+    transition: color 140ms ease, background-color 140ms ease;
+}
+
+.nav-link:focus-visible {
+    color: #065f46;
+    background-color: var(--nav-hover-background);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .nav-link:hover {
+        color: #065f46;
+        background-color: var(--nav-hover-background);
+    }
 }
 
 .nav-link--active {
@@ -98,50 +112,4 @@
 .profile__chevron {
     width: 16px;
     height: 16px;
-}
-
-@media (max-width:1000px) {
-    .navbar {
-        padding-left: 24px;
-        padding-right: 24px;
-    }
-
-    .nav-links {
-        gap: 8px;
-    }
-
-    .nav-actions {
-        gap: 12px;
-    }
-}
-
-@media (max-width:760px) {
-    .navbar {
-        height: auto;
-        min-height: 72px;
-        flex-wrap: wrap;
-        gap: 16px;
-        padding-top: 16px;
-        padding-bottom: 16px;
-    }
-
-    .nav-links {
-        order: 3;
-        width: 100%;
-        height: 42px;
-        justify-content: space-between;
-        overflow: auto;
-    }
-
-    .nav-link {
-        padding: 0 4px;
-        font-size: 13px;
-        white-space: nowrap;
-    }
-
-    .profile span,
-    .profile__chevron,
-    .nav-divider {
-        display: none;
-    }
 }

@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/svg+xml" th:href="@{/images/donor/shared/leaf.svg}">
-    <title>ReSource | Status da doação</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/donor/donation-status.css}">
-    <link rel="stylesheet" th:href="@{/css/donor/header.css}">
+<head th:replace="~{fragments/head :: head('Status da doação', ~{::pageStyles}, 'donor')}">
+    <th:block th:fragment="pageStyles">
+        <link rel="stylesheet" th:href="@{/css/donor/donation-flow.css}">
+        <link rel="stylesheet" th:href="@{/css/donor/donation-details.css}">
+        <link rel="stylesheet" th:href="@{/css/donor/donation-status.css}">
+    </th:block>
 </head>
 <body>
 <header th:replace="~{fragments/donor-header :: header('dashboard')}"></header>
@@ -17,7 +13,7 @@
 <main class="main-content">
     <div class="header-area">
         <a class="back-link" th:href="@{/donor/dashboard}">
-            <img src="/images/donor/donation-status/arrow-left.svg" alt=""> Voltar ao painel
+            <img th:src="@{/images/donor/donation-status/arrow-left.svg}" alt=""> Voltar ao painel
         </a>
         <div class="heading-row">
             <div class="titles">
@@ -32,56 +28,36 @@
     <section class="details-grid" aria-label="Detalhes da doação">
         <article class="details-card">
             <div class="card-header">
-                <div class="icon-frame"><img src="/images/donor/donation-status/monitor.svg" alt=""></div>
+                <div class="icon-frame"><img th:src="@{/images/donor/donation-status/monitor.svg}" alt=""></div>
                 <span class="card-badge">Especificações</span>
             </div>
             <div class="title-block">
                 <h2>Detalhes da Doação</h2>
                 <p>Informações declaradas no ato da abertura do fluxo de doação.</p>
             </div>
-            <img class="section-divider" src="/images/donor/donation-status/line.svg" alt="">
-            <div class="details-list">
-                <div class="detail-item" th:each="detail : ${donationDetails}">
-                    <img th:src="@{'/images/donor/donation-status/' + ${detail.icon}}" alt="">
-                    <div class="detail-text">
-                        <strong th:text="${detail.label}">Item Doado</strong>
-                        <span th:text="${detail.value}">1x Monitor Dell 24"</span>
-                    </div>
-                </div>
-            </div>
+            <img class="section-divider" th:src="@{/images/donor/donation-status/line.svg}" alt="">
+            <div th:replace="~{fragments/donation :: details(${donationDetails}, '/images/donor/donation-status', '', '')}"></div>
         </article>
 
         <article class="details-card">
             <div class="card-header">
-                <div class="icon-frame"><img src="/images/donor/donation-status/home.svg" alt=""></div>
+                <div class="icon-frame"><img th:src="@{/images/donor/donation-status/home.svg}" alt=""></div>
                 <span class="card-badge card-badge--blue">Dados da Instituição</span>
             </div>
             <div class="title-block">
                 <h2>Informações da ONG</h2>
                 <p>Detalhes de contato e prazo estipulado para a resposta da entidade parceira.</p>
             </div>
-            <img class="section-divider" src="/images/donor/donation-status/line.svg" alt="">
-            <div class="details-list">
-                <div class="detail-item" th:each="detail : ${organizationDetails}">
-                    <img th:src="@{'/images/donor/donation-status/' + ${detail.icon}}" alt="">
-                    <div class="detail-text">
-                        <strong th:text="${detail.label}">Destinatário</strong>
-                        <span th:classappend="${detail.label == 'Prazo para Aceite' ? ' detail-text--urgent' : ''}"
-                              th:text="${detail.value}">Associação Vida</span>
-                    </div>
-                </div>
-            </div>
+            <img class="section-divider" th:src="@{/images/donor/donation-status/line.svg}" alt="">
+            <div th:replace="~{fragments/donation :: details(${organizationDetails}, '/images/donor/donation-status', 'Prazo para Aceite', 'detail-text--urgent')}"></div>
         </article>
     </section>
 
     <div class="action-wrapper">
-        <a class="cancel-button" href="#cancel">Cancelar Doação</a>
+        <a class="donation-action donation-action--cancel" href="#cancel">Cancelar Doação</a>
     </div>
 
-    <aside class="help-info-banner">
-        <img src="/images/donor/donation-status/info.svg" alt="">
-        <p>Todas as doações efetuadas através do ReSource geram impacto social auditado e contam para suas estatísticas de sustentabilidade.</p>
-    </aside>
+    <aside th:replace="~{fragments/donation :: impactBanner('/images/donor/donation-status')}"></aside>
 </main>
 </body>
 </html>

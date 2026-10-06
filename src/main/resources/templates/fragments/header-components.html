@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<a class="brand" th:fragment="brand(homePath, label)" th:href="@{${homePath}}" th:attr="aria-label=${label}">
+    <img th:src="@{/images/shared/leaf.svg}" alt="" class="brand__mark">
+    <span>ReSource</span>
+</a>
+<div class="nav-actions" th:fragment="actions(name, role, label)">
+    <button class="icon-button" type="button" aria-label="Notificações">
+        <img th:src="@{/images/shared/notification.svg}" alt="">
+    </button>
+    <img class="nav-divider" th:src="@{/images/shared/divider.svg}" alt="">
+    <button class="profile" type="button" th:attr="aria-label=${label}">
+        <img class="profile__avatar" th:src="@{/images/shared/avatar.png}" alt="">
+        <span th:if="${role == null}" th:text="${name}">João Silva</span>
+        <span th:if="${role != null}" class="profile__identity">
+            <strong th:text="${name}">ONG EcoVida</strong>
+            <small th:text="${role}">Administrador</small>
+        </span>
+        <img class="profile__chevron" th:src="@{/images/shared/chevron.svg}" alt="">
+    </button>
+</div>
+</body>
+</html>

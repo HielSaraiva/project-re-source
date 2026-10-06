@@ -1,26 +1,8 @@
 :root {
-    --green: #10b981;
     --ink: #212529;
     --slate: #6c757d;
     --border: #dee2e6;
-    --surface: #fff;
     --background: #f8f9fa;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    color: var(--ink);
-    background: var(--background);
-    font-family: Inter, sans-serif;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
 }
 
 button,
@@ -28,108 +10,12 @@ input {
     font: inherit;
 }
 
-.navbar {
-    height: 80px;
-    padding: 0 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fff;
-    border-bottom: 1px solid #e2e8f0;
-    box-shadow: 0 2px 4px rgba(15, 23, 42, .04);
-}
-
-.brand,
-.nav-links,
-.nav-actions,
-.profile,
 .organization-row,
 .location,
 .result-count,
 .verified-pill {
     display: flex;
     align-items: center;
-}
-
-.brand {
-    gap: 12px;
-    font: 800 28px Outfit, sans-serif;
-}
-
-.brand__mark {
-    width: 32px;
-    height: 32px;
-}
-
-.nav-links {
-    height: 100%;
-    gap: 32px;
-}
-
-.nav-link {
-    height: 100%;
-    padding: 0 8px;
-    display: flex;
-    align-items: center;
-    color: #475569;
-    border-bottom: 3px solid transparent;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.nav-link--active {
-    color: var(--green);
-    border-color: var(--green);
-}
-
-.nav-actions {
-    gap: 24px;
-}
-
-.icon-button,
-.profile {
-    position: relative;
-    display: flex;
-    align-items: center;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-}
-
-.icon-button {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-}
-
-.icon-button img {
-    width: 40px;
-    height: 40px;
-}
-
-.nav-divider {
-    height: 24px;
-    border-left: 1px solid #e2e8f0;
-}
-
-.profile {
-    gap: 12px;
-    padding: 0;
-    color: #0f172a;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.profile__avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.profile__chevron {
-    width: 16px;
-    height: 16px;
 }
 
 .search-hero {
@@ -214,6 +100,7 @@ h1 {
 }
 
 .filter-select {
+    unicode-bidi: normal;
     min-width: 150px;
     gap: 12px;
     justify-content: space-between;
@@ -324,16 +211,6 @@ h1 {
     font-size: 11px;
     font-weight: 700;
     white-space: nowrap;
-}
-
-.priority--high {
-    color: #ef4444;
-    background: #fee2e2;
-}
-
-.priority--medium {
-    color: #f59e0b;
-    background: #fef3c7;
 }
 
 .priority--low {
@@ -479,21 +356,11 @@ h1 {
     color: var(--slate);
 }
 
-@media (max-width:1000px) {
-
-    .navbar,
+@media (max-width: 1000px) {
     .search-hero,
     .results {
         padding-left: 24px;
         padding-right: 24px;
-    }
-
-    .nav-links {
-        gap: 8px;
-    }
-
-    .nav-actions {
-        gap: 12px;
     }
 
     .needs-grid {
@@ -501,36 +368,7 @@ h1 {
     }
 }
 
-@media (max-width:700px) {
-    .navbar {
-        min-height: 72px;
-        height: auto;
-        flex-wrap: wrap;
-        gap: 16px;
-        padding-top: 16px;
-        padding-bottom: 16px;
-    }
-
-    .nav-links {
-        order: 3;
-        width: 100%;
-        height: 42px;
-        justify-content: space-between;
-        overflow: auto;
-    }
-
-    .nav-link {
-        padding: 0 4px;
-        font-size: 13px;
-        white-space: nowrap;
-    }
-
-    .profile span,
-    .profile__chevron,
-    .nav-divider {
-        display: none;
-    }
-
+@media (max-width: 700px) {
     .search-hero {
         padding-top: 28px;
     }
@@ -557,4 +395,8 @@ h1 {
     .needs-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.nav-divider {
+    border-left: 1px solid #e2e8f0;
 }
