@@ -1,6 +1,6 @@
 .status-badge {
-    color: #f59e0b;
-    background: #fef3c7;
+    color: var(--status-waiting-color);
+    background: var(--status-waiting-background);
 }
 
 .detail-text .detail-text--urgent {
@@ -8,8 +8,9 @@
     font-weight: 600;
 }
 
-.donation-action--cancel {
-    color: #ef4444;
-    background: #fff;
-    border-color: #ef4444;
+.status-badge.status-badge--cancelled {
+    color: #b91c1c;
+    background: #fef2f2;
 }
+
+.main-content [hidden] { display: none; }

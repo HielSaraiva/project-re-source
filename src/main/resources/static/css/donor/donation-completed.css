@@ -3,13 +3,33 @@
     background: #d1fae5;
 }
 
-.detail-text .detail-text--success {
-    color: var(--green);
-    font-weight: 600;
-}
-
 .donation-action--receipt {
     color: #fff;
     background: var(--green);
     border-color: var(--green);
+}
+
+.completed-delivery .details-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.completed-delivery .detail-item {
+    align-items: flex-start;
+}
+
+.completed-delivery .detail-item img {
+    flex-shrink: 0;
+}
+
+.details-card .detail-text span {
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+    .completed-delivery .details-list {
+        grid-template-columns: 1fr;
+    }
 }

@@ -250,19 +250,25 @@ h2 {
     padding: 6px 12px;
 }
 
-.status--waiting {
-    color: #f59e0b;
-    background: #fef3c7;
-}
-
-.status--shipping {
-    color: #3b82f6;
-    background: #dbeafe;
+.status--awaiting-acceptance,
+.status--awaiting-shipment {
+    color: var(--status-waiting-color);
+    background: var(--status-waiting-background);
 }
 
 .status--completed {
     color: var(--green);
     background: #d1fae5;
+}
+
+.status--shipped {
+    color: #1e40af;
+    background: #dbeafe;
+}
+
+.status--cancelled {
+    color: #b91c1c;
+    background: #fef2f2;
 }
 
 @media (max-width: 900px) {
@@ -322,4 +328,33 @@ h2 {
 
 .nav-divider {
     border-left: 1px solid var(--border);
+}
+
+.shipment-status {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.shipment-status small {
+    color: var(--slate);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.shipment-status [hidden] {
+    display: none;
+}
+
+.shipment-row--header span:nth-child(3) {
+    text-align: center;
+}
+
+.shipment-status .status-badge {
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.4;
 }

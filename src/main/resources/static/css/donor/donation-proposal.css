@@ -5,7 +5,7 @@
 }
 
 .proposal-page [hidden],
-.proposal-dialog [hidden] {
+.ui-dialog [hidden] {
     display: none;
 }
 
@@ -59,8 +59,8 @@
 }
 
 .proposal-inventory-status--waiting {
-    color: #ed7800;
-    background: #fef3c7;
+    color: var(--status-waiting-color);
+    background: var(--status-waiting-background);
 }
 
 .proposal-quantity-row {
@@ -269,82 +269,15 @@
     flex-wrap: wrap;
 }
 
-.proposal-button {
-    min-height: 46px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 20px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.proposal-button--primary {
-    color: #fff;
-    background: #047857;
-}
-
-.proposal-button--secondary {
-    color: var(--slate);
-    background: var(--surface);
-    border-color: #cbd5e1;
-}
-
-.proposal-button:disabled {
-    opacity: .6;
-    cursor: not-allowed;
-}
-
-.proposal-page :focus-visible,
-.proposal-dialog :focus-visible {
+.proposal-page :focus-visible {
     outline: 2px solid #047857;
     outline-offset: 3px;
-}
-
-.proposal-dialog h2[tabindex="-1"]:focus-visible {
-    outline: none;
 }
 
 .proposal-noscript {
     color: var(--slate);
 }
 
-.proposal-dialog {
-    width: min(560px, calc(100% - 32px));
-    max-height: calc(100dvh - 32px);
-    padding: 0;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgb(15 23 42 / 18%);
-}
-
-.proposal-dialog::backdrop {
-    background: rgb(15 23 42 / 45%);
-}
-
-.proposal-confirmation {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 32px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .proposal-button--primary:not(:disabled):hover {
-        background: #065f46;
-    }
-
-    .proposal-button--secondary:hover {
-        color: #065f46;
-        background: #f4fdf9;
-        border-color: #a7f3d0;
-    }
-}
 
 @media (max-width: 900px) {
     .proposal-grid {
@@ -358,8 +291,7 @@
 }
 
 @media (max-width: 600px) {
-    .proposal-card,
-    .proposal-confirmation {
+    .proposal-card {
         padding: 24px;
     }
 

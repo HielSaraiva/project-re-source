@@ -15,5 +15,10 @@
     <img th:src="@{${assetBase + '/info.svg'}}" alt="">
     <p>Todas as doações efetuadas através do ReSource geram impacto social auditado e contam para suas estatísticas de sustentabilidade.</p>
 </aside>
+<aside class="delivery-deadline" data-active-deadline th:fragment="deadline(title, deadlineLabel, eventLabel)">
+    <strong th:text="${title}">Prazo para envio</strong>
+    <span th:text="${deadlineLabel}">Até 7 dias após o aceite</span>
+    <small th:text="${eventLabel}">Aceite da ONG</small>
+</aside>
 </body>
 </html>

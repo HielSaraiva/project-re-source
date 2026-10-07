@@ -4,12 +4,15 @@
     <th:block th:fragment="pageStyles">
         <link rel="stylesheet" th:href="@{/css/donor/priority-badges.css}">
         <link rel="stylesheet" th:href="@{/css/donor/dashboard.css}">
+        <script th:src="@{/js/delivery-state.js}"></script>
+        <script th:src="@{/js/proposal-state.js}"></script>
+        <script th:src="@{/js/donation-dashboard.js}" defer></script>
     </th:block>
 </head>
 <body>
 <header th:replace="~{fragments/donor-header :: header('dashboard')}"></header>
 
-<main>
+<main th:attr="data-acceptance-deadline=${acceptanceDeadline},data-choice-deadline=${choiceDeadline}">
     <section class="hero">
         <div>
             <h1>Olá, <span th:text="${donorName.substring(0, donorName.indexOf(' '))}">João</span>! Pronto para fazer a diferença hoje?</h1>
@@ -17,7 +20,7 @@
         </div>
         <a class="button button--primary" href="#new-donation">
             <img th:src="@{/images/donor/dashboard/plus.svg}" alt="">
-            Nova Doação
+            Nova doação
         </a>
     </section>
 
@@ -34,7 +37,7 @@
                 <article class="urgency-card" th:each="urgency : ${urgencies}">
                     <div class="card-header">
                         <h3 th:text="${urgency.institution}">Instituto Esperança</h3>
-                        <span class="priority-badge" th:classappend="${' priority--' + urgency.priorityClass}" th:text="${urgency.priority}">Alta Prioridade</span>
+                        <span class="priority-badge" th:classappend="${' priority--' + urgency.priorityClass}" th:text="${urgency.priority}">Alta prioridade</span>
                     </div>
                     <div class="need">
                         <span class="need__icon"><img th:src="@{/images/donor/dashboard/{icon}(icon=${urgency.icon})}" alt=""></span>
@@ -43,7 +46,7 @@
                             <strong th:text="${urgency.item}">50 Cadeiras escolares</strong>
                         </span>
                     </div>
-                    <a class="button button--card" th:href="@{/donor/donation/proposal(need=${urgency.needId})}">Ajudar Agora</a>
+                    <a class="button button--card" th:href="@{/donor/donation/proposal(need=${urgency.needId})}">Ajudar agora</a>
                 </article>
             </div>
         </section>
@@ -57,14 +60,19 @@
                 <div class="shipment-row shipment-row--header" role="row">
                     <span>Item Doador</span><span>Destinatário</span><span>Status do Envio</span><span>Ações</span>
                 </div>
-                <div class="shipment-row" role="row" th:each="shipment : ${shipments}">
+                <div class="shipment-row" role="row" th:each="shipment : ${shipments}"
+                     th:attr="data-delivery-shipment=${shipment.statusClass == 'awaiting-shipment' ? 'monitor-instituto' : null},data-pending-proposal=${shipment.statusClass == 'awaiting-acceptance' ? 'monitor-associacao' : null}">
                     <div class="shipment-item">
                         <span class="item-icon"><img th:src="@{/images/donor/dashboard/{icon}(icon=${shipment.icon})}" alt=""></span>
                         <strong th:text="${shipment.item}">Monitor Dell 24"</strong>
                     </div>
                     <span class="recipient" th:text="${shipment.recipient}">Associação Vida</span>
-                    <span class="status-badge" th:classappend="${' status--' + shipment.statusClass}" th:text="${shipment.status}">Aguardando Aceite</span>
-                    <a class="text-link" th:href="@{${shipment.detailsPath}}">Ver detalhes</a>
+                    <div class="shipment-status">
+                        <span class="status-badge" th:classappend="${' status--' + shipment.statusClass}" th:text="${shipment.status}">Aguardando aceite</span>
+                        <small data-shipment-deadline th:if="${!shipment.deadlineLabel.isEmpty()}" th:text="${shipment.deadlineLabel}">Envio até a data limite</small>
+                    </div>
+                    <a class="text-link" th:href="@{${shipment.detailsPath}}"
+                       th:text="${shipment.statusClass == 'awaiting-shipment' ? 'Opções de envio' : 'Ver detalhes'}">Ver detalhes</a>
                 </div>
             </div>
         </section>

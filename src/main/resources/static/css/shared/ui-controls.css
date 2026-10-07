@@ -1,0 +1,116 @@
+.ui-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+
+.ui-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ui-button--primary {
+    color: #fff;
+    background: var(--green);
+}
+
+.ui-button--secondary {
+    color: var(--slate);
+    background: var(--surface);
+    border-color: #cbd5e1;
+}
+
+.ui-button:disabled, .ui-actions .donation-action:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.ui-button:focus-visible, .ui-actions .donation-action:focus-visible, .ui-dialog :focus-visible {
+    outline: 2px solid #047857;
+    outline-offset: 3px;
+}
+
+.ui-dialog h2[tabindex="-1"]:focus-visible {
+    outline: none;
+}
+
+.ui-dialog [hidden] {
+    display: none;
+}
+
+.ui-dialog {
+    width: min(560px, calc(100% - 32px));
+    max-height: calc(100dvh - 32px);
+    padding: 0;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgb(15 23 42 / 18%);
+}
+
+.ui-dialog::backdrop {
+    background: rgb(15 23 42 / 45%);
+}
+
+.ui-dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .ui-button--primary:not(:disabled):hover {
+        background: #059669;
+    }
+
+    .ui-button--secondary:hover {
+        color: #065f46;
+        background: #f4fdf9;
+        border-color: #a7f3d0;
+    }
+
+    .ui-actions .donation-action--cancel:not(:disabled):hover {
+        background: #fef2f2;
+    }
+
+}
+
+@media (max-width: 600px) {
+    .ui-dialog-content {
+        padding: 24px;
+    }
+
+    .ui-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+}
+
+.ui-dialog-heading {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+}
+
+.ui-dialog-heading .icon-frame {
+    flex-shrink: 0;
+}
+
+.ui-dialog-description {
+    margin: 0;
+    color: var(--slate);
+    font-size: 14px;
+    line-height: 1.5;
+}

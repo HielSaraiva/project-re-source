@@ -21,9 +21,9 @@ public class OngDashboardService {
                                 "Logística ReSource", "keyboard.svg"),
                         new DonationIntention("Impressora Laser HP", "Carlos Eduardo", "Presencial", "printer.svg")),
                 "needs", List.of(
-                        new RegisteredNeed("50 Cadeiras escolares", "Alta Prioridade", "high", "armchair.svg"),
+                        new RegisteredNeed("50 Cadeiras escolares", "Alta prioridade", "high", "armchair.svg"),
                         new RegisteredNeed("200 Cadernos", "Média", "medium", "book-open.svg"),
-                        new RegisteredNeed("10 Notebooks", "Alta Prioridade", "high", "laptop.svg")));
+                        new RegisteredNeed("10 Notebooks", "Alta prioridade", "high", "laptop.svg")));
     }
 
     public record DonationIntention(String item, String donor, String logistics, String icon) {

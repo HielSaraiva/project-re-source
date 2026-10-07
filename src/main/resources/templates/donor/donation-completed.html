@@ -33,7 +33,7 @@
             </div>
             <div class="title-block">
                 <h2>Detalhes da Doação</h2>
-                <p>Informações declaradas no ato da abertura do fluxo de doação.</p>
+                <p>Item oferecido e datas da proposta e do aceite.</p>
             </div>
             <img class="section-divider" th:src="@{/images/donor/donation-completed/details-divider.svg}" alt="">
             <div th:replace="~{fragments/donation :: details(${donationDetails}, '/images/donor/donation-completed', '', '')}"></div>
@@ -42,19 +42,27 @@
         <article class="details-card">
             <div class="card-header">
                 <div class="icon-frame"><img th:src="@{/images/donor/donation-completed/home.svg}" alt=""></div>
-                <span class="card-badge card-badge--blue">Dados da Instituição</span>
+                <span class="card-badge card-badge--blue">Dados da instituição</span>
             </div>
             <div class="title-block">
                 <h2>Informações da ONG</h2>
-                <p>Detalhes de contato e confirmação do recebimento.</p>
+                <p>Instituição beneficiada e seus dados de contato.</p>
             </div>
             <img class="section-divider" th:src="@{/images/donor/donation-completed/details-divider.svg}" alt="">
-            <div th:replace="~{fragments/donation :: details(${organizationDetails}, '/images/donor/donation-completed', 'Data de Aceite', 'detail-text--success')}"></div>
+            <div th:replace="~{fragments/donation :: details(${organizationDetails}, '/images/donor/donation-completed', '', '')}"></div>
         </article>
     </section>
 
+    <section class="details-card completed-delivery" aria-labelledby="delivery-title">
+        <div class="title-block">
+            <h2 id="delivery-title">Entrega e recebimento</h2>
+            <p>A ONG confirmou o recebimento dos itens e a doação foi concluída. Confira o registro da entrega abaixo.</p>
+        </div>
+        <div th:replace="~{fragments/donation :: details(${deliveryDetails}, '/images/donor/donation-completed', '', '')}"></div>
+    </section>
+
     <div class="action-wrapper">
-        <a class="donation-action donation-action--receipt" href="#receipt">Baixar Comprovante</a>
+        <a class="donation-action donation-action--receipt" href="#receipt">Baixar comprovante</a>
     </div>
 
     <aside th:replace="~{fragments/donation :: impactBanner('/images/donor/donation-completed')}"></aside>

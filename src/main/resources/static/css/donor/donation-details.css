@@ -75,4 +75,43 @@
     border-radius: 8px;
     font-size: 15px;
     font-weight: 700;
+    cursor: pointer;
+}
+
+.donation-action--cancel {
+    color: #ef4444;
+    background: #fff;
+    border-color: #ef4444;
+}
+
+.delivery-status {
+    align-self: flex-start;
+    color: var(--status-waiting-color);
+    background: var(--status-waiting-background);
+    font-weight: 600;
+    line-height: 16px;
+}
+
+.delivery-status.delivery-status--shipped {
+    color: #1e40af;
+    background: #dbeafe;
+}
+
+.delivery-deadline {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    color: #92400e;
+    background: #fffbeb;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.delivery-deadline small {
+    line-height: 1.5;
+}
+
+.delivery-deadline[hidden] {
+    display: none;
 }

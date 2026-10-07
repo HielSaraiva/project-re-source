@@ -15,7 +15,7 @@
             <strong th:text="${receivedDonations}">124</strong>
         </article>
         <article class="summary-card">
-            <span>Aguardando Aceite</span>
+            <span>Aguardando aceite</span>
             <strong><span th:text="${pendingAcceptances}">3</span><i class="pending-dot"></i></strong>
         </article>
         <article class="summary-card">
@@ -53,13 +53,13 @@
                 <h2>Necessidades Cadastradas</h2>
                 <p>Itens atualmente ativos na sua lista de desejos institucional.</p>
             </div>
-            <button class="button button--new" type="button"><img th:src="@{/images/ong/dashboard/plus.svg}" alt="">Nova Necessidade</button>
+            <button class="button button--new" type="button"><img th:src="@{/images/ong/dashboard/plus.svg}" alt="">Nova necessidade</button>
         </div>
         <div class="needs-grid">
             <article class="need-card" th:each="need : ${needs}">
                 <div class="need-card__top">
                     <div class="need-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${need.icon})}" alt=""></div>
-                    <span class="priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta Prioridade</span>
+                    <span class="priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta prioridade</span>
                 </div>
                 <strong th:text="${need.item}">50 Cadeiras escolares</strong>
                 <a href="#edit">Editar necessidade <span aria-hidden="true">→</span></a>

@@ -1,5 +1,7 @@
 :root {
     --green: #10b981;
+    --status-waiting-color: #ed7800;
+    --status-waiting-background: #fef3c7;
     --ink: #0f172a;
     --slate: #475569;
     --muted: #94a3b8;

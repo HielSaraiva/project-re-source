@@ -30,6 +30,15 @@
     const units = (count) => `${count} ${count === 1 ? 'unidade' : 'unidades'}`;
     const selectedDonation = () => inventory.selectedOptions[0];
     const isRegistered = (donation) => donation?.dataset.status === 'registered';
+    const returnedDonation = inventory.querySelector('[data-returned-donation]');
+    const restoreReturnedDonation = () => {
+        if (!returnedDonation) return;
+        const available = window.resourceProposalState.read()?.inventoryAvailable === true;
+        returnedDonation.dataset.status = available ? 'registered' : 'awaiting_acceptance';
+        returnedDonation.disabled = !available;
+        returnedDonation.hidden = !available;
+    };
+    restoreReturnedDonation();
     const showFeedback = (message) => {
         feedback.textContent = message;
         feedback.hidden = false;
@@ -65,7 +74,7 @@
         selectedDetails.querySelector('[data-selected-condition]').textContent = donation.dataset.condition;
         selectedDetails.querySelector('[data-selected-stock]').textContent = units(stock);
         selectedDetails.querySelector('[data-selected-description]').textContent = donation.dataset.description;
-        selectedDetails.querySelector('[data-selected-status]').textContent = available ? 'Registrado' : 'Aguardando Aceite';
+        selectedDetails.querySelector('[data-selected-status]').textContent = available ? 'Registrado' : 'Aguardando aceite';
         selectedDetails.querySelector('[data-selected-status]').classList.toggle('proposal-inventory-status--waiting', !available);
         const maximum = Math.min(stock, remainingQuantity);
         quantity.max = String(maximum);
@@ -122,19 +131,26 @@
         const { donation, stock, offered } = pendingProposal;
         if (!isRegistered(donation) || Number(donation.dataset.quantity) !== stock
             || !Number.isSafeInteger(offered) || offered < 1 || offered > stock || offered > remainingQuantity) return;
+        if (donation === returnedDonation && !window.resourceProposalState.reserve()) {
+            confirmation.close();
+            restoreReturnedDonation();
+            updateSelection();
+            updateAvailability();
+            return;
+        }
 
         confirmButton.disabled = true;
         pendingProposal = null;
         proposalSent = true;
         donation.dataset.status = 'awaiting_acceptance';
         donation.disabled = true;
-        donation.textContent = `${donation.dataset.item} • Aguardando Aceite`;
+        donation.textContent = `${donation.dataset.item} • Aguardando aceite`;
         remainingQuantity -= offered;
         form.dataset.remainingQuantity = String(remainingQuantity);
         document.querySelector('[data-need-remaining]').textContent = units(remainingQuantity);
         updateSelection();
         updateAvailability();
-        showFeedback(`Proposta enviada com sucesso. ${donation.dataset.item}: ${units(offered)} na proposta. Status em Minhas Doações: Aguardando Aceite.`);
+        showFeedback(`Proposta enviada com sucesso. ${donation.dataset.item}: ${units(offered)} na proposta. Status em Minhas doações: Aguardando aceite.`);
         confirmation.close();
         result.querySelector('[data-result-quantity]').textContent = units(offered);
         result.querySelector('[data-result-remaining]').textContent = units(remainingQuantity);
@@ -198,7 +214,7 @@
         inventory.add(donation);
         updateAvailability();
         updateSelection();
-        showFeedback(`${item} cadastrado em Minhas Doações com o status Registrado. Escolha a quantidade para sua proposta.`);
+        showFeedback(`${item} cadastrado em Minhas doações com o status Registrado. Escolha a quantidade para sua proposta.`);
         registeredNewDonation = true;
         registrationForm.reset();
         registration.close();
@@ -212,4 +228,9 @@
     registrationForm.querySelector('button[type="submit"]').disabled = false;
     updateSelection();
     updateAvailability();
+    window.addEventListener('pageshow', () => {
+        restoreReturnedDonation();
+        updateSelection();
+        updateAvailability();
+    });
 })();

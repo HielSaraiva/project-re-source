@@ -9,19 +9,22 @@ import org.springframework.stereotype.Service;
 public class DonorDashboardService {
 
     public Map<String, Object> dashboardData() {
+        var deadline = MockDonationDeadline.recent();
         return Map.of(
                 "donorName", "João Silva",
+                "acceptanceDeadline", deadline.deadlineInstant(),
+                "choiceDeadline", deadline.deadlineInstant(),
                 "urgencies", List.of(
-                        new Urgency("school-chairs", "Instituto Esperança", "Alta Prioridade", "50 Cadeiras escolares", "shirt.svg", "high"),
-                        new Urgency("soft-blankets", "Casa do Menor", "Média Prioridade", "20 Cobertores macios", "armchair.svg", "medium"),
-                        new Urgency("notebooks", "ONG Recomeço", "Alta Prioridade", "10 Notebooks usados", "cpu.svg", "high")),
+                        new Urgency("school-chairs", "Instituto Esperança", "Alta prioridade", "50 Cadeiras escolares", "shirt.svg", "high"),
+                        new Urgency("soft-blankets", "Casa do Menor", "Média prioridade", "20 Cobertores macios", "armchair.svg", "medium"),
+                        new Urgency("notebooks", "ONG Recomeço", "Alta prioridade", "10 Notebooks usados", "cpu.svg", "high")),
                 "shipments", List.of(
-                        new Shipment("Monitor Dell 24\"", "Associação Vida", "Aguardando Aceite", "monitor.svg", "waiting",
-                                "/donor/donation/status"),
-                        new Shipment("15 Cadeiras escolares", "Instituto Esperança", "Aguardando Envio", "circle-x.svg", "shipping",
-                                "/donor/donation/shipping"),
+                        new Shipment("Monitor Dell 24\"", "Associação Vida", "Aguardando aceite", "monitor.svg", "awaiting-acceptance",
+                                "/donor/donation/status", "Aceite até " + deadline.deadlineLabel()),
+                        new Shipment("Monitor Dell 24\"", "Instituto Esperança", "Aguardando envio", "monitor.svg", "awaiting-shipment",
+                                "/donor/donation/shipping", "Escolha até " + deadline.deadlineLabel()),
                         new Shipment("Notebook Lenovo", "ONG Recomeço", "Concluído", "laptop.svg", "completed",
-                                "/donor/donation/completed")));
+                                "/donor/donation/completed", "")));
     }
 
     public record Urgency(String needId, String institution, String priority, String item, String icon, String priorityClass) {
@@ -33,6 +36,7 @@ public class DonorDashboardService {
             String status,
             String icon,
             String statusClass,
-            String detailsPath) {
+            String detailsPath,
+            String deadlineLabel) {
     }
 }

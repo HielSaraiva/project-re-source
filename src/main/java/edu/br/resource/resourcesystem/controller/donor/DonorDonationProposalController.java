@@ -27,6 +27,7 @@ public class DonorDonationProposalController {
         model.addAttribute("donorName", "João Silva");
         model.addAttribute("need", need);
         model.addAttribute("inventoryDonations", inventoryService.registeredDonationsForCategory(need.category()));
+        model.addAttribute("cancellableDonation", inventoryService.cancellableDonationForCategory(need.category()).orElse(null));
         return "donor/donation-proposal";
     }
 }

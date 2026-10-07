@@ -9,6 +9,8 @@
     <link rel="stylesheet" th:href="@{/css/shared/base.css}">
     <link rel="stylesheet" th:href="@{/css/shared/header.css}">
     <link rel="stylesheet" th:if="${persona == 'ong'}" th:href="@{/css/ong/header.css}">
+    <script th:src="@{/js/mock-storage.js}"></script>
+    <script th:if="${persona == 'donor'}" th:src="@{/js/donation-deadlines.js}"></script>
     <th:block th:replace="${pageStyles}"></th:block>
     <link rel="stylesheet" th:href="@{/css/shared/mobile-navigation.css}">
     <script th:src="@{/js/navigation.js}"></script>

@@ -1,6 +1,7 @@
 package edu.br.resource.resourcesystem.service.donor;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,12 @@ public class DonorInventoryService {
                 .filter(donation -> donation.status().equals("registered"))
                 .filter(donation -> donation.quantity() > 0)
                 .toList();
+    }
+
+    public Optional<InventoryDonation> cancellableDonationForCategory(String category) {
+        return DONATIONS.stream()
+                .filter(donation -> donation.id().equals("monitor-pending") && donation.category().equals(category))
+                .findFirst();
     }
 
     public record InventoryDonation(String id, String item, String category, int quantity,
