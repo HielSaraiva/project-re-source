@@ -28,7 +28,7 @@
             <div class="proposal-grid">
                 <aside class="proposal-card need-summary" aria-labelledby="need-title">
                     <div class="proposal-card__header">
-                        <span class="icon-frame"><img th:src="@{/images/donor/needs/{icon}(icon=${need.icon})}" alt=""></span>
+                        <span class="icon-frame"><img th:src="@{${need.icon}}" alt=""></span>
                         <span class="proposal-priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta prioridade</span>
                     </div>
                     <div class="title-block">

@@ -40,7 +40,7 @@
                                 <span class="priority-badge" th:classappend="${' priority--' + urgency.priorityClass}" th:text="${urgency.priority}">Alta prioridade</span>
                             </div>
                             <div class="need-summary">
-                                <span class="need-summary__icon"><img th:src="@{/images/donor/dashboard/{icon}(icon=${urgency.icon})}" alt=""></span>
+                                <span class="need-summary__icon"><img th:src="@{${urgency.icon}}" alt=""></span>
                                 <span>
                                     <small>Necessidade urgente:</small>
                                     <strong th:text="${urgency.item}">50 Cadeiras escolares</strong>
@@ -63,7 +63,7 @@
                         <div class="shipment-row" role="row" th:each="shipment : ${shipments}"
                             th:attr="data-cancelled-protocol=${shipment.statusClass == 'cancelled' ? shipment.protocol : null},data-rejected-protocol=${shipment.statusClass == 'rejected' ? shipment.protocol : null},data-delivery-shipment=${shipment.statusClass == 'awaiting-shipment' ? 'monitor-instituto' : null},data-pending-proposal=${shipment.statusClass == 'awaiting-acceptance' ? 'monitor-associacao' : null}">
                             <div class="shipment-item">
-                                <span class="item-icon"><img th:src="@{/images/donor/dashboard/{icon}(icon=${shipment.icon})}" alt=""></span>
+                                <span class="item-icon"><img th:src="@{${shipment.icon}}" alt=""></span>
                                 <div class="shipment-item-info"><strong th:text="${shipment.item}">Monitor Dell 24"</strong><small th:text="${shipment.protocol}"></small>
                                 </div>
                             </div>

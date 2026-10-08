@@ -39,7 +39,7 @@
                     <article class="ong-donation-row" th:each="intention, position : ${intentions}"
                         th:hidden="${intention.status != 'awaiting_acceptance' or position.index >= 3}"
                         th:attr="data-intention-id=${intention.id},data-status=${intention.status},data-deadline=${intention.acceptanceDeadline},data-created-at=${intention.createdAt}">
-                        <div class="ong-donation-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${intention.icon})}" alt="">
+                        <div class="ong-donation-icon"><img th:src="@{${intention.icon}}" alt="">
                         </div>
                         <div class="ong-donation-info">
                             <strong th:text="${intention.quantity + '× ' + intention.item}">1× Monitor</strong>
@@ -66,7 +66,7 @@
                 <div class="needs-grid">
                     <article class="need-card" th:each="need : ${needs}">
                         <div class="need-card__top">
-                            <div class="need-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${need.icon})}" alt="">
+                            <div class="need-icon"><img th:src="@{${need.icon}}" alt="">
                             </div>
                             <span class="priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta prioridade</span>
                         </div>

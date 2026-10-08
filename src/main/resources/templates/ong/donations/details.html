@@ -26,7 +26,7 @@
             </div>
             <section class="ong-donation-detail-grid" aria-label="Dados da doação">
                 <article class="ong-donation-card">
-                    <div class="ong-donation-card-heading"><span class="ong-donation-item-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${intention.icon})}" alt=""></span>
+                    <div class="ong-donation-card-heading"><span class="ong-donation-item-icon"><img th:src="@{${intention.icon}}" alt=""></span>
                         <h2 th:text="${intention.item}"></h2>
                     </div>
                     <dl class="ong-donation-summary">

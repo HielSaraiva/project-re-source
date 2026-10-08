@@ -43,7 +43,7 @@
                     <article class="ong-donation-list-row" th:each="intention : ${intentions}"
                         th:attr="data-intention-id=${intention.id},data-status=${intention.status},data-deadline=${intention.acceptanceDeadline},data-created-at=${intention.createdAt},data-search=${intention.id + ' ' + intention.item + ' ' + intention.donor + ' ' + intention.need + ' ' + intention.category}">
                         <div class="ong-donation-item">
-                            <span class="ong-donation-item-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${intention.icon})}" alt=""></span>
+                            <span class="ong-donation-item-icon"><img th:src="@{${intention.icon}}" alt=""></span>
                             <div><strong th:text="${intention.quantity + '× ' + intention.item}"></strong><span th:text="${intention.donor}"></span><small th:text="${intention.id}"></small>
                             </div>
                         </div>

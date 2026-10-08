@@ -65,7 +65,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="item-visual"><img th:src="@{/images/donor/needs/{icon}(icon=${need.icon})}" alt="">
+                            <div class="item-visual"><img th:src="@{${need.icon}}" alt="">
                             </div>
                             <div class="item-info">
                                 <h2 th:text="${need.item}">Cadeira de Rodas</h2>
