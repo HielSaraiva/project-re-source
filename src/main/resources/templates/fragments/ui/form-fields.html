@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <div class="delivery-field" th:fragment="dateField(id, label, minimum, maximum)">
+            <label th:for="${id}"><th:block th:text="${label}"></th:block> <span aria-hidden="true">*</span></label>
+            <input th:id="${id}" name="date" type="date" th:min="${minimum}" th:max="${maximum}" required>
+        </div>
+        <div class="delivery-field" th:fragment="notesField(id, placeholder)">
+            <label th:for="${id}">Observações <span class="delivery-optional">(opcional)</span></label>
+            <textarea th:id="${id}" name="notes" rows="3" maxlength="1000" th:placeholder="${placeholder}"></textarea>
+        </div>
+    </body>
+</html>

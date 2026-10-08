@@ -1,0 +1,17 @@
+<header class="navbar" th:fragment="header(activePage)">
+    <a th:replace="~{fragments/layout/header-components :: brand('/donor/dashboard', 'ReSource - início')}"></a>
+    <button th:replace="~{fragments/layout/navigation-toggle :: toggle}"></button>
+    <div class="navigation-panel">
+        <div class="navigation-panel__content">
+            <nav id="primary-navigation" class="nav-links" aria-label="Navegação do doador">
+                <a class="nav-link" th:classappend="${activePage == 'dashboard' ? ' nav-link--active' : ''}"
+                    th:href="@{/donor/dashboard}">Início</a>
+                <a class="nav-link" th:classappend="${activePage == 'needs' ? ' nav-link--active' : ''}"
+                    th:href="@{/donor/needs}">Necessidades</a>
+                <a class="nav-link" href="#donations">Minhas doações</a>
+                <a class="nav-link" href="#organizations">Explorar ONGs</a>
+            </nav>
+        </div>
+    </div>
+    <div th:replace="~{fragments/layout/header-components :: actions(${donorName}, 'Doador', 'Abrir menu do perfil')}"></div>
+</header>

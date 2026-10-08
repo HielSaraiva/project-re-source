@@ -1,0 +1,142 @@
+.donation-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 40px 80px 80px;
+}
+
+.header-area,
+.page-heading,
+.title-block,
+.detail-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.detail-content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.header-area {
+    gap: 24px;
+}
+
+.back-link {
+    align-self: flex-start;
+}
+.page-heading {
+    gap: 8px;
+}
+
+h1 {
+    margin: 0;
+    font-size: var(--font-page);
+    font-weight: 700;
+}
+
+.page-heading p {
+    margin: 0;
+    color: var(--slate);
+    font-size: var(--font-subtitle);
+    line-height: 1.5;
+}
+
+.page-heading strong {
+    color: var(--ink);
+}
+
+.title-block {
+    gap: 8px;
+}
+
+.title-block h2 {
+    margin: 0;
+    font-size: var(--font-section);
+    font-weight: 700;
+}
+
+.title-block p {
+    margin: 0;
+    color: var(--slate);
+    font-size: var(--font-body);
+    line-height: 1.4;
+}
+
+.section-divider {
+    width: 100%;
+    height: 1px;
+}
+
+.detail-list {
+    gap: 16px;
+}
+
+.detail-row>img {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+}
+
+.detail-content strong {
+    color: var(--slate);
+    font-size: var(--font-caption);
+    font-weight: 600;
+}
+
+.detail-content span {
+    color: var(--ink);
+    font-size: var(--font-body);
+    line-height: 1.35;
+}
+
+.help-info-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+    background: #ecfdf5;
+    border: 1px solid var(--green);
+    border-radius: 8px;
+}
+
+.help-info-banner img {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+}
+
+@media (max-width: 1000px) {
+    .donation-page {
+        padding-top: 32px;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+.help-info-banner p {
+    margin: 0;
+    color: var(--slate);
+    font-size: var(--font-body);
+    line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+    .donation-page {
+        gap: 24px;
+        padding-top: 24px;
+        padding-bottom: 48px;
+    }
+
+    h1 {
+        font-size: var(--font-page-mobile);
+    }
+}

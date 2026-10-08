@@ -10,14 +10,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class DonorShippingService {
     public Map<String, Object> screenData() {
-        var deadline = MockDonationDeadline.recent();
+        return screenData("");
+    }
+
+    public Map<String, Object> screenData(String expiredStage) {
+        var expired = MockDonationProtocols.EXPIRED_DELIVERIES.containsKey(expiredStage);
+        var deadline = expired ? MockDonationDeadline.expired() : MockDonationDeadline.recent();
         var recipient = MockDonationRecipient.institutoEsperanca();
         var model = new LinkedHashMap<String, Object>();
+        model.put("expiredStage", expired ? expiredStage : "");
+        model.put("methodConfirmedAt", deadline.startedInstant());
         model.put("deliveryDeadlineLabel", "Até " + deadline.deadlineLabel() + " (7 dias após o aceite)");
         model.put("choiceDeadline", deadline.deadlineInstant());
         model.put("acceptedOnLabel", deadline.startedOnLabel());
         model.put("donorName", "João Silva");
-        model.put("donation", new Donation("1x Monitor Dell 24\"", "Instituto Esperança"));
+        model.put("donationHistory", MockDonationHistory.accepted(deadline, recipient.name()));
+        model.put("donation", new Donation(MockDonationProtocols.EXPIRED_DELIVERIES.getOrDefault(expiredStage, MockDonationProtocols.DELIVERY_INSTITUTO_ESPERANCA), "1x Monitor Dell 24\"", "Instituto Esperança"));
         model.put("inPerson", new DeliveryOption(
                 "Entrega Presencial",
                 "Entrega direta",
@@ -42,7 +50,7 @@ public class DonorShippingService {
         return model;
     }
 
-    public record Donation(String item, String organization) {
+    public record Donation(String protocol, String item, String organization) {
     }
 
     public record DeliveryOption(

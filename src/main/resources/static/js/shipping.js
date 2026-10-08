@@ -24,7 +24,7 @@
         const status = document.querySelector('[data-shipping-status]');
         status.classList.toggle('shipping-status--cancelled', cancelled);
         status.classList.toggle('delivery-status--shipped', state?.status === 'shipped');
-        status.textContent = cancelled ? 'Envio cancelado' : state?.status === 'shipped' ? 'Enviado'
+        status.textContent = cancelled ? 'Doação cancelada' : state?.status === 'shipped' ? 'Enviado'
             : state?.status === 'awaiting_ngo_confirmation' ? 'Aguardando confirmação da ONG'
             : state?.method === 'in_person' ? 'Aguardando entrega' : 'Aguardando envio';
         document.querySelector('.options-cards').hidden = cancelled;
@@ -32,10 +32,27 @@
         const notice = document.querySelector('#delivery-method-notice');
         notice.classList.toggle('delivery-method-notice--cancelled', cancelled);
         if (cancelled) {
-            notice.hidden = false;
-            notice.textContent = 'O envio foi cancelado. As opções de envio e a confirmação de entrega desta doação estão indisponíveis.';
-            document.querySelector('.titles h1').textContent = 'Envio cancelado';
-            document.querySelector('.titles p').textContent = 'Você pode voltar ao painel para acompanhar suas outras doações.';
+            if (dialog.open) dialog.close();
+            if (cancellation.open) cancellation.close();
+            notice.hidden = true;
+            document.querySelector('.page-heading h1').textContent = 'Doação cancelada';
+            const automatic = state.reason === 'deadline_expired';
+            document.querySelector('#delivery-cancelled').hidden = false;
+            const stages = { choice: 'Escolha da modalidade de entrega', in_person: 'Confirmação da entrega presencial', carrier: 'Confirmação da postagem' };
+            document.querySelector('[data-cancellation-explanation]').textContent = automatic
+                ? 'O prazo de 7 dias terminou sem a conclusão desta etapa. A doação foi cancelada automaticamente e não pode mais ser enviada ou entregue.'
+                : 'O envio foi cancelado a seu pedido. O cancelamento não pode ser desfeito.';
+            document.querySelector('[data-expired-stage-row]').hidden = !automatic;
+            document.querySelector('[data-expired-deadline-row]').hidden = !automatic;
+            document.querySelector('[data-expired-stage-label]').textContent = stages[state.expiryStage] || '';
+            const setDate = selector => {
+                const time = document.querySelector(selector);
+                time.textContent = state.cancelledAt ? dates.dateTime(state.cancelledAt) : 'Data não registrada';
+                if (state.cancelledAt) time.dateTime = state.cancelledAt;
+            };
+            setDate('[data-cancellation-date]');
+            setDate('[data-expired-deadline]');
+            document.querySelector('[data-shipping-description]').textContent = 'Você pode voltar ao painel para acompanhar suas outras doações.';
             return;
         }
         if (!state?.method) return;
@@ -52,6 +69,8 @@
     };
     updateChoice();
     window.addEventListener('pageshow', updateChoice);
+    window.addEventListener('focus', updateChoice);
+    setInterval(updateChoice, 30000);
     buttons.forEach(button => button.addEventListener('click', event => {
         const state = window.resourceDeliveryState.read();
         const method = button.closest('[data-delivery-method]').dataset.deliveryMethod;
@@ -75,7 +94,7 @@
     }));
     dialog.querySelector('[data-cancel-method]').addEventListener('click', () => dialog.close());
     dialog.addEventListener('close', () => {
-        choice = null;
+        if (!dialog.open) choice = null;
         trigger?.focus();
     });
     confirm.addEventListener('click', () => {

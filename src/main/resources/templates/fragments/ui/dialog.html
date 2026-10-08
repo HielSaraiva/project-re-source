@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <div class="ui-dialog-heading title-block" th:fragment="resultHeading(id, title)">
+            <span class="icon-frame"><img th:src="@{/images/donor/donation-completed/check-circle.svg}" alt=""></span>
+            <h2 th:id="${id}" tabindex="-1" autofocus th:text="${title}">Operação confirmada</h2>
+        </div>
+    </body>
+</html>

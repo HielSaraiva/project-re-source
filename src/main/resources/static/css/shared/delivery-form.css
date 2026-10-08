@@ -6,13 +6,13 @@
 
 .delivery-summary dt {
     color: var(--slate);
-    font-size: 13px;
+    font-size: var(--font-caption);
     line-height: 1.5;
 }
 
 .delivery-summary dd {
     margin: 4px 0 0;
-    font-size: 14px;
+    font-size: var(--font-body);
     font-weight: 600;
     line-height: 1.5;
     overflow-wrap: anywhere;
@@ -25,55 +25,13 @@
     align-items: end;
 }
 
-.delivery-form, .delivery-field {
-    display: flex;
-    flex-direction: column;
-}
-
-.delivery-form {
-    gap: 24px;
-}
-
-.delivery-field {
-    min-width: 0;
-    gap: 8px;
-}
-
-.delivery-field label {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.delivery-field label>span[aria-hidden] {
-    color: #047857;
-}
-
 .delivery-optional {
     color: var(--slate);
     font-weight: 400;
 }
 
-.delivery-field input, .delivery-field textarea {
-    width: 100%;
-    min-width: 0;
-    padding: 12px 14px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    color: var(--ink);
-    background: var(--surface);
-    font: 400 14px/1.5 Inter, sans-serif;
-}
-
 .delivery-field input {
     height: 48px;
-}
-
-.delivery-field textarea {
-    resize: vertical;
-}
-
-.delivery-field input::placeholder, .delivery-field textarea::placeholder {
-    color: #64748b;
 }
 
 .delivery-attestation {
@@ -81,7 +39,7 @@
     align-items: flex-start;
     gap: 12px;
     color: var(--slate);
-    font-size: 14px;
+    font-size: var(--font-body);
     line-height: 1.5;
     cursor: pointer;
 }
@@ -99,7 +57,4 @@
         grid-template-columns: 1fr;
     }
 
-    .delivery-field input, .delivery-field textarea {
-        font-size: 16px;
-    }
 }

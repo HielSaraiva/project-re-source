@@ -17,6 +17,6 @@ public class DonorInPersonDeliveryController {
     @GetMapping("/donor/donation/shipping/in-person")
     public String delivery(Model model) {
         model.addAllAttributes(deliveryService.deliveryData());
-        return "donor/in-person-delivery";
+        return "donor/donation/in-person-delivery";
     }
 }

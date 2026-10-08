@@ -4,6 +4,7 @@ import edu.br.resource.resourcesystem.service.donor.DonorDonationCompletedServic
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class DonorDonationCompletedController {
@@ -14,8 +15,8 @@ public class DonorDonationCompletedController {
     }
 
     @GetMapping("/donor/donation/completed")
-    public String completed(Model model) {
-        model.addAllAttributes(screenService.screenData());
-        return "donor/donation-completed";
+    public String completed(@RequestParam(defaultValue = "") String method, Model model) {
+        model.addAllAttributes(screenService.screenData("carrier".equals(method)));
+        return "donor/donation/completed";
     }
 }

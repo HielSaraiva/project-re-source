@@ -28,6 +28,6 @@ public class DonorDonationProposalController {
         model.addAttribute("need", need);
         model.addAttribute("inventoryDonations", inventoryService.registeredDonationsForCategory(need.category()));
         model.addAttribute("cancellableDonation", inventoryService.cancellableDonationForCategory(need.category()).orElse(null));
-        return "donor/donation-proposal";
+        return "donor/donation/proposal";
     }
 }

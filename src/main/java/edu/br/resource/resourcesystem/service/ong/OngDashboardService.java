@@ -8,25 +8,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class OngDashboardService {
 
+    private final OngDonationIntentionService intentionsService;
+
+    public OngDashboardService(OngDonationIntentionService intentionsService) {
+        this.intentionsService = intentionsService;
+    }
+
     public Map<String, Object> dashboardData() {
+        var intentions = intentionsService.intentions();
         return Map.of(
                 "ongName", "ONG EcoVida",
                 "ongRole", "Administrador",
-                "receivedDonations", 124,
-                "pendingAcceptances", 3,
-                "activeNeeds", 5,
-                "intentions", List.of(
-                        new DonationIntention("Monitor Dell 24\"", "João Silva", "Presencial", "monitor.svg"),
-                        new DonationIntention("Teclado Mecânico Keychron K2", "Mariana Souza",
-                                "Logística ReSource", "keyboard.svg"),
-                        new DonationIntention("Impressora Laser HP", "Carlos Eduardo", "Presencial", "printer.svg")),
+                "receivedDonations", intentions.stream().filter(item -> item.status().equals("completed")).count(),
+                "pendingAcceptances", intentions.stream().filter(item -> item.status().equals("awaiting_acceptance")).count(),
+                "activeNeeds", 3,
+                "intentions", intentions,
                 "needs", List.of(
                         new RegisteredNeed("50 Cadeiras escolares", "Alta prioridade", "high", "armchair.svg"),
-                        new RegisteredNeed("200 Cadernos", "Média", "medium", "book-open.svg"),
+                        new RegisteredNeed("200 Cadernos", "Média prioridade", "medium", "book-open.svg"),
                         new RegisteredNeed("10 Notebooks", "Alta prioridade", "high", "laptop.svg")));
-    }
-
-    public record DonationIntention(String item, String donor, String logistics, String icon) {
     }
 
     public record RegisteredNeed(String item, String priority, String priorityClass, String icon) {

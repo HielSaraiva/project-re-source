@@ -6,17 +6,23 @@
 
     const redirectIfCancelled = () => {
         const state = window.resourceDeliveryState.read();
+        if (state?.status === 'cancelled') {
+            window.location.replace(document.querySelector('.personal-delivery').dataset.shippingUrl);
+            return true;
+        }
         if (state?.method === 'carrier') {
             window.location.replace(document.querySelector('.personal-delivery').dataset.carrierUrl);
             return true;
         }
-        if (state?.status !== 'cancelled') return false;
-        window.location.replace(document.querySelector('.back-link').href);
-        return true;
+        if (state?.method !== 'in_person') {
+            window.location.replace(document.querySelector('.personal-delivery').dataset.shippingUrl);
+            return true;
+        }
+        return false;
     };
     if (redirectIfCancelled()) return;
 
-    const submit = form.querySelector('[type="submit"]');
+    const submit = document.querySelector('[type="submit"][form="in-person-delivery-form"]');
     const recipient = form.elements.namedItem('recipient');
     const confirm = review.querySelector('[data-confirm-delivery]');
     let draft = null;
@@ -48,13 +54,18 @@
         if (!review.open || !draft || sent) return;
         sent = true;
         confirm.disabled = true;
-        window.resourceDeliveryState.write({ ...draft, status: 'awaiting_ngo_confirmation', method: 'in_person' });
+        if (!window.resourceDeliveryState.write({ ...draft, status: 'awaiting_ngo_confirmation', method: 'in_person' })) {
+            sent = false;
+            restore();
+            return;
+        }
         restore();
         review.close();
         result.showModal();
     });
     review.querySelector('[data-close-review]').addEventListener('click', () => review.close());
     review.addEventListener('close', () => {
+        if (review.open) return;
         draft = null;
         if (!sent) submit.focus();
     });
@@ -79,11 +90,15 @@
             document.querySelector('#delivery-report').hidden = true;
             document.querySelector('#delivery-sent').hidden = false;
             form.querySelectorAll('input, textarea, button').forEach(control => { control.disabled = true; });
-        } else {
-            submit.disabled = false;
         }
-        return sent || window.resourceDeliveryState.canConfirm(form);
+        const allowed = sent || window.resourceDeliveryState.canConfirm(form);
+        submit.hidden = sent;
+        submit.disabled = sent || !allowed;
+        document.querySelector('[data-sent-panel-link]').hidden = !sent;
+        return allowed;
     };
     restore();
     window.addEventListener('pageshow', restore);
+    window.addEventListener('focus', restore);
+    setInterval(restore, 30000);
 })();

@@ -14,7 +14,8 @@ public class DonorCarrierDeliveryService {
         var today = LocalDate.now(ZoneId.of("America/Fortaleza"));
         return Map.of(
                 "donorName", "João Silva",
-                "donation", new Donation("1x Monitor Dell 24\"", recipient.name()),
+                "donationHistory", MockDonationHistory.accepted(MockDonationDeadline.recent(), recipient.name()),
+                "donation", new Donation(MockDonationProtocols.DELIVERY_INSTITUTO_ESPERANCA, "1x Monitor Dell 24\"", recipient.name()),
                 "recipientDetails", recipient.postalDetails(),
                 "methodConfirmedOn", deadline.startedOn().toString(),
                 "methodConfirmedOnLabel", deadline.startedOnLabel(),
@@ -23,5 +24,5 @@ public class DonorCarrierDeliveryService {
                 "today", today.toString());
     }
 
-    public record Donation(String item, String organization) {}
+    public record Donation(String protocol, String item, String organization) {}
 }

@@ -1,5 +1,5 @@
 .navbar {
-    height: 80px;
+    height: 72px;
     padding: 0 80px;
     display: flex;
     align-items: center;
@@ -19,7 +19,7 @@
 
 .brand {
     gap: 12px;
-    font: 800 28px Outfit, sans-serif;
+    font: 800 var(--font-logo) Outfit, sans-serif;
 }
 
 .brand__mark {
@@ -40,7 +40,7 @@
     align-items: center;
     color: #475569;
     border-bottom: 3px solid transparent;
-    font-size: 15px;
+    font-size: var(--font-body);
     font-weight: 600;
     transition: color 140ms ease, background-color 140ms ease;
 }
@@ -63,7 +63,8 @@
 }
 
 .nav-actions {
-    gap: 24px;
+    gap: 12px;
+    flex: 0 0 auto;
 }
 
 .icon-button,
@@ -72,14 +73,18 @@
     align-items: center;
     border: 0;
     background: transparent;
+    border-radius: 12px;
     cursor: pointer;
+    transition: background-color 140ms ease;
 }
 
 .icon-button {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     padding: 0;
     display: flex;
+    flex: 0 0 auto;
+    justify-content: center;
 }
 
 .icon-button img {
@@ -87,29 +92,80 @@
     height: 40px;
 }
 
-.nav-divider {
-    width: 24px;
-    height: 1px;
-    display: block;
-    transform: rotate(90deg);
-}
-
 .profile {
-    gap: 12px;
-    padding: 0;
+    min-width: 0;
+    min-height: 52px;
+    gap: 10px;
+    padding: 6px 8px;
     color: #0f172a;
-    font-size: 14px;
+    font-size: var(--font-body);
     font-weight: 600;
 }
 
 .profile__avatar {
     width: 40px;
     height: 40px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
     border-radius: 50%;
-    object-fit: cover;
+    color: #047857;
+    background: #d1fae5;
+    border: 1px solid #a7f3d0;
+    font: 700 var(--font-body)/1 Inter, sans-serif;
 }
 
 .profile__chevron {
     width: 16px;
     height: 16px;
+}
+
+.profile__identity {
+    display: flex;
+    min-width: 0;
+    max-width: 160px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    text-align: left;
+}
+
+.profile__identity strong {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: var(--font-body);
+    font-weight: 700;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile__identity small {
+    color: #64748b;
+    font-size: var(--font-caption);
+    font-weight: 400;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .navbar :is(.icon-button, .profile):hover {
+        background: #f1f5f9;
+    }
+}
+
+.navbar :is(.icon-button, .profile):active {
+    background: #ecfdf5;
+}
+
+@media (min-width: 1101px) and (max-width: 1280px) {
+    .navbar {
+        padding-inline: 32px;
+    }
+    .nav-links {
+        gap: 16px;
+    }
+    .profile__identity {
+        max-width: 128px;
+    }
 }

@@ -1,0 +1,24 @@
+.personal-delivery, .carrier-delivery {
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.personal-delivery [hidden], .carrier-delivery [hidden] {
+    display: none;
+}
+
+.personal-delivery :focus-visible, .carrier-delivery :focus-visible {
+    outline: 2px solid #047857;
+    outline-offset: 3px;
+}
+
+.personal-delivery h2[tabindex="-1"]:focus-visible,
+.carrier-delivery h2[tabindex="-1"]:focus-visible {
+    outline: none;
+}
+
+@media (max-width: 600px) {
+    .personal-delivery .details-card, .carrier-delivery .details-card {
+        padding: 24px;
+    }
+}

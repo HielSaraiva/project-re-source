@@ -1,0 +1,33 @@
+.donation-status {
+    display: inline-block;
+    width: fit-content;
+    max-width: 100%;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: var(--font-caption);
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    color: var(--slate);
+    background: #f1f5f9;
+}
+
+.donation-status--waiting {
+    color: var(--status-waiting-color);
+    background: var(--status-waiting-background);
+}
+
+.donation-status--shipped {
+    color: #1e40af;
+    background: #dbeafe;
+}
+
+.donation-status--completed {
+    color: var(--green);
+    background: #d1fae5;
+}
+
+.donation-status--rejected, .donation-status--cancelled {
+    color: #b91c1c;
+    background: #fef2f2;
+}

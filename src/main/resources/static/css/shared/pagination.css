@@ -1,0 +1,57 @@
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding-top: 24px;
+}
+
+.pagination a,
+.pagination button,
+.pagination span {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: var(--font-body);
+}
+
+.pagination a,
+.pagination button {
+    background: #fff;
+    border: 1px solid var(--border);
+}
+
+.pagination .current {
+    color: #fff;
+    background: var(--green);
+    border-color: var(--green);
+}
+
+.pagination span {
+    color: var(--slate);
+}
+
+.pagination-pages {
+    display: contents;
+}
+
+.pagination button {
+    padding: 0;
+    color: var(--ink);
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    opacity: .45;
+    cursor: default;
+}
+
+.pagination :is(a, button):focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+}

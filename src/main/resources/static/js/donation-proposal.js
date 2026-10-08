@@ -38,7 +38,17 @@
         returnedDonation.disabled = !available;
         returnedDonation.hidden = !available;
     };
+    const restoreReleasedDonations = () => {
+        form.querySelectorAll('[data-released-protocol]').forEach(option => option.remove());
+        window.resourceDonationReservations.available(form.dataset.category).forEach(entry => {
+            const option = new Option(`${entry.item} • ${units(entry.availableQuantity)}`, 'released-' + entry.protocol);
+            Object.assign(option.dataset, { item: entry.item, quantity: String(entry.availableQuantity),
+                condition: entry.condition, description: entry.description, status: 'registered', releasedProtocol: entry.protocol });
+            inventory.add(option);
+        });
+    };
     restoreReturnedDonation();
+    restoreReleasedDonations();
     const showFeedback = (message) => {
         feedback.textContent = message;
         feedback.hidden = false;
@@ -139,6 +149,13 @@
             return;
         }
 
+        if (donation.dataset.releasedProtocol && !window.resourceDonationReservations.reserve(donation.dataset.releasedProtocol, offered)) {
+            confirmation.close();
+            restoreReleasedDonations();
+            updateSelection();
+            updateAvailability();
+            return;
+        }
         confirmButton.disabled = true;
         pendingProposal = null;
         proposalSent = true;
@@ -163,6 +180,7 @@
 
     confirmation.querySelector('[data-close-confirmation]').addEventListener('click', () => confirmation.close());
     confirmation.addEventListener('close', () => {
+        if (confirmation.open) return;
         pendingProposal = null;
         if (result.open) return;
         if (remainingQuantity === 0) fulfilledState.querySelector('h3').focus();
@@ -230,6 +248,7 @@
     updateAvailability();
     window.addEventListener('pageshow', () => {
         restoreReturnedDonation();
+        restoreReleasedDonations();
         updateSelection();
         updateAvailability();
     });

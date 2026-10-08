@@ -3,6 +3,9 @@
     const storage = window.resourceMockStorage.create('resource:mock:donation-deadlines', state =>
         state && typeof state === 'object' && Object.values(state).every(value => Number.isFinite(Date.parse(value))) ? state : null);
     const date = value => new Date(value).toLocaleDateString('pt-BR', { timeZone: 'America/Fortaleza' });
+    const dateTime = value => date(value) + ' às ' + new Date(value).toLocaleTimeString('pt-BR', {
+        timeZone: 'America/Fortaleza', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    });
     const inputDate = value => new Intl.DateTimeFormat('en-CA', {
         timeZone: 'America/Fortaleza', year: 'numeric', month: '2-digit', day: '2-digit'
     }).format(new Date(value));
@@ -19,8 +22,8 @@
     };
     const render = (element, deadline, eventLabel, suffix) => {
         if (!element || !deadline) return;
-        element.querySelector('span').textContent = `Até ${date(deadline)} (${suffix})`;
+        element.querySelector('span').textContent = `Até ${dateTime(deadline)} (${suffix})`;
         element.querySelector('small').textContent = (expired(deadline) ? 'Prazo encerrado. ' : '') + eventLabel;
     };
-    window.resourceDonationDeadlines = { afterWeek, startedAt, expired, stage, date, inputDate, render };
+    window.resourceDonationDeadlines = { afterWeek, startedAt, expired, stage, date, dateTime, inputDate, render };
 })();

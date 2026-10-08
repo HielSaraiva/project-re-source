@@ -16,6 +16,6 @@ public class DonorCarrierDeliveryController {
     @GetMapping("/donor/donation/shipping/carrier")
     public String delivery(Model model) {
         model.addAllAttributes(deliveryService.deliveryData());
-        return "donor/carrier-delivery";
+        return "donor/donation/carrier-delivery";
     }
 }

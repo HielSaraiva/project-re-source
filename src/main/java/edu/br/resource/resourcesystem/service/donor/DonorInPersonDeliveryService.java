@@ -18,7 +18,8 @@ public class DonorInPersonDeliveryService {
         var timeline = MockDonationDeadline.selectedToday();
         return Map.of(
                 "donorName", "João Silva",
-                "donation", new Donation("1x Monitor Dell 24\"", "Instituto Esperança", "Eletrônicos", "Usado (Bom estado)"),
+                "donationHistory", MockDonationHistory.accepted(MockDonationDeadline.recent(), recipient.name()),
+                "donation", new Donation(MockDonationProtocols.DELIVERY_INSTITUTO_ESPERANCA, "1x Monitor Dell 24\"", "Instituto Esperança", "Eletrônicos", "Usado (Bom estado)"),
                 "receivingDetails", List.of(
                         new DonationDetail("map.svg", "Local de entrega", recipient.address() + ", " + recipient.complement() + ", CEP " + recipient.postalCode()),
                         new DonationDetail("clock.svg", "Horário de recebimento", "Segunda a sexta, das 08:00 às 17:00"),
@@ -30,5 +31,5 @@ public class DonorInPersonDeliveryService {
                 "deliveryDeadlineLabel", timeline.deliveryLabel());
     }
 
-    public record Donation(String item, String organization, String category, String condition) {}
+    public record Donation(String protocol, String item, String organization, String category, String condition) {}
 }

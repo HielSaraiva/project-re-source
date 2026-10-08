@@ -1,10 +1,21 @@
 (() => {
+    const page = document.querySelector('[data-proposal-rejected]');
+    if (page?.dataset.proposalRejected === 'true') {
+        window.resourceDonationReservations.release(page.dataset.donationProtocol,
+            document.querySelector('#rejected-title').closest('section').querySelector('time').dateTime);
+        return;
+    }
     const button = document.querySelector('[data-open-cancellation]');
     const confirmation = document.querySelector('#donation-cancellation');
     const result = document.querySelector('#cancellation-result');
     if (!button || typeof confirmation?.showModal !== 'function' || !result) return;
     const confirm = confirmation.querySelector('[data-confirm-cancellation]');
     const update = () => {
+        const deadline = window.resourceDonationDeadlines.stage('acceptance');
+        const acceptanceLimit = document.querySelector('[data-detail-label="Prazo para Aceite"]');
+        if (deadline && acceptanceLimit) {
+            acceptanceLimit.textContent = 'Até ' + window.resourceDonationDeadlines.dateTime(deadline) + ' (7 dias após a proposta)';
+        }
         const state = window.resourceProposalState.read();
         if (!state?.cancelled) return;
         const cancelledAt = new Date(state.cancelledAt);
@@ -23,6 +34,7 @@
         document.querySelector('[data-status-description]').textContent = state.reason === 'acceptance_expired'
             ? 'A ONG não aceitou a proposta no prazo de 7 dias. A doação foi cancelada e os itens voltaram a ficar disponíveis em Minhas doações.'
             : 'Esta proposta foi cancelada. A ONG não poderá mais aceitá-la. Consulte outras necessidades para fazer uma nova proposta.';
+        if (acceptanceLimit) acceptanceLimit.closest('.detail-row').hidden = true;
         document.querySelector('#pending-actions').hidden = true;
         document.querySelector('#cancelled-notice').hidden = false;
     };

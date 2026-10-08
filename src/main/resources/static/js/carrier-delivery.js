@@ -4,7 +4,7 @@
     const review = document.querySelector('#carrier-review');
     const result = document.querySelector('#carrier-result');
     if (!page || !form || typeof review?.showModal !== 'function') return;
-    const submit = form.querySelector('[type="submit"]');
+    const submit = document.querySelector('[type="submit"][form="carrier-delivery-form"]');
     const confirm = review.querySelector('[data-confirm-posting]');
     const tracking = form.elements.namedItem('trackingCode');
     let draft = null;
@@ -12,8 +12,8 @@
     const dateLabel = value => value.split('-').reverse().join('/');
     const restore = () => {
         const state = window.resourceDeliveryState.read();
-        if (state?.method !== 'carrier') {
-            window.location.replace(state?.method === 'in_person' ? page.dataset.inPersonUrl : page.dataset.shippingUrl);
+        if (state?.status === 'cancelled' || state?.method !== 'carrier') {
+            window.location.replace(state?.status !== 'cancelled' && state?.method === 'in_person' ? page.dataset.inPersonUrl : page.dataset.shippingUrl);
             return false;
         }
         if (state.status === 'shipped') {
@@ -30,10 +30,16 @@
             document.querySelector('[data-sent-notes-row]').hidden = !state.notes;
             form.querySelectorAll('input, textarea, button').forEach(control => { control.disabled = true; });
         }
-        return sent || window.resourceDeliveryState.canConfirm(form);
+        const allowed = sent || window.resourceDeliveryState.canConfirm(form);
+        submit.hidden = sent;
+        submit.disabled = sent || !allowed;
+        document.querySelector('[data-sent-panel-link]').hidden = !sent;
+        return allowed;
     };
     if (!restore()) return;
     window.addEventListener('pageshow', restore);
+    window.addEventListener('focus', restore);
+    setInterval(restore, 30000);
     tracking.addEventListener('input', () => { tracking.value = tracking.value.toUpperCase(); });
     form.addEventListener('submit', event => {
         event.preventDefault();
@@ -48,18 +54,21 @@
     });
     review.querySelector('[data-close-review]').addEventListener('click', () => review.close());
     review.addEventListener('close', () => {
+        if (review.open) return;
         draft = null;
         if (!sent) submit.focus();
     });
     confirm.addEventListener('click', () => {
         if (!review.open || !draft || confirm.disabled || !restore() || sent) return;
         confirm.disabled = true;
-        window.resourceDeliveryState.write({ ...draft, method: 'carrier', status: 'shipped' });
+        if (!window.resourceDeliveryState.write({ ...draft, method: 'carrier', status: 'shipped' })) {
+            restore();
+            return;
+        }
         restore();
         review.close();
         result.showModal();
     });
     result.querySelector('[data-close-result]').addEventListener('click', () => result.close());
     result.addEventListener('close', () => document.querySelector('#sent-title').focus());
-    submit.disabled = sent;
 })();

@@ -1,6 +1,6 @@
 .section-title,
 .card-header,
-.need,
+.need-summary,
 .shipment-item {
     display: flex;
     align-items: center;
@@ -24,32 +24,13 @@ p {
 }
 
 h1 {
-    font: 800 32px Outfit, sans-serif;
+    font: 800 var(--font-page) Outfit, sans-serif;
 }
 
 .hero p {
     margin-top: 8px;
     color: var(--slate);
-    font-size: 16px;
-}
-
-.button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.button--primary {
-    gap: 8px;
-    padding: 14px 24px;
-    color: white;
-    background: var(--green);
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(16, 185, 129, .2);
-    font-size: 16px;
+    font-size: var(--font-subtitle);
 }
 
 .button--primary img {
@@ -64,7 +45,7 @@ h1 {
     padding: 48px 80px 80px;
 }
 
-.section {
+.dashboard-section {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -81,7 +62,7 @@ h1 {
 }
 
 h2 {
-    font: 700 24px Outfit, sans-serif;
+    font: 700 var(--font-section) Outfit, sans-serif;
 }
 
 .counter-badge {
@@ -89,13 +70,13 @@ h2 {
     color: white;
     background: var(--green);
     border-radius: 100px;
-    font-size: 11px;
+    font-size: var(--font-caption);
     font-weight: 700;
 }
 
 .text-link {
     color: var(--green);
-    font-size: 14px;
+    font-size: var(--font-body);
     font-weight: 600;
 }
 
@@ -125,7 +106,7 @@ h2 {
     width: 160px;
     overflow: hidden;
     color: var(--slate);
-    font-size: 14px;
+    font-size: var(--font-body);
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -135,16 +116,16 @@ h2 {
 .status-badge {
     padding: 4px 10px;
     border-radius: 100px;
-    font-size: 12px;
+    font-size: var(--font-caption);
     font-weight: 600;
     white-space: nowrap;
 }
 
-.need {
+.need-summary {
     gap: 16px;
 }
 
-.need__icon,
+.need-summary__icon,
 .item-icon {
     display: inline-flex;
     align-items: center;
@@ -154,34 +135,31 @@ h2 {
     background: #ecfdf5;
 }
 
-.need__icon {
+.need-summary__icon {
     width: 48px;
     height: 48px;
 }
 
-.need__icon img {
+.need-summary__icon img {
     width: 24px;
     height: 24px;
 }
 
-.need small {
+.need-summary small {
     display: block;
     margin-bottom: 4px;
     color: var(--muted);
-    font-size: 12px;
+    font-size: var(--font-caption);
 }
 
-.need strong {
+.need-summary strong {
     display: block;
-    font-size: 16px;
+    font-size: var(--font-subtitle);
     font-weight: 700;
 }
 
 .button--card {
     width: 100%;
-    padding: 12px;
-    color: white;
-    background: var(--green);
 }
 
 .shipment-table {
@@ -196,7 +174,7 @@ h2 {
     min-height: 72px;
     padding: 16px 24px;
     display: grid;
-    grid-template-columns: 1fr 1fr 200px 120px;
+    grid-template-columns: 1fr 1fr 232px 120px;
     align-items: center;
     border-bottom: 1px solid var(--border);
 }
@@ -211,7 +189,7 @@ h2 {
     padding-bottom: 14px;
     color: #064e3b;
     background: #ecfdf5;
-    font-size: 13px;
+    font-size: var(--font-caption);
     font-weight: 700;
 }
 
@@ -224,10 +202,20 @@ h2 {
     gap: 16px;
 }
 
+.shipment-item-info {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+}
+
+.shipment-item-info small {
+    color: var(--slate);
+    font-size: var(--font-caption);
+}
+
 .item-icon {
     width: 40px;
     height: 40px;
-    background: var(--background);
     border-radius: 8px;
 }
 
@@ -238,7 +226,7 @@ h2 {
 
 .shipment-item strong,
 .recipient {
-    font-size: 15px;
+    font-size: var(--font-body);
 }
 
 .recipient {
@@ -266,7 +254,8 @@ h2 {
     background: #dbeafe;
 }
 
-.status--cancelled {
+.status--cancelled,
+.status--rejected {
     color: #b91c1c;
     background: #fef2f2;
 }
@@ -286,13 +275,20 @@ h2 {
     }
 
     .shipment-row {
-        grid-template-columns: 1.2fr 1fr 150px 90px;
+        grid-template-columns: 1.2fr 1fr 182px 90px;
         padding-left: 16px;
         padding-right: 16px;
     }
 }
 
 @media (max-width: 680px) {
+    .section-header,
+    .section-title,
+    .card-header {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
     .hero {
         height: auto;
         gap: 24px;
@@ -303,11 +299,11 @@ h2 {
     }
 
     h1 {
-        font-size: 26px;
+        font-size: var(--font-page-mobile);
     }
 
     .hero p {
-        font-size: 14px;
+        font-size: var(--font-body);
         line-height: 1.5;
     }
 
@@ -326,10 +322,6 @@ h2 {
     }
 }
 
-.nav-divider {
-    border-left: 1px solid var(--border);
-}
-
 .shipment-status {
     min-width: 0;
     display: flex;
@@ -341,7 +333,7 @@ h2 {
 
 .shipment-status small {
     color: var(--slate);
-    font-size: 12px;
+    font-size: var(--font-caption);
     line-height: 1.5;
 }
 

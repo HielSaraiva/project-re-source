@@ -4,6 +4,7 @@ import edu.br.resource.resourcesystem.service.donor.DonorDonationStatusService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class DonorDonationStatusController {
@@ -14,8 +15,8 @@ public class DonorDonationStatusController {
     }
 
     @GetMapping("/donor/donation/status")
-    public String status(Model model) {
-        model.addAllAttributes(screenService.screenData());
-        return "donor/donation-status";
+    public String status(@RequestParam(defaultValue = "") String status, Model model) {
+        model.addAllAttributes(screenService.screenData("rejected".equals(status)));
+        return "donor/donation/status";
     }
 }

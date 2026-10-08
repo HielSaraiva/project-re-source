@@ -13,33 +13,63 @@
             && typeof state.recipient === 'string' && typeof state.notes === 'string') return state;
         return null;
     };
-    const storage = window.resourceMockStorage.create('resource:mock:monitor-instituto:delivery', validate);
-    const read = () => {
-        const state = storage.read();
-        if (state?.method && !Number.isFinite(Date.parse(state.methodConfirmedAt))) {
-            const upgraded = { ...state, methodConfirmedAt: new Date().toISOString() };
-            storage.write(upgraded);
-            return upgraded;
-        }
+    const stores = new Map();
+    const page = () => document.querySelector('[data-delivery-protocol]');
+    const protocol = () => page()?.dataset.deliveryProtocol || 'INT-2026-202';
+    const storage = () => {
+        const key = protocol() === 'INT-2026-202' ? 'resource:mock:monitor-instituto:delivery' : 'resource:mock:delivery:' + protocol();
+        if (!stores.has(key)) stores.set(key, window.resourceMockStorage.create(key, validate));
+        return stores.get(key);
+    };
+    const dates = window.resourceDonationDeadlines;
+    const choiceDeadline = () => page()?.dataset.expiredStage ? page().dataset.choiceDeadline : dates.stage('choice');
+    const dueFor = state => state?.method ? dates.afterWeek(state.methodConfirmedAt) : choiceDeadline();
+    const locked = state => ['cancelled', 'shipped', 'awaiting_ngo_confirmation'].includes(state?.status);
+    const release = state => {
+        window.resourceDonationReservations.release(protocol(), state.cancelledAt);
         return state;
     };
-    const write = state => {
+    const read = () => {
+        let state = storage().read();
+        const initialStage = page()?.dataset.expiredStage;
+        if (!state && ['in_person', 'carrier'].includes(initialStage)) {
+            state = { method: initialStage, status: initialStage === 'carrier' ? 'awaiting_shipping' : 'awaiting_delivery',
+                methodConfirmedAt: page().dataset.methodConfirmedAt };
+        }
+        if (state?.method && !Number.isFinite(Date.parse(state.methodConfirmedAt))) {
+            state = { ...state, methodConfirmedAt: new Date().toISOString() };
+            storage().write(state);
+        }
+        if (!locked(state) && dates.expired(dueFor(state))) {
+            state = { ...state, status: 'cancelled', reason: 'deadline_expired',
+                expiryStage: state?.method || 'choice', cancelledAt: dueFor(state),
+                inventoryAvailable: true, needReservationReleased: true };
+            storage().write(state);
+        }
+        if (state?.status === 'cancelled') return release(state);
+        return state;
+    };
+    const write = next => {
         const previous = read();
-        return storage.write(state.method ? {
-            ...state,
-            methodConfirmedAt: previous?.methodConfirmedAt || new Date().toISOString()
-        } : state);
+        if (locked(previous) || (previous?.method && next.method && next.method !== previous.method)) return false;
+        let state = { ...previous, ...next };
+        if (state.status === 'cancelled') {
+            state = { ...state, cancelledAt: new Date().toISOString(), inventoryAvailable: true, needReservationReleased: true };
+            release(state);
+        } else if (state.method) {
+            state.methodConfirmedAt = previous?.methodConfirmedAt || new Date().toISOString();
+        }
+        if (['shipped', 'awaiting_ngo_confirmation'].includes(state.status)) state.reportedAt = new Date().toISOString();
+        if (!validate(state)) return false;
+        storage().write(state);
+        window.dispatchEvent(new Event('resource:donation-updated'));
+        return true;
     };
-    const deadline = () => {
-        const state = read();
-        return state?.method ? window.resourceDonationDeadlines.afterWeek(state.methodConfirmedAt)
-            : window.resourceDonationDeadlines.stage('choice');
-    };
+    const deadline = () => dueFor(read());
     const canConfirm = form => {
         const state = read();
-        if (!state?.method) return true;
-        const dates = window.resourceDonationDeadlines;
-        const due = deadline();
+        if (locked(state) || !state?.method) return false;
+        const due = dueFor(state);
         dates.render(document.querySelector('[data-active-deadline]'), due,
             'Modalidade escolhida em ' + dates.date(state.methodConfirmedAt), '7 dias após a escolha');
         const date = form?.elements.namedItem('date');
@@ -47,9 +77,7 @@
             date.min = dates.inputDate(state.methodConfirmedAt);
             date.max = [dates.inputDate(new Date().toISOString()), dates.inputDate(due)].sort()[0];
         }
-        if (!dates.expired(due)) return true;
-        form?.querySelectorAll('input, textarea, button').forEach(control => { control.disabled = true; });
-        return false;
+        return !dates.expired(due);
     };
     window.resourceDeliveryState = { read, write, deadline, canConfirm };
 })();

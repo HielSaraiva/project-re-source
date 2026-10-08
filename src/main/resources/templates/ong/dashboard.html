@@ -1,71 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head('Painel da ONG', ~{::pageStyles}, 'ong')}">
-    <th:block th:fragment="pageStyles">
-        <link rel="stylesheet" th:href="@{/css/ong/dashboard.css}">
-    </th:block>
-</head>
-<body>
-<header th:replace="~{fragments/ong-header :: header('dashboard')}"></header>
+    <head th:replace="~{fragments/layout/head :: head('Painel da ONG', ~{::pageStyles}, 'ong')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/ong/dashboard.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/donation-status.css}">
+            <script th:src="@{/js/ong-intention-state.js}"></script>
+            <script th:src="@{/js/ong-intentions.js}" defer></script>
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/ong-header :: header('dashboard')}"></header>
 
-<main class="page-content">
-    <section class="summary-grid" aria-label="Resumo da ONG">
-        <article class="summary-card">
-            <span>Doações Recebidas</span>
-            <strong th:text="${receivedDonations}">124</strong>
-        </article>
-        <article class="summary-card">
-            <span>Aguardando aceite</span>
-            <strong><span th:text="${pendingAcceptances}">3</span><i class="pending-dot"></i></strong>
-        </article>
-        <article class="summary-card">
-            <span>Necessidades Ativas</span>
-            <strong th:text="${activeNeeds}">5</strong>
-        </article>
-    </section>
+        <main class="page-content" data-intention-dashboard>
+            <section class="summary-grid" aria-label="Resumo da ONG">
+                <article class="summary-card">
+                    <span>Doações recebidas</span>
+                    <strong data-received-count th:text="${receivedDonations}">124</strong>
+                </article>
+                <article class="summary-card">
+                    <span>Aguardando aceite</span>
+                    <strong><span data-pending-count th:text="${pendingAcceptances}">3</span><i class="pending-dot"></i></strong>
+                </article>
+                <article class="summary-card">
+                    <span>Necessidades ativas</span>
+                    <strong th:text="${activeNeeds}">5</strong>
+                </article>
+            </section>
 
-    <section class="section-block">
-        <div class="section-heading">
-            <div>
-                <h1>Novas intenções de doação</h1>
-                <p>Avalie as ofertas de doação enviadas pela comunidade antes de aceitar.</p>
-            </div>
-        </div>
-        <div class="intentions-list">
-            <article class="intention-row" th:each="intention : ${intentions}">
-                <div class="intention-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${intention.icon})}" alt=""></div>
-                <div class="intention-info">
-                    <strong th:text="${intention.item}">Monitor Dell 24"</strong>
-                    <span>Doador: <span th:text="${intention.donor}">João Silva</span></span>
+            <section class="section-block">
+                <div class="section-heading section-heading--actions">
+                    <div>
+                        <h1>Doações aguardando aceite</h1>
+                        <p>Avalie as ofertas de doação enviadas pela comunidade antes de aceitar.</p>
+                    </div>
+                    <a class="management-link" th:href="@{/ong/donations}">Gerenciar doações <span aria-hidden="true">→</span></a>
                 </div>
-                <span class="logistics-pill" th:text="${intention.logistics}">Presencial</span>
-                <div class="intention-actions">
-                    <button class="button button--accept" type="button">Aceitar</button>
-                    <button class="button button--decline" type="button">Recusar</button>
+                <div class="ong-donations-list">
+                    <article class="ong-donation-row" th:each="intention, position : ${intentions}"
+                        th:hidden="${intention.status != 'awaiting_acceptance' or position.index >= 3}"
+                        th:attr="data-intention-id=${intention.id},data-status=${intention.status},data-deadline=${intention.acceptanceDeadline},data-created-at=${intention.createdAt}">
+                        <div class="ong-donation-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${intention.icon})}" alt="">
+                        </div>
+                        <div class="ong-donation-info">
+                            <strong th:text="${intention.quantity + '× ' + intention.item}">1× Monitor</strong>
+                            <span th:text="${intention.donor + ' · ' + intention.id}">Doador · Protocolo</span>
+                        </div>
+                        <div class="ong-donation-status">
+                            <span class="donation-status" data-intention-status th:classappend="${' donation-status--' + intention.statusClass()}" th:text="${intention.statusLabel()}">Aguardando aceite</span>
+                            <small data-intention-deadline th:text="${'Aceite até ' + intention.deadlineLabel}"></small>
+                        </div>
+                        <a class="management-link" th:href="@{/ong/donations/{id}(id=${intention.id})}">Analisar doação</a>
+                    </article>
+                    <p class="dashboard-empty" data-dashboard-empty hidden>Não há doações aguardando aceite. Consulte o histórico em Gerenciar doações.</p>
                 </div>
-            </article>
-        </div>
-    </section>
+            </section>
 
-    <section class="section-block needs-section">
-        <div class="section-heading section-heading--needs">
-            <div>
-                <h2>Necessidades Cadastradas</h2>
-                <p>Itens atualmente ativos na sua lista de desejos institucional.</p>
-            </div>
-            <button class="button button--new" type="button"><img th:src="@{/images/ong/dashboard/plus.svg}" alt="">Nova necessidade</button>
-        </div>
-        <div class="needs-grid">
-            <article class="need-card" th:each="need : ${needs}">
-                <div class="need-card__top">
-                    <div class="need-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${need.icon})}" alt=""></div>
-                    <span class="priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta prioridade</span>
+            <section class="section-block needs-section">
+                <div class="section-heading section-heading--needs">
+                    <div>
+                        <h2>Necessidades cadastradas</h2>
+                        <p>Itens atualmente ativos na sua lista de desejos institucional.</p>
+                    </div>
+                    <button class="button button--new" type="button"><img th:src="@{/images/ong/dashboard/plus.svg}" alt="">Nova necessidade</button>
                 </div>
-                <strong th:text="${need.item}">50 Cadeiras escolares</strong>
-                <a href="#edit">Editar necessidade <span aria-hidden="true">→</span></a>
-            </article>
-        </div>
-    </section>
-</main>
-</body>
+                <div class="needs-grid">
+                    <article class="need-card" th:each="need : ${needs}">
+                        <div class="need-card__top">
+                            <div class="need-icon"><img th:src="@{/images/ong/dashboard/{icon}(icon=${need.icon})}" alt="">
+                            </div>
+                            <span class="priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta prioridade</span>
+                        </div>
+                        <strong th:text="${need.item}">50 Cadeiras escolares</strong>
+                        <a class="text-link" href="#edit">Editar necessidade</a>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </body>
 </html>

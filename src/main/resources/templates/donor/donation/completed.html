@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Doação concluída', ~{::pageStyles}, 'donor')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/flow.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/details.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/completed.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/donation-history.css}">
+            <script th:src="@{/js/donor-donation-history.js}" defer></script>
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/donor-header :: header('dashboard')}"></header>
+
+        <main class="donation-page">
+            <div class="header-area">
+                <a class="back-link" th:href="@{/donor/dashboard}">
+                    <span aria-hidden="true">←</span> Voltar ao painel
+                </a>
+                <div class="heading-row">
+                    <div class="page-heading">
+                        <p class="donation-protocol" th:text="${donation.protocol}"></p>
+                        <h1>Doação Concluída</h1>
+                        <p>Você doou <strong th:text="${donation.item}">1x Notebook Lenovo</strong> para a
+                            <strong th:text="${donation.organization}">ONG Recomeço</strong>. A doação foi recebida e confirmada com sucesso.</p>
+                    </div>
+                    <span class="status-badge">Concluído</span>
+                </div>
+            </div>
+
+            <section class="details-grid" aria-label="Detalhes da doação concluída">
+                <article class="details-card">
+                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/donation-completed/monitor.svg', 'Especificações', '')}"></div>
+                    <div class="title-block">
+                        <h2>Detalhes da Doação</h2>
+                        <p>Item oferecido e datas da proposta e do aceite.</p>
+                    </div>
+                    <img class="section-divider" th:src="@{/images/donor/donation-completed/details-divider.svg}" alt="">
+                    <div th:replace="~{fragments/donation/details :: details(${donationDetails}, '/images/donor/donation-completed', '', '')}"></div>
+                </article>
+
+                <article class="details-card">
+                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/donation-completed/home.svg', 'Dados da instituição', 'card-badge--blue')}"></div>
+                    <div class="title-block">
+                        <h2>Informações da ONG</h2>
+                        <p>Instituição beneficiada e seus dados de contato.</p>
+                    </div>
+                    <img class="section-divider" th:src="@{/images/donor/donation-completed/details-divider.svg}" alt="">
+                    <div th:replace="~{fragments/donation/details :: details(${organizationDetails}, '/images/donor/donation-completed', '', '')}"></div>
+                </article>
+            </section>
+
+            <section class="details-card completed-delivery" aria-labelledby="delivery-title">
+                <div class="title-block">
+                    <h2 id="delivery-title">Entrega e recebimento</h2>
+                    <p>A ONG confirmou o recebimento dos itens e a doação foi concluída. Confira o registro da entrega abaixo.</p>
+                </div>
+                <div th:replace="~{fragments/donation/details :: details(${deliveryDetails}, '/images/donor/donation-completed', '', '')}"></div>
+            </section>
+
+            <section th:replace="~{fragments/donation/history :: history(${donationHistory}, 'completed', ${donorName}, ${donation.organization})}"></section>
+
+            <aside th:replace="~{fragments/donation/details :: impactBanner('/images/donor/donation-completed')}"></aside>
+            <div class="action-wrapper">
+                <a class="donation-action donation-action--receipt" href="#receipt">Baixar comprovante</a>
+            </div>
+        </main>
+    </body>
+</html>
