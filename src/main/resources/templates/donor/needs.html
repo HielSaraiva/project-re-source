@@ -19,23 +19,16 @@
                     <h1>Todas as necessidades</h1>
                     <p>Explore as demandas de ONGs parceiras e encontre o match perfeito para a sua doação. Sua ajuda chega diretamente a quem mais precisa.</p>
                 </div>
-                <form class="filters" action="#" method="get">
+                <form class="filters" th:action="@{/donor/needs}" method="get">
                     <label class="search-field">
                         <img th:src="@{/images/donor/needs/search.svg}" alt="">
-                        <input type="search" name="query" aria-label="Buscar item ou ONG" placeholder="Buscar item ou ONG...">
+                        <input type="search" name="query" th:value="${filter.query}" aria-label="Buscar item ou ONG" placeholder="Buscar item ou ONG...">
                     </label>
-                    <div class="filter-select">
-                        <span><small>Categoria</small><strong>Todas as categorias</strong></span>
-                        <img th:src="@{/images/donor/needs/filter-chevron.svg}" alt="">
-                    </div>
-                    <div class="filter-select">
-                        <span><small>Distância</small><strong>Até 15 km</strong></span>
-                        <img th:src="@{/images/donor/needs/filter-chevron.svg}" alt="">
-                    </div>
-                    <div class="filter-select">
-                        <span><small>Ordenar por</small><strong>Mais urgentes</strong></span>
-                        <img th:src="@{/images/donor/needs/filter-chevron.svg}" alt="">
-                    </div>
+
+
+
+                <label class="filter-select">Categoria<select name="category" onchange="this.form.requestSubmit()"><option value="">Todas as categorias</option><option th:each="category : ${T(edu.br.resource.resourcesystem.model.enums.ItemCategory).values()}" th:value="${category.value}" th:text="${category.label}" th:selected="${filter.category == category}"></option></select></label>
+                    <label class="filter-select">Prioridade<select name="priority" onchange="this.form.requestSubmit()"><option value="">Todas</option><option th:each="priority : ${T(edu.br.resource.resourcesystem.model.enums.NecessityPriority).values()}" th:value="${priority.value}" th:text="${priority.label}" th:selected="${filter.priority == priority}"></option></select></label>
                 </form>
             </section>
 
@@ -43,7 +36,7 @@
                 <div class="results-meta">
                     <div class="result-count">
                         <img th:src="@{/images/donor/needs/city.svg}" alt="">
-                        <strong>Exibindo 156 necessidades encontradas</strong>
+                        <strong th:text="${pagination.totalElements + ' necessidades encontradas'}"></strong>
                     </div>
                     <span class="verified-pill">
                         <img th:src="@{/images/donor/needs/shield.svg}" alt="">
@@ -79,10 +72,7 @@
                         </div>
                     </article>
                 </div>
-                <nav class="pagination" aria-label="Paginação">
-                    <button type="button" aria-label="Página anterior" disabled>‹</button>
-                    <a class="current" href="#" aria-current="page">1</a><a href="#">2</a><a href="#">3</a><span>...</span><a href="#">26</a><a href="#" aria-label="Próxima página">›</a>
-                </nav>
+                <nav th:replace="~{fragments/ui/pagination :: pages('/donor/needs', ${pagination}, ${filter}, true)}"></nav>
             </section>
         </main>
     </body>

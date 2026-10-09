@@ -112,8 +112,7 @@ h2 {
     white-space: nowrap;
 }
 
-.priority-badge,
-.status-badge {
+.priority-badge {
     padding: 4px 10px;
     border-radius: 100px;
     font-size: var(--font-caption);
@@ -233,33 +232,6 @@ h2 {
     color: var(--slate);
 }
 
-.status-badge {
-    justify-self: start;
-    padding: 6px 12px;
-}
-
-.status--awaiting-acceptance,
-.status--awaiting-shipment {
-    color: var(--status-waiting-color);
-    background: var(--status-waiting-background);
-}
-
-.status--completed {
-    color: var(--green);
-    background: #d1fae5;
-}
-
-.status--shipped {
-    color: #1e40af;
-    background: #dbeafe;
-}
-
-.status--cancelled,
-.status--rejected {
-    color: #b91c1c;
-    background: #fef2f2;
-}
-
 @media (max-width: 900px) {
     .hero {
         padding-left: 24px;
@@ -345,7 +317,7 @@ h2 {
     text-align: center;
 }
 
-.shipment-status .status-badge {
+.shipment-status .donation-status {
     max-width: 100%;
     white-space: normal;
     line-height: 1.4;

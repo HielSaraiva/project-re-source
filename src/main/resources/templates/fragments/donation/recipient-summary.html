@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
     <body>
-        <th:block th:fragment="postalDetails(donation)" th:if="${donation.deliveryMethod() == 'carrier'}">
+        <th:block th:fragment="postalDetails(donation)" th:if="${donation.deliveryMethod == 'carrier'}">
             <div>
                 <dt>Tipo de entrega</dt>
                 <dd>Envio pelos Correios</dd>
             </div>
             <div>
                 <dt>Postagem informada em</dt>
-                <dd th:text="${donation.postedOnLabel()}"></dd>
+                <dd th:text="${donation.postedOnLabel}"></dd>
             </div>
             <div class="ong-donation-summary-wide">
                 <dt>Código de rastreamento</dt>
-                <dd th:text="${donation.trackingCode()}"></dd>
+                <dd th:text="${donation.trackingCode}"></dd>
             </div>
         </th:block>
     </body>

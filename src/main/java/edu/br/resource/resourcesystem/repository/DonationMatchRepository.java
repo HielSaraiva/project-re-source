@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -43,6 +44,15 @@ public interface DonationMatchRepository extends JpaRepository<DonationMatch, In
     @Query("select m from DonationMatch m where m.protocol = :protocol and m.necessity.institution.id = :institutionId")
     Optional<DonationMatch> findForUpdateForInstitution(@Param("protocol") String protocol,
             @Param("institutionId") Integer institutionId);
+
+    @Modifying(flushAutomatically = true)
+    @Query(value = "update matches set updated_at = clock_timestamp() where id = :matchId", nativeQuery = true)
+    void recordFlowUpdate(@Param("matchId") Integer matchId);
+
+    Optional<DonationMatch> findByProtocol(String protocol);
+
+    @EntityGraph(attributePaths = {"donation", "necessity"})
+    java.util.List<DonationMatch> findAllByDonationId(Integer donationId);
 
     boolean existsByDonationIdAndNecessityIdAndStatusIn(Integer donationId, Integer necessityId, Collection<MatchStatus> statuses);
 

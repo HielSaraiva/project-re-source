@@ -8,17 +8,22 @@
             <link rel="stylesheet" th:href="@{/css/shared/delivery-form.css}">
             <link rel="stylesheet" th:href="@{/css/donor/donation/delivery.css}">
             <link rel="stylesheet" th:href="@{/css/donor/donation/carrier-delivery.css}">
-            <script th:src="@{/js/delivery-state.js}"></script>
-            <script th:src="@{/js/carrier-delivery.js}" defer></script>
             <link rel="stylesheet" th:href="@{/css/shared/donation-history.css}">
-            <script th:src="@{/js/donor-donation-history.js}" defer></script>
         </th:block>
     </head>
     <body>
         <header th:replace="~{fragments/layout/donor-header :: header('dashboard')}"></header>
-        <main class="donation-page carrier-delivery" th:attr="data-shipping-url=@{/donor/donation/shipping},data-in-person-url=@{/donor/donation/shipping/in-person}">
+        <main th:data-match-protocol="${protocol}" th:data-match-status="${match.status.value}"
+            th:data-match-method="${delivery == null ? '' : delivery.method.value}"
+            th:data-can-cancel="${actions.canCancel}" th:data-can-confirm-personal="${actions.canConfirmInPersonDelivery}"
+            th:data-can-confirm-shipment="${actions.canConfirmShipment}"
+            th:data-delivered-on="${delivery == null ? '' : delivery.deliveredOn}"
+            th:data-posted-on="${delivery == null ? '' : delivery.postedOn}"
+            th:data-received-by="${delivery == null ? '' : delivery.receivedByName}"
+            th:data-tracking-code="${delivery == null ? '' : delivery.trackingCode}"
+            th:data-delivery-notes="${delivery == null ? '' : delivery.notes}" class="donation-page carrier-delivery" th:attr="data-shipping-url=@{/donor/donation/shipping(protocol=${protocol})},data-in-person-url=@{/donor/donation/shipping/in-person(protocol=${protocol})}">
             <div class="header-area">
-                <a class="back-link" th:href="@{/donor/donation/shipping}"><span aria-hidden="true">←</span> Voltar às opções de envio</a>
+                <a class="back-link" th:href="@{/donor/dashboard}"><span aria-hidden="true">←</span> Voltar ao painel</a>
                 <div class="heading-row">
                     <div class="page-heading">
                         <p class="donation-protocol" th:text="${donation.protocol}"></p>
@@ -66,7 +71,7 @@
                     <h2 id="report-title">Já postou a doação?</h2>
                     <p>Informe os dados do comprovante somente após entregar o pacote aos Correios.</p>
                 </div>
-                <form id="carrier-delivery-form" class="delivery-form" th:action="@{/donor/donation/shipping/carrier}" method="get">
+                <form id="carrier-delivery-form" class="delivery-form" th:action="@{/donor/donation/shipping/carrier(protocol=${protocol})}" method="get">
                     <div class="delivery-fields">
                         <div th:replace="~{fragments/ui/form-fields :: dateField('posted-on', 'Data da postagem', ${methodConfirmedOn}, ${today.compareTo(deliveryDeadline) <= 0 ? today : deliveryDeadline})}"></div>
                         <div class="delivery-field">
@@ -111,14 +116,16 @@
             <section th:replace="~{fragments/donation/history :: history(${donationHistory}, 'delivery', ${donorName}, ${donation.organization})}"></section>
 
             <div class="ui-actions">
+                <button class="donation-action donation-action--cancel" type="button" data-open-cancellation th:if="${actions.canCancel}">Cancelar doação</button>
                 <button class="ui-button ui-button--primary" type="submit" form="carrier-delivery-form" disabled>Confirmar postagem</button>
                 <a class="ui-button ui-button--primary" data-sent-panel-link th:href="@{/donor/dashboard}" hidden>Voltar ao painel</a>
             </div>
         </main>
+        <th:block th:replace="~{fragments/donation/cancellation :: dialogs}"></th:block>
         <dialog id="carrier-review" class="ui-dialog" aria-labelledby="review-title" aria-describedby="review-description">
             <div class="ui-dialog-content">
                 <div class="title-block">
-                    <h2 id="review-title" tabindex="-1" autofocus>Confirmar postagem</h2>
+                    <div th:replace="~{fragments/ui/dialog :: heading('review-title', 'Confirmar postagem', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/shipping/package.svg')}"></div>
                     <p id="review-description">Confira os dados antes de confirmar. A doação passará para Enviado e não será mais possível cancelar o envio ou alterar os dados de postagem.</p>
                 </div>
                 <dl class="delivery-summary">
@@ -155,7 +162,7 @@
         </dialog>
         <dialog id="carrier-result" class="ui-dialog" aria-labelledby="result-title" aria-describedby="result-description">
             <div class="ui-dialog-content">
-                <div th:replace="~{fragments/ui/dialog :: resultHeading('result-title', 'Postagem informada com sucesso')}"></div>
+                <div th:replace="~{fragments/ui/dialog :: resultHeading('result-title', 'Postagem informada com sucesso', 'Enviado', 'donation-status--shipped')}"></div>
                 <p id="result-description" class="ui-dialog-description">O envio foi registrado. A ONG poderá acompanhar a doação pelo código informado e confirmar o recebimento quando os itens chegarem.</p>
                 <div class="ui-actions">
                     <button class="ui-button ui-button--secondary" type="button" data-close-result>Ver detalhes do envio</button>

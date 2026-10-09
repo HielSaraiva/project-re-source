@@ -7,16 +7,21 @@
             <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
             <link rel="stylesheet" th:href="@{/css/shared/delivery-form.css}">
             <link rel="stylesheet" th:href="@{/css/donor/donation/status.css}">
-            <script th:src="@{/js/proposal-state.js}"></script>
-            <script th:src="@{/js/donation-status.js}" defer></script>
             <link rel="stylesheet" th:href="@{/css/shared/donation-history.css}">
-            <script th:src="@{/js/donor-donation-history.js}" defer></script>
         </th:block>
     </head>
     <body>
         <header th:replace="~{fragments/layout/donor-header :: header('dashboard')}"></header>
 
-        <main class="donation-page" th:attr="data-acceptance-deadline=${acceptanceDeadline},data-proposal-rejected=${rejected},data-donation-protocol=${donation.protocol}">
+        <main th:data-match-protocol="${protocol}" th:data-match-status="${match.status.value}"
+            th:data-match-method="${delivery == null ? '' : delivery.method.value}"
+            th:data-can-cancel="${actions.canCancel}" th:data-can-confirm-personal="${actions.canConfirmInPersonDelivery}"
+            th:data-can-confirm-shipment="${actions.canConfirmShipment}"
+            th:data-delivered-on="${delivery == null ? '' : delivery.deliveredOn}"
+            th:data-posted-on="${delivery == null ? '' : delivery.postedOn}"
+            th:data-received-by="${delivery == null ? '' : delivery.receivedByName}"
+            th:data-tracking-code="${delivery == null ? '' : delivery.trackingCode}"
+            th:data-delivery-notes="${delivery == null ? '' : delivery.notes}" class="donation-page" th:attr="data-acceptance-deadline=${acceptanceDeadline},data-proposal-rejected=${rejected},data-donation-protocol=${donation.protocol}">
             <div class="header-area">
                 <a class="back-link" th:href="@{/donor/dashboard}">
                     <span aria-hidden="true">←</span> Voltar ao painel
@@ -24,18 +29,18 @@
                 <div class="heading-row">
                     <div class="page-heading">
                         <p class="donation-protocol" th:text="${donation.protocol}"></p>
-                        <h1 data-status-title th:text="${rejected ? 'Proposta recusada' : 'Aguardando aceite da ONG'}">Aguardando aceite da ONG</h1>
-                        <p th:if="${!rejected}" data-status-description>Você ofereceu <strong th:text="${donation.item}">1x Monitor Dell 24"</strong> para a
+                        <h1 data-status-title th:text="${cancelled ? 'Doação cancelada' : rejected ? 'Proposta recusada' : statusLabel}">Aguardando aceite da ONG</h1>
+                        <p th:if="${!rejected and !cancelled}" data-status-description>Você ofereceu <strong th:text="${donation.item}">1x Monitor Dell 24"</strong> para a
                             <strong th:text="${donation.organization}">Associação Vida</strong>. A ONG tem 7 dias para aceitar sua proposta. Após esse prazo, sem aceite, a doação será cancelada.</p>
                         <p th:if="${rejected}" data-status-description>A <strong th:text="${donation.organization}"></strong> recusou sua proposta. Consulte o motivo abaixo e encontre outra necessidade para ajudar.</p>
                     </div>
-                    <span class="status-badge" data-donation-status aria-live="polite" th:classappend="${rejected ? ' status-badge--cancelled' : ''}" th:text="${rejected ? 'Recusado' : 'Aguardando aceite'}">Aguardando aceite</span>
+                    <span class="status-badge" data-donation-status aria-live="polite" th:classappend="${cancelled or rejected ? ' status-badge--cancelled' : ''}" th:text="${statusLabel}">Aguardando aceite</span>
                 </div>
             </div>
 
             <section class="details-grid" aria-label="Detalhes da doação">
                 <article class="details-card">
-                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/donation-status/monitor.svg', 'Especificações', '')}"></div>
+                    <div th:replace="~{fragments/donation/details :: cardHeading(${donation.icon}, 'Especificações', '')}"></div>
                     <div class="title-block">
                         <h2>Detalhes da Doação</h2>
                         <p>Informações declaradas no ato da abertura do fluxo de doação.</p>
@@ -79,15 +84,27 @@
                 </div>
             </section>
 
-            <section id="cancelled-notice" class="details-card" aria-labelledby="cancelled-title" hidden>
+            <section id="cancelled-notice" class="details-card" aria-labelledby="cancelled-title" th:hidden="${!cancelled}">
                 <div class="title-block">
                     <h2 id="cancelled-title" tabindex="-1">Cancelamento registrado</h2>
-                    <p>A quantidade reservada para esta proposta voltou a ficar disponível em Minhas doações com o status Registrado. O cancelamento não pode ser desfeito; para doar novamente, envie uma nova proposta.</p>
+                    <p>Os itens reservados para esta proposta estão disponíveis para uma nova proposta. A reserva da necessidade foi liberada. O cancelamento não pode ser desfeito; para doar novamente, envie uma nova proposta.</p>
                 </div>
                 <dl class="delivery-summary">
                     <div>
+                        <dt>Motivo do cancelamento</dt>
+                        <dd th:text="${cancellationReason}"></dd>
+                    </div>
+                    <div th:if="${expiredStage != null}">
+                        <dt>Etapa encerrada</dt>
+                        <dd th:text="${expiredStageLabel}"></dd>
+                    </div>
+                    <div th:if="${expiredStage != null}">
+                        <dt>Prazo encerrado em</dt>
+                        <dd th:text="${expiredDeadlineLabel}"></dd>
+                    </div>
+                    <div>
                         <dt>Data de cancelamento</dt>
-                        <dd><time data-cancellation-date></time>
+                        <dd><time data-cancellation-date th:text="${cancelledAtLabel}"></time>
                         </dd>
                     </div>
                 </dl>
@@ -98,7 +115,7 @@
             <section th:replace="~{fragments/donation/history :: history(${donationHistory}, 'proposal', ${donorName}, ${donation.organization})}"></section>
 
             <aside th:replace="~{fragments/donation/details :: impactBanner('/images/donor/donation-status')}"></aside>
-            <div class="action-wrapper ui-actions" id="pending-actions" th:hidden="${rejected}">
+            <div class="action-wrapper ui-actions" id="pending-actions" th:hidden="${!actions.canCancel}">
                 <button class="donation-action donation-action--cancel" type="button" data-open-cancellation>Cancelar doação</button>
             </div>
         </main>
@@ -106,10 +123,10 @@
             <div class="ui-dialog-content">
                 <div class="title-block">
                     <p class="donation-protocol" th:text="${donation.protocol}"></p>
-                    <h2 id="cancellation-title" tabindex="-1" autofocus>Cancelar doação?</h2>
+                    <div th:replace="~{fragments/ui/dialog :: heading('cancellation-title', 'Cancelar doação?', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/donation-status/info.svg')}"></div>
                     <p id="cancellation-description">Você está cancelando a proposta de <strong th:text="${donation.item}">1x Monitor Dell 24"</strong> para <strong th:text="${donation.organization}">Associação Vida</strong>.</p>
                 </div>
-                <p>Após confirmar, <strong>a ONG não poderá mais aceitar esta proposta</strong>. A quantidade reservada voltará a ficar disponível em Minhas doações com o status <strong>Registrado</strong>.</p>
+                <p>Após confirmar, <strong>a ONG não poderá mais aceitar esta proposta</strong>. Os itens reservados para esta proposta ficarão disponíveis para doar novamente e a reserva da necessidade será liberada.</p>
                 <p>Esta ação não pode ser desfeita. Você poderá enviar uma nova proposta para doar esses itens.</p>
                 <div class="ui-actions">
                     <button class="ui-button ui-button--secondary" type="button" data-close-cancellation>Manter doação</button>
@@ -120,12 +137,12 @@
         <dialog id="cancellation-result" class="ui-dialog" aria-labelledby="result-title" aria-describedby="result-description">
             <div class="ui-dialog-content">
                 <p class="donation-protocol" th:text="${donation.protocol}"></p>
-                <div th:replace="~{fragments/ui/dialog :: resultHeading('result-title', 'Doação cancelada')}"></div>
-                <p id="result-description" class="ui-dialog-description">O cancelamento foi registrado. O item voltou a ficar disponível em Minhas doações com o status Registrado para você fazer uma nova proposta.</p>
+                <div th:replace="~{fragments/ui/dialog :: resultHeading('result-title', 'Doação cancelada', 'Doação cancelada', 'donation-status--cancelled')}"></div>
+                <p id="result-description" class="ui-dialog-description">O cancelamento foi registrado. Os itens reservados para esta proposta ficaram disponíveis para doar novamente e a reserva da necessidade foi liberada.</p>
                 <dl class="delivery-summary">
                     <div>
                         <dt>Data de cancelamento</dt>
-                        <dd><time data-cancellation-date></time>
+                        <dd><time data-cancellation-date th:text="${cancelledAtLabel}"></time>
                         </dd>
                     </div>
                 </dl>

@@ -6,8 +6,6 @@
             <link rel="stylesheet" th:href="@{/css/shared/priority-badges.css}">
             <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
             <link rel="stylesheet" th:href="@{/css/donor/donation/proposal.css}">
-            <script th:src="@{/js/proposal-state.js}"></script>
-            <script th:src="@{/js/donation-proposal.js}" defer></script>
         </th:block>
     </head>
     <body>
@@ -78,7 +76,7 @@
                         <button class="ui-button ui-button--primary" type="button" data-open-registration disabled>Cadastrar doação</button>
                     </div>
                     <p id="inventory-feedback" class="proposal-inventory-feedback" role="status" hidden></p>
-                    <form id="donation-proposal-form" class="proposal-form" th:action="@{/donor/donation/proposal}" method="get" th:hidden="${inventoryDonations.isEmpty()}" th:attr="data-remaining-quantity=${need.requestedQuantity()},data-category=${need.category}">
+                    <form id="donation-proposal-form" class="proposal-form" th:action="@{/donor/donation/proposal}" method="post" th:hidden="${inventoryDonations.isEmpty()}" th:attr="data-remaining-quantity=${need.requestedQuantity},data-category=${need.category}">
                         <input type="hidden" name="need" th:value="${need.id}">
                         <div class="proposal-field">
                             <label for="inventory-donation">Doação em Minhas doações <span aria-hidden="true">*</span>
@@ -147,9 +145,8 @@
 
         <dialog id="proposal-confirmation" class="ui-dialog" aria-labelledby="confirmation-title" aria-describedby="confirmation-description">
             <div class="ui-dialog-content">
-                <span class="icon-frame"><img th:src="@{/images/donor/shipping/file-text.svg}" alt=""></span>
                 <div class="title-block">
-                    <h2 id="confirmation-title" tabindex="-1" autofocus>Confira sua proposta</h2>
+                    <div th:replace="~{fragments/ui/dialog :: heading('confirmation-title', 'Confira sua proposta', 'Proposta em preparação', '', '/images/donor/donation-status/file-text.svg')}"></div>
                     <p id="confirmation-description">Revise as informações antes de enviar. A ONG analisará sua proposta e, após o aceite, você poderá combinar a entrega.</p>
                 </div>
                 <dl class="proposal-summary">
@@ -190,10 +187,8 @@
         </dialog>
         <dialog id="proposal-result" class="ui-dialog" aria-labelledby="result-title" aria-describedby="result-description">
             <div class="ui-dialog-content">
-                <span class="icon-frame"><img th:src="@{/images/donor/donation-completed/check-circle.svg}" alt=""></span>
                 <div class="title-block">
-                    <span class="proposal-inventory-status proposal-inventory-status--waiting">Aguardando aceite</span>
-                    <h2 id="result-title" tabindex="-1" autofocus>Proposta enviada com sucesso</h2>
+                    <div th:replace="~{fragments/ui/dialog :: heading('result-title', 'Proposta enviada', 'Aguardando aceite', 'donation-status--waiting', '/images/donor/donation-completed/check-circle.svg')}"></div>
                     <p id="result-description">Sua proposta para <strong th:text="${need.organization}">Instituto Esperança</strong> foi enviada. Aguarde o aceite da ONG para combinar a entrega.</p>
                 </div>
                 <dl class="proposal-summary">
@@ -217,10 +212,10 @@
             <div class="ui-dialog-content">
                 <div class="title-block">
                     <span class="proposal-eyebrow">Minhas doações</span>
-                    <h2 id="registration-title">Cadastrar doação</h2>
+                    <div th:replace="~{fragments/ui/dialog :: heading('registration-title', 'Cadastrar doação', 'Novo cadastro', '', '/images/donor/donation-status/gift.svg')}"></div>
                     <p id="registration-description">Cadastre os itens que você possui. A doação ficará com o status <strong>Registrado</strong> para você montar a proposta.</p>
                 </div>
-                <form id="inventory-registration-form" class="proposal-form" th:action="@{/donor/donation/proposal}" method="get">
+                <form id="inventory-registration-form" class="proposal-form" th:action="@{/donor/donation/proposal}" method="post">
                     <input type="hidden" name="need" th:value="${need.id}">
                     <div class="proposal-field">
                         <label for="registration-category">Categoria</label>

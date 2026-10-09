@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
     <body>
-        <div class="ui-dialog-heading title-block" th:fragment="resultHeading(id, title)">
-            <span class="icon-frame"><img th:src="@{/images/donor/donation-completed/check-circle.svg}" alt=""></span>
+        <div th:fragment="resultHeading(id, title, status, statusClass)"
+            th:replace="~{fragments/ui/dialog :: heading(${id}, ${title}, ${status}, ${statusClass}, '/images/donor/donation-completed/check-circle.svg')}"></div>
+        <div class="ui-dialog-heading" th:fragment="heading(id, title, status, statusClass, iconPath)">
+            <span class="icon-frame"><img data-dialog-icon th:src="@{${iconPath}}" alt=""></span>
+            <div th:replace="~{fragments/ui/dialog :: titleRow(${id}, ${title}, ${status}, ${statusClass})}"></div>
+        </div>
+        <div class="ui-dialog-title-row" th:fragment="titleRow(id, title, status, statusClass)">
             <h2 th:id="${id}" tabindex="-1" autofocus th:text="${title}">Operação confirmada</h2>
+            <span th:if="${status != null}" class="donation-status" data-dialog-status aria-live="polite" th:classappend="${statusClass}" th:text="${status}"></span>
         </div>
     </body>
 </html>

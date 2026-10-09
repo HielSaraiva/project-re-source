@@ -1,7 +1,5 @@
 package edu.br.resource.resourcesystem.dto.response;
 
-
-
 public record MatchActionsResponse(
         boolean canAccept,
         boolean canReject,

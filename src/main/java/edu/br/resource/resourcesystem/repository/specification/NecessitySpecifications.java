@@ -52,6 +52,7 @@ public final class NecessitySpecifications {
             allocation.select(builder.coalesce(builder.sumAsLong(match.get("allocatedQuantity")), 0L))
                     .where(builder.equal(match.get("necessity"), root), match.get("status").in(MatchStatus.allocationConsumingStatuses()));
             return builder.and(builder.equal(root.get("status"), NecessityStatus.ACTIVE),
+                    builder.equal(root.get("institution").get("status"), edu.br.resource.resourcesystem.model.enums.InstitutionStatus.APPROVED),
                     builder.lessThan(allocation, root.get("quantityRequested").as(Long.class)));
         };
     }

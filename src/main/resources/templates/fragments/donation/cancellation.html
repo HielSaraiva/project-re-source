@@ -1,0 +1,33 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="dialogs">
+    <dialog id="shipping-cancellation" class="ui-dialog" aria-labelledby="cancellation-title" aria-describedby="cancellation-description">
+        <div class="ui-dialog-content">
+            <div class="title-block">
+                <p class="donation-protocol" th:text="${protocol}"></p>
+                <div th:replace="~{fragments/ui/dialog :: heading('cancellation-title', 'Cancelar doação?', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/donation-status/info.svg')}"></div>
+                <p id="cancellation-description">Você está cancelando a doação de <strong th:text="${donation.item}"></strong> para <strong th:text="${donation.organization}"></strong>.</p>
+            </div>
+            <p class="ui-dialog-description">Os itens reservados para esta proposta ficarão disponíveis para doar novamente e a reserva da necessidade será liberada. Esta ação não pode ser desfeita.</p>
+            <div class="ui-actions">
+                <button class="ui-button ui-button--secondary" type="button" data-close-cancellation>Manter doação</button>
+                <button class="donation-action donation-action--cancel" type="button" data-confirm-cancellation>Confirmar cancelamento</button>
+            </div>
+        </div>
+    </dialog>
+    <dialog id="cancellation-result" class="ui-dialog" aria-labelledby="cancellation-result-title" aria-describedby="cancellation-result-description">
+        <div class="ui-dialog-content">
+            <p class="donation-protocol" th:text="${protocol}"></p>
+            <div th:replace="~{fragments/ui/dialog :: resultHeading('cancellation-result-title', 'Doação cancelada', 'Doação cancelada', 'donation-status--cancelled')}"></div>
+            <p id="cancellation-result-description" class="ui-dialog-description">O cancelamento foi registrado e a reserva foi liberada. Os itens estão disponíveis para uma nova proposta.</p>
+            <dl class="delivery-summary">
+                <div>
+                    <dt>Data de cancelamento</dt>
+                    <dd><time data-cancellation-date></time></dd>
+                </div>
+            </dl>
+            <div class="ui-actions">
+                <a class="ui-button ui-button--secondary" th:href="@{/donor/donation/status(protocol=${protocol})}">Ver detalhes</a>
+                <a class="ui-button ui-button--primary" th:href="@{/donor/dashboard}">Ir para o painel</a>
+            </div>
+        </div>
+    </dialog>
+</th:block>

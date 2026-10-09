@@ -6,13 +6,20 @@
             <link rel="stylesheet" th:href="@{/css/donor/donation/details.css}">
             <link rel="stylesheet" th:href="@{/css/donor/donation/completed.css}">
             <link rel="stylesheet" th:href="@{/css/shared/donation-history.css}">
-            <script th:src="@{/js/donor-donation-history.js}" defer></script>
         </th:block>
     </head>
     <body>
         <header th:replace="~{fragments/layout/donor-header :: header('dashboard')}"></header>
 
-        <main class="donation-page">
+        <main th:data-match-protocol="${protocol}" th:data-match-status="${match.status.value}"
+            th:data-match-method="${delivery == null ? '' : delivery.method.value}"
+            th:data-can-cancel="${actions.canCancel}" th:data-can-confirm-personal="${actions.canConfirmInPersonDelivery}"
+            th:data-can-confirm-shipment="${actions.canConfirmShipment}"
+            th:data-delivered-on="${delivery == null ? '' : delivery.deliveredOn}"
+            th:data-posted-on="${delivery == null ? '' : delivery.postedOn}"
+            th:data-received-by="${delivery == null ? '' : delivery.receivedByName}"
+            th:data-tracking-code="${delivery == null ? '' : delivery.trackingCode}"
+            th:data-delivery-notes="${delivery == null ? '' : delivery.notes}" class="donation-page">
             <div class="header-area">
                 <a class="back-link" th:href="@{/donor/dashboard}">
                     <span aria-hidden="true">←</span> Voltar ao painel
@@ -30,7 +37,7 @@
 
             <section class="details-grid" aria-label="Detalhes da doação concluída">
                 <article class="details-card">
-                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/donation-completed/monitor.svg', 'Especificações', '')}"></div>
+                    <div th:replace="~{fragments/donation/details :: cardHeading(${donation.icon}, 'Especificações', '')}"></div>
                     <div class="title-block">
                         <h2>Detalhes da Doação</h2>
                         <p>Item oferecido e datas da proposta e do aceite.</p>

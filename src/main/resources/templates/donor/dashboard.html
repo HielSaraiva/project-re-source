@@ -4,9 +4,6 @@
         <th:block th:fragment="pageStyles">
             <link rel="stylesheet" th:href="@{/css/shared/priority-badges.css}">
             <link rel="stylesheet" th:href="@{/css/donor/dashboard.css}">
-            <script th:src="@{/js/delivery-state.js}"></script>
-            <script th:src="@{/js/proposal-state.js}"></script>
-            <script th:src="@{/js/donation-dashboard.js}" defer></script>
         </th:block>
     </head>
     <body>
@@ -15,7 +12,7 @@
         <main th:attr="data-acceptance-deadline=${acceptanceDeadline},data-choice-deadline=${choiceDeadline},data-rejected-at=${rejectedAt},data-cancelled-at=${cancelledAt}">
             <section class="hero">
                 <div>
-                    <h1>Olá, <span th:text="${donorName.substring(0, donorName.indexOf(' '))}">João</span>! Pronto para fazer a diferença hoje?</h1>
+                    <h1>Olá, <span th:text="${#strings.arraySplit(donorName, ' ')[0]}">João</span>! Pronto para fazer a diferença hoje?</h1>
                     <p>Suas doações ajudam a sustentar iniciativas sociais e promovem a economia circular.</p>
                 </div>
                 <a class="button button--primary" href="#new-donation">
@@ -58,10 +55,9 @@
                     </div>
                     <div class="shipment-table" role="table" aria-label="Acompanhe seus envios">
                         <div class="shipment-row shipment-row--header" role="row">
-                            <span>Item Doador</span><span>Destinatário</span><span>Status do Envio</span><span>Ações</span>
+                            <span>Item doado</span><span>Destinatário</span><span>Status do envio</span><span>Ações</span>
                         </div>
-                        <div class="shipment-row" role="row" th:each="shipment : ${shipments}"
-                            th:attr="data-cancelled-protocol=${shipment.statusClass == 'cancelled' ? shipment.protocol : null},data-rejected-protocol=${shipment.statusClass == 'rejected' ? shipment.protocol : null},data-delivery-shipment=${shipment.statusClass == 'awaiting-shipment' ? 'monitor-instituto' : null},data-pending-proposal=${shipment.statusClass == 'awaiting-acceptance' ? 'monitor-associacao' : null}">
+                        <div class="shipment-row" role="row" th:each="shipment : ${shipments}">
                             <div class="shipment-item">
                                 <span class="item-icon"><img th:src="@{${shipment.icon}}" alt=""></span>
                                 <div class="shipment-item-info"><strong th:text="${shipment.item}">Monitor Dell 24"</strong><small th:text="${shipment.protocol}"></small>
@@ -69,11 +65,11 @@
                             </div>
                             <span class="recipient" th:text="${shipment.recipient}">Associação Vida</span>
                             <div class="shipment-status">
-                                <span class="status-badge" th:classappend="${' status--' + shipment.statusClass}" th:text="${shipment.status}">Aguardando aceite</span>
-                                <small data-shipment-deadline th:if="${!shipment.deadlineLabel.isEmpty()}" th:text="${shipment.deadlineLabel}">Envio até a data limite</small>
+                                <span class="donation-status" th:classappend="${' donation-status--' + shipment.statusClass}" th:text="${shipment.statusLabel}">Aguardando aceite</span>
+                                <small data-shipment-deadline th:if="${!shipment.currentDeadlineLabel.isEmpty()}" th:text="${shipment.currentDeadlineLabel}">Envio até a data limite</small>
                             </div>
                             <a class="text-link" th:href="@{${shipment.detailsPath}}"
-                                th:text="${shipment.statusClass == 'awaiting-shipment' ? 'Opções de envio' : 'Ver detalhes'}">Ver detalhes</a>
+                                th:text="${shipment.status == 'awaiting_shipment' ? 'Continuar envio' : 'Ver detalhes'}">Ver detalhes</a>
                         </div>
                     </div>
                 </section>

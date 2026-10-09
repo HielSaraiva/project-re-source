@@ -3,7 +3,6 @@ package edu.br.resource.resourcesystem.presentation;
 import edu.br.resource.resourcesystem.model.enums.ItemCategory;
 import org.springframework.stereotype.Component;
 
-/** Shared category artwork for DTO mappers and Thymeleaf views. */
 @Component("categoryIconResolver")
 public class CategoryIconResolver {
     private static final String ASSET_DIRECTORY = "/images/shared/categories/";
