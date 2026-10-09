@@ -19,7 +19,7 @@
 
 .brand {
     gap: 12px;
-    font: 800 var(--font-logo) Outfit, sans-serif;
+    font: var(--font-brand);
 }
 
 .brand__mark {

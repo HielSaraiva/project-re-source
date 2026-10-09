@@ -402,11 +402,12 @@ main .auth-input input {
     }
 
     .auth-logo {
-        gap: 8px;
-        font-size: 28px;
+        gap: 12px;
+        font: var(--font-brand);
+        color: var(--ink);
     }
 
-    .auth-logo img { width: 30px; height: 30px; }
+    .auth-logo img { width: 32px; height: 32px; }
 
     .auth-panel {
         padding: 28px max(24px, env(safe-area-inset-left)) max(32px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-right));
