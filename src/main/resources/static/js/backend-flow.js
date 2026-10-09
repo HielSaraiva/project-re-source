@@ -14,23 +14,27 @@
     };
     const post = async (path, data, button, container) => {
         if (button?.disabled) return null;
-        if (button) button.disabled = true;
+        const finishLoading = window.ResourceLoading.request(container, button);
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
         try {
             const token = document.querySelector('meta[name="_csrf"]')?.content;
             const header = document.querySelector('meta[name="_csrf_header"]')?.content;
             const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
             if (token && header) headers[header] = token;
-            const response = await fetch(url(path), { method: 'POST', headers, credentials: 'same-origin', body: JSON.stringify(data) });
+            const response = await fetch(url(path), { method: 'POST', headers, credentials: 'same-origin', signal: controller.signal, body: JSON.stringify(data) });
             const body = await response.json().catch(() => ({}));
             if (!response.ok) throw new Error(body.detail || 'Não foi possível concluir a operação. Atualize a página e tente novamente.');
             return body;
-        } catch (error) { showError(error, container); return null; }
-        finally { if (button) button.disabled = false; }
+        } catch (error) {
+            if (error.name === 'AbortError' || error instanceof TypeError) error = new Error('Não foi possível confirmar o resultado a tempo. Atualize a página e consulte o histórico antes de enviar novamente.');
+            showError(error, container); return null;
+        } finally { clearTimeout(timeout); finishLoading(); }
     };
     const close = (dialog, selector) => dialog?.querySelector(selector)?.addEventListener('click', () => dialog.close());
     const text = (container, selector, value) => { const el = container?.querySelector(selector); if (el) el.textContent = value ?? ''; };
     const result = (dialog, title, description, saved) => {
-        if (!dialog) { window.location.reload(); return; }
+        if (!dialog) { window.ResourceLoading.reload(); return; }
         const statuses = {
             awaiting_acceptance: ['Aguardando aceite', 'waiting'],
             awaiting_shipment: ['Aguardando envio', 'waiting'],
@@ -45,7 +49,7 @@
             badge.textContent = label; badge.className = `donation-status donation-status--${style}`;
         }
         text(dialog, 'h2', title); text(dialog, '.ui-dialog-description, #intention-result-description', description);
-        dialog.addEventListener('close', () => window.location.reload(), { once: true });
+        dialog.addEventListener('close', () => window.ResourceLoading.reload(), { once: true });
         dialog.showModal();
     };
     const date = value => value?.split('-').reverse().join('/') || 'Não informada';
@@ -126,7 +130,7 @@
                 success.querySelectorAll('[data-cancellation-date]').forEach(el => { el.textContent = cancelledAt; el.dateTime = saved.cancelledAt; });
                 result(success, 'Doação cancelada', 'O cancelamento foi registrado e a reserva foi liberada.', saved); close(success, '[data-close-result]');
             }
-            else window.location.assign(url(`/donor/donation/status?protocol=${protocol}`));
+            else window.ResourceLoading.navigate(url(`/donor/donation/status?protocol=${protocol}`));
         });
     }
     const methodReview = document.querySelector('#delivery-method-confirmation');
@@ -145,7 +149,7 @@
         });
         close(methodReview, '[data-cancel-method]');
         methodReview.querySelector('[data-confirm-method]').addEventListener('click', async event => {
-            if (await post(`/donor/api/matches/${protocol}/method`, { method, confirmed: true }, event.currentTarget, methodReview)) window.location.assign(target);
+            if (await post(`/donor/api/matches/${protocol}/method`, { method, confirmed: true }, event.currentTarget, methodReview)) window.ResourceLoading.navigate(target);
         });
     }
     const personal = document.querySelector('#in-person-delivery-form');
@@ -219,6 +223,6 @@
     const filters = document.querySelector('#intention-filters');
     if (filters) {
         filters.querySelectorAll('select').forEach(select => select.addEventListener('change', () => filters.requestSubmit()));
-        filters.querySelector('[data-clear-filters]').addEventListener('click', event => { event.preventDefault(); window.location.assign(url('/ong/donations')); });
+        filters.querySelector('[data-clear-filters]').addEventListener('click', event => { event.preventDefault(); window.ResourceLoading.navigate(url('/ong/donations')); });
     }
 })();

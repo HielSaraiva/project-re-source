@@ -14,9 +14,14 @@ public class MatchDeadlineScheduler {
     private final MatchDeadlineRepository deadlines;
     private final MatchWorkflowService workflow;
 
-    @Scheduled(fixedDelayString="${resource.match.expiry-delay-ms:30000}",initialDelay=5000)
+    @Scheduled(fixedDelayString = "${resource.match.expiry-delay-ms:30000}", initialDelay = 5000)
     public void cancelExpired() {
-        List<String> protocols=deadlines.findExpiredProtocols();
-        for(String protocol:protocols)try{workflow.expire(protocol);}catch(RuntimeException failure){log.error("Não foi possível processar a expiração de {}",protocol,failure);}
+        List<String> protocols = deadlines.findExpiredProtocols();
+        for (String protocol : protocols)
+            try {
+                workflow.expire(protocol);
+            } catch (RuntimeException failure) {
+                log.error("Não foi possível processar a expiração de {}", protocol, failure);
+            }
     }
 }

@@ -4,6 +4,7 @@ import edu.br.resource.resourcesystem.config.MessagingConfiguration;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import edu.br.resource.resourcesystem.repository.MatchEventRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,10 @@ public class MatchEventConsumer {
     @RabbitListener(queues = MessagingConfiguration.QUEUE)
     @Transactional
     public void recordNotification(String eventId) {
-        events.recordNotification(UUID.fromString(eventId));
+        try {
+            events.recordNotification(UUID.fromString(eventId));
+        } catch (IllegalArgumentException failure) {
+            throw new AmqpRejectAndDontRequeueException("Evento inválido ou desconhecido.", failure);
+        }
     }
 }
