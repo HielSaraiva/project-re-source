@@ -1,0 +1,15 @@
+.auth-field-error {
+    color: var(--color-danger);
+    font-size: var(--font-caption);
+    line-height: 1.5;
+}
+
+.auth-field-error:empty {
+    display: none;
+}
+
+.auth-input:has([aria-invalid="true"]) {
+    border-color: var(--color-danger);
+}
+
+.auth-field-error > span { display: block; }

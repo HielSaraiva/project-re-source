@@ -1,0 +1,7 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="googleEntry(label)">
+    <div class="auth-alternative">
+        <div class="auth-divider" aria-hidden="true"><span><img th:src="@{/images/auth/divider.svg}" alt=""></span><strong>OU</strong><span><img th:src="@{/images/auth/divider.svg}" alt=""></span></div>
+        <a th:if="${googleEnabled}" class="button ui-button--secondary auth-google" th:href="@{/oauth2/authorization/google}"><span class="auth-google-icon"><img th:src="@{/images/auth/register-google.svg}" alt=""></span><span th:text="${label}">Entrar com Google</span></a>
+        <button th:unless="${googleEnabled}" class="button ui-button--secondary auth-google" type="button" disabled title="Login com Google indisponível no momento."><span class="auth-google-icon"><img th:src="@{/images/auth/register-google.svg}" alt=""></span><span th:text="${label}">Entrar com Google</span></button>
+    </div>
+</th:block>

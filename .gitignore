@@ -37,3 +37,6 @@ build/
 
 ### Development Scripts
 scripts
+
+# Private uploaded documents
+/var/

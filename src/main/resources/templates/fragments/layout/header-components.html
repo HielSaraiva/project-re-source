@@ -9,16 +9,21 @@
             <button class="icon-button" type="button" aria-label="Notificações: há notificações não lidas" title="Notificações">
                 <img th:src="@{/images/shared/notification.svg}" alt="">
             </button>
-            <button class="profile" type="button" th:attr="aria-label=${label + ': ' + name},title=${name + (role == null ? '' : ' — ' + role)}"
-                th:with="cleanName=${name == null ? '' : name.trim().replaceAll('\s+', ' ')},words=${#strings.arraySplit(#strings.isEmpty(cleanName) ? '?' : cleanName, ' ')}">
-                <span class="profile__avatar" aria-hidden="true"
-                    th:text="${#strings.toUpperCase(#strings.substring(words[0], 0, 1) + (words.length > 1 ? #strings.substring(words[words.length - 1], 0, 1) : ''))}">JS</span>
-                <span class="profile__identity">
-                    <strong th:text="${name}">ONG EcoVida</strong>
-                    <small th:if="${role != null}" th:text="${role}">Administrador</small>
-                </span>
-                <img class="profile__chevron" th:src="@{/images/shared/chevron.svg}" alt="">
-            </button>
+            <details class="profile-menu">
+                <summary class="profile" th:attr="aria-label=${label + ': ' + name},title=${name + (role == null ? '' : ' — ' + role)}"
+                    th:with="cleanName=${name == null ? '' : name.trim().replaceAll('\s+', ' ')},words=${#strings.arraySplit(#strings.isEmpty(cleanName) ? '?' : cleanName, ' ')}">
+                    <span class="profile__avatar" aria-hidden="true"
+                        th:text="${#strings.toUpperCase(#strings.substring(words[0], 0, 1) + (words.length > 1 ? #strings.substring(words[words.length - 1], 0, 1) : ''))}">JS</span>
+                    <span class="profile__identity">
+                        <strong th:text="${name}">ONG EcoVida</strong>
+                        <small th:if="${role != null}" th:text="${role}">Administrador</small>
+                    </span>
+                    <img class="profile__chevron" th:src="@{/images/shared/chevron.svg}" alt="">
+                </summary>
+                <form class="profile-menu__logout" method="post" th:action="@{/logout}">
+                    <button type="submit">Sair da conta</button>
+                </form>
+            </details>
         </div>
     </body>
 </html>

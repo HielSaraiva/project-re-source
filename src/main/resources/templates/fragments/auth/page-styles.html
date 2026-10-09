@@ -1,0 +1,10 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="styles(registration)">
+    <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
+    <link rel="stylesheet" th:href="@{/css/auth/login.css}">
+    <th:block th:if="${registration}">
+        <link rel="stylesheet" th:href="@{/css/auth/register.css}">
+        <link rel="stylesheet" th:href="@{/css/auth/register-institution.css}">
+    </th:block>
+    <script th:src="@{/js/auth.js}" defer></script>
+    <script th:if="${registration}" th:src="@{/js/institution-registration.js}" defer></script>
+</th:block>
