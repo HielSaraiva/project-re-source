@@ -1,5 +1,6 @@
 package edu.br.resource.resourcesystem.messaging;
 
+import edu.br.resource.resourcesystem.observability.FailureDetails;
 import edu.br.resource.resourcesystem.config.MessagingConfiguration;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -39,6 +40,7 @@ public class MatchOutboxPublisher {
                 rabbit.send(MessagingConfiguration.EXCHANGE, MessagingConfiguration.ROUTING_KEY,
                         new Message(id.toString().getBytes(StandardCharsets.UTF_8), properties), correlation);
                 confirmations.put(id, correlation);
+                log.debug("event=outbox_sent eventId={} batchId={}", id, token);
             }
             long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
             for (var entry : confirmations.entrySet()) {
@@ -48,13 +50,21 @@ public class MatchOutboxPublisher {
                 if (!confirm.ack() || correlation.getReturned() != null)
                     throw new IllegalStateException("Publicação não confirmada ou sem rota.");
                 confirmed.add(entry.getKey());
+                log.info("event=outbox_broker_confirmed eventId={} batchId={}", entry.getKey(), token);
             }
         } catch (Exception failure) {
             if (failure instanceof InterruptedException)
                 Thread.currentThread().interrupt();
-            log.warn("Lote de {} eventos aguardará nova tentativa: {}", ids.size(), failure.getClass().getSimpleName());
+            log.warn("event=outbox_publish_retry batchId={} claimed={} confirmed={} failure={}",
+                    token, ids.size(), confirmed.size(), FailureDetails.describe(failure));
         } finally {
-            store.finish(ids, confirmed, token);
+            try {
+                store.finish(ids, confirmed, token);
+            } catch (RuntimeException failure) {
+                log.error("event=outbox_finish_failed batchId={} claimed={} confirmed={} failure={}",
+                        token, ids.size(), confirmed.size(), FailureDetails.describe(failure));
+                throw failure;
+            }
         }
     }
 }

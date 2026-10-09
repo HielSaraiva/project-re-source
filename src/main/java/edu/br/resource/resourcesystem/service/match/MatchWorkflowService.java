@@ -9,6 +9,8 @@ import edu.br.resource.resourcesystem.messaging.MatchEventOutbox;
 import java.time.*;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import edu.br.resource.resourcesystem.observability.TransactionLog;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@Slf4j
 @Validated
 @RequiredArgsConstructor
 @Transactional(noRollbackFor = WorkflowConflictException.class)
@@ -50,6 +53,8 @@ public class MatchWorkflowService {
         var donation = donations.saveAndFlush(Donation.builder().donor(donor).donationPackage(pack).build());
         donationHistory.save(DonationStatusHistory.builder().donation(donation).newStatus(DonationStatus.REGISTERED)
                 .changedByUser(donor).notes("Itens cadastrados para doação.").build());
+        TransactionLog.afterCommit(log, "event=donation_registered donationId={} donorId={} quantity={}",
+                donation.getId(), donorId, request.quantity());
         return mapper.inventory(donation);
     }
 
@@ -294,6 +299,12 @@ public class MatchWorkflowService {
                         : institution != null ? institution.getLegalName() : "Sistema")
                 .eventType(type).eventTitle(type.getLabel()).notes(notes).build());
         outbox.append(m, type);
+        TransactionLog.afterCommit(log,
+                "event=match_transition protocol={} matchId={} action={} previousStatus={} status={} actorType={} actorId={} expiredStage={}",
+                m.getProtocol(), m.getId(), type.getValue(), previous == null ? "none" : previous.getValue(),
+                m.getStatus().getValue(), user != null ? "donor" : institution != null ? "institution" : "system",
+                user != null ? user.getId() : institution != null ? institution.getId() : null,
+                m.getExpiredStage() == null ? "none" : m.getExpiredStage().getValue());
     }
 
     private void synchronizeDonation(Donation d, User user, Institution institution) {

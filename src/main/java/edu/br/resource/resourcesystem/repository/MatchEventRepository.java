@@ -5,20 +5,26 @@ import edu.br.resource.resourcesystem.model.enums.MatchEventType;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import edu.br.resource.resourcesystem.observability.TransactionLog;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Slf4j
 @RequiredArgsConstructor
 public class MatchEventRepository {
     private final JdbcTemplate jdbc;
 
     public void append(DonationMatch match, MatchEventType type) {
+        UUID eventId = UUID.randomUUID();
         jdbc.update("""
             insert into match_event_outbox(id, match_id, protocol, event_type, donor_id, institution_id)
             values (?, ?, ?, ?, ?, ?)
-            """, UUID.randomUUID(), match.getId(), match.getProtocol(), type.getValue(),
+            """, eventId, match.getId(), match.getProtocol(), type.getValue(),
                 match.getDonation().getDonor().getId(), match.getNecessity().getInstitution().getId());
+        TransactionLog.afterCommit(log, "event=outbox_created eventId={} protocol={} action={}",
+                eventId, match.getProtocol(), type.getValue());
     }
 
     public List<UUID> claimPending(UUID token, int batchSize, int leaseSeconds) {
@@ -66,5 +72,9 @@ public class MatchEventRepository {
         if (inserted == 0 && !Boolean.TRUE.equals(jdbc.queryForObject(
                 "select exists(select 1 from match_event_outbox where id=?)", Boolean.class, id)))
             throw new IllegalArgumentException("Evento desconhecido.");
+        if (inserted > 0)
+            TransactionLog.afterCommit(log, "event=notification_recorded eventId={}", id);
+        else
+            log.debug("event=notification_duplicate eventId={}", id);
     }
 }

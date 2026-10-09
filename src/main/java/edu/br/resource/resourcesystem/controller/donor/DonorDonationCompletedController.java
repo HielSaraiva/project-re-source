@@ -19,7 +19,8 @@ public class DonorDonationCompletedController {
         var attributes = views.donorDetail(actors.donor(authentication).getId(), protocol);
         var match = (edu.br.resource.resourcesystem.dto.response.MatchDetailResponse) attributes.get("match");
         String actual = views.canonicalPath(match);
-        if (!actual.equals("completed")) return "redirect:/donor/donation/" + actual + "?protocol=" + match.protocol();
+        if (!actual.equals("completed"))
+            return "redirect:/donor/donation/" + actual + "?protocol=" + match.protocol();
         model.addAllAttributes(attributes);
         return "donor/donation/completed";
     }
