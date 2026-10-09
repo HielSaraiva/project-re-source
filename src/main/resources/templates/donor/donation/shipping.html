@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Envio da doação', ~{::pageStyles}, 'donor')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/flow.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/details.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/shipping.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/delivery-form.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/donation-history.css}">
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/donor-header :: header('dashboard')}"></header>
+
+        <main th:data-match-protocol="${protocol}" th:data-match-status="${match.status.value}"
+            th:data-match-method="${delivery == null ? '' : delivery.method.value}"
+            th:data-can-cancel="${actions.canCancel}" th:data-can-confirm-personal="${actions.canConfirmInPersonDelivery}"
+            th:data-can-confirm-shipment="${actions.canConfirmShipment}"
+            th:data-delivered-on="${delivery == null ? '' : delivery.deliveredOn}"
+            th:data-posted-on="${delivery == null ? '' : delivery.postedOn}"
+            th:data-received-by="${delivery == null ? '' : delivery.receivedByName}"
+            th:data-tracking-code="${delivery == null ? '' : delivery.trackingCode}"
+            th:data-delivery-notes="${delivery == null ? '' : delivery.notes}" class="donation-page" th:attr="data-choice-deadline=${choiceDeadline},data-delivery-protocol=${donation.protocol},data-expired-stage=${expiredStage},data-method-confirmed-at=${methodConfirmedAt}">
+            <div class="header-area">
+                <a class="back-link" th:href="@{/donor/dashboard}">
+                    <span aria-hidden="true">←</span> Voltar ao painel
+                </a>
+                <div class="heading-row">
+                    <div class="page-heading">
+                        <p class="donation-protocol" th:text="${donation.protocol}"></p>
+                        <h1>Como você prefere enviar sua doação?</h1>
+                        <p data-shipping-description>Você está doando <strong th:text="${donation.item}">1x Monitor Dell 24"</strong> para o
+                            <strong th:text="${donation.organization}">Instituto Esperança</strong>. Escolha o método de entrega.</p>
+                    </div>
+                    <span class="status-badge delivery-status" data-shipping-status aria-live="polite">Aguardando envio</span>
+                </div>
+            </div>
+
+            <aside th:replace="~{fragments/donation/details :: deadline('Prazo para escolher a modalidade de entrega', ${deliveryDeadlineLabel}, ${'Aceite da ONG em ' + acceptedOnLabel})}"></aside>
+            <p id="delivery-method-notice" class="delivery-method-notice" role="status" hidden>Entrega presencial confirmada. A doação está Aguardando entrega e a modalidade não pode mais ser alterada.</p>
+            <section id="delivery-cancelled" class="details-card" aria-labelledby="delivery-cancelled-title" hidden>
+                <div class="title-block">
+                    <h2 id="delivery-cancelled-title">Cancelamento registrado</h2>
+                    <p data-cancellation-explanation></p>
+                    <p>Os itens voltaram a ficar disponíveis com o status Registrado. A quantidade reservada da necessidade foi liberada. Para doar novamente, envie uma nova proposta.</p>
+                </div>
+                <dl class="delivery-summary">
+                    <div data-expired-stage-row>
+                        <dt>Etapa encerrada</dt>
+                        <dd data-expired-stage-label></dd>
+                    </div>
+                    <div data-expired-deadline-row>
+                        <dt>Prazo encerrado em</dt>
+                        <dd><time data-expired-deadline></time>
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Data de cancelamento</dt>
+                        <dd><time data-cancellation-date></time>
+                        </dd>
+                    </div>
+                </dl>
+                <div class="ui-actions"><a class="ui-button ui-button--primary" th:href="@{/donor/needs}">Fazer outra proposta</a>
+                </div>
+            </section>
+            <section class="options-cards" aria-label="Métodos de entrega">
+                <article class="delivery-card" th:each="option : ${ {inPerson, mail} }" th:attr="data-delivery-method=${option == inPerson ? 'in_person' : 'carrier'}">
+                    <div class="card-content-top">
+                        <div th:replace="~{fragments/donation/details :: cardHeading(${'/images/donor/shipping/' + option.icon}, ${option.badge}, ${option == mail ? 'card-badge--blue' : ''})}"></div>
+                        <div class="title-block">
+                            <h2 th:text="${option.title}">Entrega Presencial</h2>
+                            <p th:text="${option.description}">Leve a doação diretamente ao local da instituição.</p>
+                        </div>
+                        <img class="section-divider" th:src="@{/images/donor/shipping/line.svg}" alt="">
+                        <div th:replace="~{fragments/donation/details :: details(${option.details}, '/images/donor/shipping', '', '')}"></div>
+                    </div>
+                    <div class="card-action-wrapper">
+                        <a class="action-button"
+                            th:classappend="${option == inPerson ? ' action-button--outline' : ''}"
+                            th:href="${option == inPerson} ? @{/donor/donation/shipping/in-person(protocol=${protocol})} : @{/donor/donation/shipping/carrier(protocol=${protocol})}" th:text="${option.action}">Entregar presencialmente</a>
+                    </div>
+                </article>
+            </section>
+
+            <section th:replace="~{fragments/donation/history :: history(${donationHistory}, 'delivery', ${donorName}, ${donation.organization})}"></section>
+
+            <aside th:replace="~{fragments/donation/details :: impactBanner('/images/donor/shipping')}"></aside>
+            <div class="ui-actions" id="shipping-cancellation-actions" th:if="${actions.canCancel}">
+                <button class="donation-action donation-action--cancel" type="button" data-open-cancellation>Cancelar doação</button>
+            </div>
+        </main>
+        <dialog id="delivery-method-confirmation" class="ui-dialog" aria-labelledby="method-title" aria-describedby="method-description">
+            <div class="ui-dialog-content">
+                <div class="title-block">
+                    <div th:replace="~{fragments/ui/dialog :: heading('method-title', 'Confirmar entrega presencial', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/shipping/package.svg')}"></div>
+                    <p id="method-description"><span data-method-summary>Você escolheu levar a doação diretamente à </span><strong th:text="${donation.organization}">Instituto Esperança</strong>.</p>
+                </div>
+                <p>Ao confirmar a modalidade, você terá mais <strong>7 dias para confirmar a entrega presencial ou a postagem</strong>. Caso o prazo termine sem confirmação, a doação será cancelada automaticamente e a reserva será liberada.</p>
+                <p>Após confirmar, <strong>não será possível desfazer esta escolha ou alterar a modalidade de entrega</strong>. A doação ficará com o status <strong data-method-status>Aguardando entrega</strong>.</p>
+                <div class="ui-actions">
+                    <button class="ui-button ui-button--secondary" type="button" data-cancel-method>Voltar</button>
+                    <button class="ui-button ui-button--primary" type="button" data-confirm-method>Confirmar entrega presencial</button>
+                </div>
+            </div>
+        </dialog>
+        <th:block th:replace="~{fragments/donation/cancellation :: dialogs}"></th:block>
+    </body>
+</html>

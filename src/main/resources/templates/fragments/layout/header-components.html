@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <a class="brand" th:fragment="brand(homePath, label)" th:href="@{${homePath}}" th:attr="aria-label=${label}">
+            <img th:src="@{/images/shared/leaf.svg}" alt="" class="brand__mark">
+            <span>ReSource</span>
+        </a>
+        <div class="nav-actions" th:fragment="actions(name, role, label)">
+            <button class="icon-button" type="button" aria-label="Notificações: há notificações não lidas" title="Notificações">
+                <img th:src="@{/images/shared/notification.svg}" alt="">
+            </button>
+            <button class="profile" type="button" th:attr="aria-label=${label + ': ' + name},title=${name + (role == null ? '' : ' — ' + role)}"
+                th:with="cleanName=${name == null ? '' : name.trim().replaceAll('\s+', ' ')},words=${#strings.arraySplit(#strings.isEmpty(cleanName) ? '?' : cleanName, ' ')}">
+                <span class="profile__avatar" aria-hidden="true"
+                    th:text="${#strings.toUpperCase(#strings.substring(words[0], 0, 1) + (words.length > 1 ? #strings.substring(words[words.length - 1], 0, 1) : ''))}">JS</span>
+                <span class="profile__identity">
+                    <strong th:text="${name}">ONG EcoVida</strong>
+                    <small th:if="${role != null}" th:text="${role}">Administrador</small>
+                </span>
+                <img class="profile__chevron" th:src="@{/images/shared/chevron.svg}" alt="">
+            </button>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,68 @@
+.donation-history {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    min-width: 0;
+}
+
+.donation-history h2, .donation-history-description {
+    margin: 0;
+}
+
+.donation-history-description {
+    color: var(--slate);
+    font-size: var(--font-body);
+    line-height: 1.6;
+}
+
+.donation-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 8px;
+}
+
+.donation-timeline li {
+    position: relative;
+    display: grid;
+    gap: 8px;
+    padding: 0 0 24px 24px;
+    border-left: 2px solid #d1fae5;
+}
+
+.donation-timeline li::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: -6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+}
+
+.donation-timeline li:last-child {
+    padding-bottom: 0;
+    border-left-color: transparent;
+}
+
+.donation-timeline strong {
+    font-size: var(--font-body);
+}
+
+.donation-timeline time, .donation-timeline span, .donation-timeline p {
+    margin: 0;
+    font-size: var(--font-caption);
+    color: var(--slate);
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+    .donation-history {
+        padding: 24px;
+    }
+}

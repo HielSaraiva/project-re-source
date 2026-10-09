@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Analisar doação', ~{::pageStyles}, 'ong')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/delivery-form.css}">
+            <link rel="stylesheet" th:href="@{/css/ong/donations.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/donation-history.css}">
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/ong-header :: header('donations')}"></header>
+        <main th:data-match-protocol="${protocol}" th:data-match-status="${match.status.value}" class="ong-donation-page" data-intention-detail
+            th:attr="data-intention-id=${intention.id},data-status=${intention.status},data-deadline=${intention.acceptanceDeadline},data-created-at=${intention.createdAt},data-choice-deadline=${intention.choiceDeadline},data-in-person-deadline=${intention.inPersonDeadline},data-delivery-method=${intention.deliveryMethod}">
+            <a class="ong-donation-back" th:href="@{/ong/donations}"><span aria-hidden="true">←</span> Voltar às doações</a>
+            <div class="ong-donation-heading">
+                <div>
+                    <p class="donation-protocol" th:text="${intention.id}"></p>
+                    <h1>Detalhes da doação</h1>
+                    <p th:text="${'Proposta de ' + intention.donor + ' para ' + ongName + '.'}"></p>
+                </div>
+                <span class="donation-status" data-intention-status th:classappend="${' donation-status--' + intention.statusClass}" th:text="${intention.statusLabel}"></span>
+            </div>
+            <section class="ong-donation-detail-grid" aria-label="Dados da doação">
+                <article class="ong-donation-card">
+                    <div class="ong-donation-card-heading"><span class="ong-donation-item-icon"><img th:src="@{${intention.icon}}" alt=""></span>
+                        <h2 th:text="${intention.item}"></h2>
+                    </div>
+                    <dl class="ong-donation-summary">
+                        <div>
+                            <dt>Quantidade oferecida</dt>
+                            <dd th:text="${intention.quantity + (intention.quantity == 1 ? ' unidade' : ' unidades')}"></dd>
+                        </div>
+                        <div>
+                            <dt>Categoria</dt>
+                            <dd th:text="${intention.category}"></dd>
+                        </div>
+                        <div>
+                            <dt>Condição</dt>
+                            <dd th:text="${intention.condition}"></dd>
+                        </div>
+                        <div>
+                            <dt>Necessidade relacionada</dt>
+                            <dd th:text="${intention.need}"></dd>
+                        </div>
+                        <div class="ong-donation-summary-wide">
+                            <dt>Descrição dos itens</dt>
+                            <dd th:text="${intention.description}"></dd>
+                        </div>
+                    </dl>
+                </article>
+                <article class="ong-donation-card">
+                    <div class="ong-donation-card-heading">
+                        <span class="ong-donation-item-icon"><img th:src="@{/images/donor/donation-status/clock.svg}" alt=""></span>
+                        <h2>Proposta e prazo</h2>
+                    </div>
+                    <dl class="ong-donation-summary">
+                        <div>
+                            <dt>Doador</dt>
+                            <dd th:text="${intention.donor}"></dd>
+                        </div>
+                        <div>
+                            <dt>Protocolo</dt>
+                            <dd th:text="${intention.id}"></dd>
+                        </div>
+                        <div class="ong-donation-summary-wide">
+                            <dt>Proposta recebida em</dt>
+                            <dd><time th:datetime="${intention.createdAt}" th:text="${intention.createdLabel}"></time>
+                            </dd>
+                        </div>
+                        <div class="ong-donation-summary-wide">
+                            <dt>Mensagem do doador</dt>
+                            <dd th:text="${intention.message}"></dd>
+                        </div>
+                        <th:block th:replace="~{fragments/donation/recipient-summary :: postalDetails(${intention})}"></th:block>
+                    </dl>
+                    <p class="ong-donation-deadline" data-intention-deadline th:hidden="${intention.currentDeadlineLabel.isEmpty()}" th:text="${intention.currentDeadlineLabel}"></p>
+                    <p class="ong-donation-note" data-decision-note th:text="${intention.statusDescription}"></p>
+                </article>
+            </section>
+            <div class="ui-actions" data-decision-actions th:hidden="${!actions.canAccept}">
+                <button class="ui-button ui-button--danger" type="button" data-open-decision="reject">Recusar proposta</button>
+                <button class="ui-button ui-button--primary" type="button" data-open-decision="accept">Aceitar proposta</button>
+            </div>
+            <section th:replace="~{fragments/donation/history :: history(${intention.history}, 'ong', '', '')}"></section>
+            <div class="ui-actions" data-receipt-actions th:hidden="${!actions.canConfirmReceipt}">
+                <button class="ui-button ui-button--primary" type="button" data-open-decision="receive">Confirmar recebimento</button>
+            </div>
+        </main>
+        <dialog id="intention-decision" class="ui-dialog" aria-labelledby="decision-title" aria-describedby="decision-description">
+            <form class="ui-dialog-content" id="intention-decision-form" method="dialog">
+                <div th:replace="~{fragments/ui/dialog :: heading('decision-title', 'Confirmar decisão', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/donation-status/file-text.svg')}"></div>
+                <p id="decision-description" class="ong-donation-description"></p>
+                <dl class="ong-donation-summary">
+                    <div>
+                        <dt>Protocolo</dt>
+                        <dd th:text="${intention.id}"></dd>
+                    </div>
+                    <div>
+                        <dt>Doação</dt>
+                        <dd th:text="${intention.quantity + '× ' + intention.item}"></dd>
+                    </div>
+                    <div>
+                        <dt>Doador</dt>
+                        <dd th:text="${intention.donor}"></dd>
+                    </div>
+                    <div>
+                        <dt>Condição</dt>
+                        <dd th:text="${intention.condition}"></dd>
+                    </div>
+                </dl>
+                <dl class="ong-donation-summary" data-postal-review hidden>
+                    <th:block th:replace="~{fragments/donation/recipient-summary :: postalDetails(${intention})}"></th:block>
+                </dl>
+                <label class="ong-donation-reason" data-reason-field hidden>Motivo da recusa<textarea name="reason" rows="3" maxlength="1000" placeholder="Explique por que a proposta não pode ser aceita."></textarea><small>O motivo será registrado no histórico da doação.</small>
+                </label>
+                <label class="delivery-attestation" data-receipt-attestation hidden>
+                    <input type="checkbox" name="receiptConfirmed">
+                    <span>Conferi e recebi todos os itens e a quantidade desta doação.</span>
+                </label>
+                <div class="ui-actions"><button class="ui-button ui-button--secondary" type="button" data-close-decision>Voltar</button><button class="ui-button ui-button--primary" type="submit" data-confirm-decision>Confirmar</button>
+                </div>
+            </form>
+        </dialog>
+        <dialog id="intention-result" class="ui-dialog" aria-labelledby="result-title" aria-describedby="intention-result-description">
+            <div class="ui-dialog-content">
+                <div th:replace="~{fragments/ui/dialog :: resultHeading('result-title', 'Decisão registrada', ${statusLabel}, ${'donation-status--' + statusClass})}"></div>
+                <p class="ui-dialog-description" id="intention-result-description"></p>
+                <div class="ui-actions"><button class="ui-button ui-button--secondary" type="button" data-close-result>Ver histórico</button><a class="ui-button ui-button--primary" th:href="@{/ong/donations}">Voltar às doações</a>
+                </div>
+            </div>
+        </dialog>
+    </body>
+</html>

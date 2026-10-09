@@ -1,0 +1,29 @@
+.status-badge {
+    color: #047857;
+    background: #d1fae5;
+}
+
+.completed-delivery .detail-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.completed-delivery .detail-row {
+    align-items: flex-start;
+}
+
+.completed-delivery .detail-row img {
+    flex-shrink: 0;
+}
+
+.details-card .detail-content span {
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+    .completed-delivery .detail-list {
+        grid-template-columns: 1fr;
+    }
+}

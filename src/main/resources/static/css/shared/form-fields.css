@@ -1,0 +1,42 @@
+.delivery-form, .proposal-form, .delivery-field, .proposal-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.delivery-form, .proposal-form {
+    gap: 24px;
+}
+
+.delivery-field, .proposal-field {
+    min-width: 0;
+    gap: 8px;
+}
+
+.delivery-field label, .proposal-field label {
+    font-size: var(--font-body);
+    font-weight: 600;
+}
+
+.delivery-field label > span[aria-hidden], .proposal-field label > span[aria-hidden] {
+    color: #047857;
+}
+
+.delivery-field :is(input, textarea), .proposal-field :is(input, select, textarea) {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: var(--ink);
+    background: var(--surface);
+    font: 400 var(--font-body)/1.5 Inter, sans-serif;
+}
+
+.delivery-field textarea, .proposal-field textarea {
+    resize: vertical;
+}
+
+.delivery-field input::placeholder, .delivery-field textarea::placeholder,
+.proposal-field textarea::placeholder {
+    color: #64748b;
+}

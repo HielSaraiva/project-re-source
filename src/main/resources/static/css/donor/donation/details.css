@@ -1,0 +1,102 @@
+.details-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.heading-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+}
+
+.details-card {
+    min-width: 0;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, .02);
+}
+
+.card-badge {
+    padding: 4px 10px;
+    color: var(--green);
+    background: #ecfdf5;
+    border-radius: 999px;
+    font-size: var(--font-caption);
+    font-weight: 600;
+}
+
+.card-badge--blue {
+    color: #1e40af;
+    background: #dbeafe;
+}
+
+.action-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+}
+
+@media (max-width: 760px) {
+    .heading-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: var(--font-caption);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.delivery-status {
+    align-self: flex-start;
+    color: var(--status-waiting-color);
+    background: var(--status-waiting-background);
+    font-weight: 600;
+    line-height: 16px;
+}
+
+.delivery-status.delivery-status--shipped {
+    color: #1e40af;
+    background: #dbeafe;
+}
+
+.delivery-deadline {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    color: #92400e;
+    background: #fffbeb;
+    border-radius: 8px;
+    font-size: var(--font-body);
+}
+
+.delivery-deadline small {
+    line-height: 1.5;
+}
+
+.delivery-deadline[hidden] {
+    display: none;
+}

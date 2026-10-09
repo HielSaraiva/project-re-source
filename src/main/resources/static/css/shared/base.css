@@ -1,0 +1,63 @@
+:root {
+    --font-caption: 12px;
+    --font-body: 14px;
+    --font-subtitle: 16px;
+    --font-section: 20px;
+    --font-page: 32px;
+    --font-page-mobile: 28px;
+    --font-metric: 36px;
+    --font-logo: 28px;
+    --color-brand: #10b981;
+    --color-success: #047857;
+    --color-success-dark: #065f46;
+    --color-success-surface: #ecfdf5;
+    --color-success-soft: #d1fae5;
+    --color-warning: #ed7800;
+    --color-warning-surface: #fef3c7;
+    --color-danger: #b91c1c;
+    --color-danger-surface: #fef2f2;
+    --color-info: #1e40af;
+    --color-info-surface: #dbeafe;
+    --color-neutral-surface: #f1f5f9;
+    --color-control-border: #cbd5e1;
+    --color-focus-ring: #047857;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-text-muted: #94a3b8;
+    --color-border: #e2e8f0;
+    --color-surface: #fff;
+    --color-background: #f8fafc;
+
+    /* Backward-compatible aliases for page-specific styles. */
+    --green: var(--color-brand);
+    --status-waiting-color: var(--color-warning);
+    --status-waiting-background: var(--color-warning-surface);
+    --ink: var(--color-text-primary);
+    --slate: var(--color-text-secondary);
+    --muted: var(--color-text-muted);
+    --border: var(--color-border);
+    --surface: var(--color-surface);
+    --background: var(--color-background);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--background);
+    font-family: Inter, sans-serif;
+    font-size: var(--font-body);
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+}

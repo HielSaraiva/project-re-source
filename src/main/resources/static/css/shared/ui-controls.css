@@ -1,0 +1,126 @@
+.ui-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+
+.ui-dialog :focus-visible {
+    outline: 2px solid #047857;
+    outline-offset: 3px;
+}
+
+.ui-dialog h2[tabindex="-1"]:focus-visible {
+    outline: none;
+}
+
+.ui-dialog [hidden] {
+    display: none;
+}
+
+.ui-dialog {
+    width: min(560px, calc(100% - 32px));
+    max-height: calc(100dvh - 32px);
+    padding: 0;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgb(15 23 42 / 18%);
+}
+
+.ui-dialog::backdrop {
+    background: rgb(15 23 42 / 45%);
+}
+
+.ui-dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+}
+
+@media (max-width: 600px) {
+    .ui-dialog-content {
+        padding: 24px;
+    }
+
+    .ui-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+}
+
+.ui-dialog-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+}
+
+.ui-dialog-heading .icon-frame {
+    min-width: 48px;
+    min-height: 48px;
+    align-self: flex-start;
+    flex-shrink: 0;
+}
+
+.ui-dialog-description {
+    margin: 0;
+    color: var(--slate);
+    font-size: var(--font-body);
+    line-height: 1.5;
+}
+
+.backend-error {
+    padding: 12px 16px;
+    color: #b91c1c;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+}
+
+.ui-dialog-title-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+}
+
+.ui-dialog-title-row h2 {
+    margin: 0;
+    min-width: 0;
+}
+
+.ui-dialog-title-row .donation-status {
+    flex-shrink: 0;
+}
+
+.ui-dialog-content > p,
+.ui-dialog .title-block p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.ui-dialog h2 {
+    font-size: var(--font-section);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.ui-dialog .title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ui-dialog-heading .icon-frame img {
+    display: block;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+}

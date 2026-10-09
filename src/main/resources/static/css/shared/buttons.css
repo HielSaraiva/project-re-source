@@ -1,0 +1,126 @@
+/* Shared action styles. Scoped to page content and dialogs to preserve the header.
+   Existing class names remain compatible with page layouts and JavaScript. */
+:is(main, dialog) :is(.button, .ui-button, .action-button, .donation-action) {
+    --action-hover-color: #fff;
+    --action-hover-background: #059669;
+    --action-hover-border: #059669;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 12px 20px;
+    color: #fff;
+    background: var(--green);
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    box-shadow: none;
+    font: 600 var(--font-body)/1.4 Inter, sans-serif;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+:is(main, dialog) :is(.ui-button--secondary, .action-button--outline) {
+    --action-hover-color: #065f46;
+    --action-hover-background: #ecfdf5;
+    --action-hover-border: #a7f3d0;
+    color: var(--slate);
+    background: var(--surface);
+    border-color: #cbd5e1;
+}
+
+:is(main, dialog) .action-button--outline {
+    color: #047857;
+    border-color: var(--green);
+}
+
+:is(main, dialog) :is(.donation-action--cancel, .ui-button--danger) {
+    --action-hover-color: #b91c1c;
+    --action-hover-background: #fef2f2;
+    --action-hover-border: #dc2626;
+    color: #dc2626;
+    background: var(--surface);
+    border-color: #ef4444;
+}
+
+:is(main, dialog) :is(.text-link, .back-link, .management-link,
+    .ong-donation-link, .ong-donation-back, .proposal-register-link) {
+    color: #047857;
+    font: 600 var(--font-body)/1.5 Inter, sans-serif;
+    text-decoration: none;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    cursor: pointer;
+}
+
+:is(main, dialog) :is(.button, .ui-button, .action-button, .donation-action,
+    .text-link, .back-link, .management-link, .ong-donation-link, .ong-donation-back,
+    .proposal-register-link, .pagination :is(a, button)) {
+    transition: background-color 180ms ease, color 180ms ease,
+        border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+:is(main, dialog) :is(.button, .ui-button, .action-button, .donation-action,
+    .text-link, .back-link, .management-link, .ong-donation-link, .ong-donation-back,
+    .proposal-register-link, .pagination :is(a, button)):focus-visible {
+    outline: 2px solid #047857;
+    outline-offset: 3px;
+}
+
+:is(main, dialog) :is(.button, .ui-button, .action-button, .donation-action,
+    .text-link, .back-link, .management-link, .ong-donation-link, .ong-donation-back,
+    .proposal-register-link, .pagination :is(a, button)):is(:disabled, [aria-disabled="true"]) {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    :is(main, dialog) :is(.button, .ui-button, .action-button, .donation-action):not(:disabled):not([aria-disabled="true"]):hover {
+        color: var(--action-hover-color);
+        background: var(--action-hover-background);
+        border-color: var(--action-hover-border);
+        box-shadow: 0 4px 10px rgb(15 23 42 / 10%);
+        transform: translateY(-2px);
+    }
+
+    :is(main, dialog) :is(.text-link, .back-link, .management-link,
+        .ong-donation-link, .ong-donation-back, .proposal-register-link):not(:disabled):not([aria-disabled="true"]):hover {
+        color: #065f46;
+        text-decoration: underline;
+    }
+
+    main .pagination :is(a, button):not(:disabled):not([aria-disabled="true"]):hover {
+        color: #065f46;
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+        transform: translateY(-2px);
+    }
+
+    main .pagination :is(a, button).current:hover {
+        color: #fff;
+        background: #059669;
+        border-color: #059669;
+    }
+}
+
+:is(main, dialog) :is(.button, .ui-button, .action-button, .donation-action,
+    .pagination :is(a, button)):not(:disabled):not([aria-disabled="true"]):active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :is(main, dialog) :is(.button, .ui-button, .action-button, .donation-action,
+        .text-link, .back-link, .management-link, .ong-donation-link, .ong-donation-back,
+        .proposal-register-link, .pagination :is(a, button)) {
+        transition: none;
+    }
+
+    :is(main, dialog) :is(.button, .ui-button, .action-button, .donation-action,
+        .pagination :is(a, button)):not(:disabled):not([aria-disabled="true"]):hover {
+        transform: none;
+    }
+}

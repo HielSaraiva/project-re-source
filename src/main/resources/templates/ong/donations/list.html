@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Gestão de doações', ~{::pageStyles}, 'ong')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/shared/pagination.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
+            <link rel="stylesheet" th:href="@{/css/ong/donations.css}">
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/ong-header :: header('donations')}"></header>
+        <main class="ong-donation-page" data-intention-list>
+            <a class="ong-donation-back" th:href="@{/ong/dashboard}"><span aria-hidden="true">←</span> Voltar ao painel</a>
+            <div class="ong-donation-heading">
+                <div>
+                    <h1>Gestão de doações</h1>
+                    <p>Analise as propostas e acompanhe cada contribuição, do envio ao recebimento.</p>
+                </div>
+                <span class="pending-summary"><strong data-pending-count th:text="${pendingAcceptances}">0</strong> aguardando aceite</span>
+            </div>
+            <form id="intention-filters" class="ong-donation-filters" th:action="@{/ong/donations}" method="get" role="search">
+                <label>Buscar doação<input type="search" name="query" th:value="${filter.query}" placeholder="Protocolo, doador, item ou necessidade">
+                </label>
+                <label>Status<select name="status" th:value="${filter.status?.value}">
+                        <option value="">Todos os status</option><option value="awaiting_acceptance" th:selected="${filter.status?.value == 'awaiting_acceptance'}">Aguardando aceite</option>
+                        <option value="awaiting_shipment" th:selected="${filter.status?.value == 'awaiting_shipment'}">Aguardando envio</option><option value="awaiting_delivery" th:selected="${filter.status?.value == 'awaiting_delivery'}">Aguardando entrega</option>
+                        <option value="awaiting_ngo_confirmation" th:selected="${filter.status?.value == 'awaiting_ngo_confirmation'}">Aguardando confirmação da ONG</option><option value="in_transit" th:selected="${filter.status?.value == 'in_transit'}">Enviado</option>
+                        <option value="completed" th:selected="${filter.status?.value == 'completed'}">Concluído</option><option value="rejected" th:selected="${filter.status?.value == 'rejected'}">Recusado</option><option value="cancelled" th:selected="${filter.status?.value == 'cancelled'}">Doação cancelada</option>
+                    </select>
+                </label>
+                <label>Ordenar por<select name="order" th:value="${filter.order.value}"><option value="recent" th:selected="${filter.order?.value == 'recent'}">Mais recentes</option><option value="deadline" th:selected="${filter.order?.value == 'deadline'}">Prazo mais próximo</option></select>
+                </label>
+                <button class="ui-button ui-button--secondary" type="reset" data-clear-filters>Limpar filtros</button>
+            </form>
+            <p th:text="${pagination.totalElements + ' doações encontradas'}" class="results-count" data-results-count tabindex="-1" role="status">Doações recebidas</p>
+            <section class="ong-donation-table" aria-label="Doações recebidas">
+                <div class="ong-donation-table-heading" aria-hidden="true"><span>Proposta e doador</span><span>Recebida em</span><span>Status</span><span>Ação</span>
+                </div>
+                <div data-intention-rows>
+                    <article class="ong-donation-list-row" th:each="intention : ${intentions}"
+                        th:attr="data-intention-id=${intention.id},data-status=${intention.status},data-deadline=${intention.acceptanceDeadline},data-created-at=${intention.createdAt},data-search=${intention.id + ' ' + intention.item + ' ' + intention.donor + ' ' + intention.item}">
+                        <div class="ong-donation-item">
+                            <span class="ong-donation-item-icon"><img th:src="@{${intention.icon}}" alt=""></span>
+                            <div><strong th:text="${intention.quantity + '× ' + intention.item}"></strong><span th:text="${intention.donor}"></span><small th:text="${intention.id}"></small>
+                            </div>
+                        </div>
+                        <time th:datetime="${intention.createdAt}" th:text="${intention.createdLabel}"></time>
+                        <div class="ong-donation-status-cell">
+                            <span class="donation-status" data-intention-status th:classappend="${' donation-status--' + intention.statusClass}" th:text="${intention.statusLabel}"></span>
+                            <small data-intention-deadline th:hidden="${intention.currentDeadlineLabel.isEmpty()}" th:text="${intention.currentDeadlineLabel}"></small>
+                        </div>
+                        <a class="ong-donation-link" th:href="@{/ong/donations/{id}(id=${intention.id})}" th:aria-label="${'Ver detalhes de ' + intention.id}">Ver detalhes</a>
+                    </article>
+                </div>
+                <div class="ong-donation-empty" data-empty-results th:hidden="${!intentions.isEmpty()}">
+                    <h2>Nenhuma doação encontrada</h2>
+                    <p>Experimente outro termo ou ajuste os filtros.</p>
+                </div>
+            </section>
+            <nav th:replace="~{fragments/ui/pagination :: pages('/ong/donations', ${pagination}, ${filter}, false)}"></nav>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,29 @@
+package edu.br.resource.resourcesystem.model.enums;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.persistence.EnumeratedValue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public enum DeliveryMethod implements DatabaseEnum {
+    IN_PERSON("in_person", "Entrega presencial"),
+    RESOURCE_LOGISTICS("resource_logistics", "Logística ReSource"),
+    CARRIER("carrier", "Envio pelos Correios");
+
+    @EnumeratedValue
+    private final String value;
+    private final String label;
+
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+
+    @JsonCreator
+    public static DeliveryMethod fromValue(String value) {
+        return EnumValues.fromValue(DeliveryMethod.class, value);
+    }
+}

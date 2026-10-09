@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Painel da ONG', ~{::pageStyles}, 'ong')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/ong/dashboard.css}">
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/ong-header :: header('dashboard')}"></header>
+
+        <main class="page-content" data-intention-dashboard>
+            <section class="summary-grid" aria-label="Resumo da ONG">
+                <article class="summary-card">
+                    <span>Doações recebidas</span>
+                    <strong data-received-count th:text="${receivedDonations}">0</strong>
+                </article>
+                <article class="summary-card">
+                    <span>Aguardando aceite</span>
+                    <strong><span data-pending-count th:text="${pendingAcceptances}">0</span><i class="pending-dot" th:if="${pendingAcceptances > 0}" aria-hidden="true"></i></strong>
+                </article>
+                <article class="summary-card">
+                    <span>Necessidades ativas</span>
+                    <strong th:text="${activeNeeds}">0</strong>
+                </article>
+            </section>
+
+            <section class="section-block">
+                <div class="section-heading section-heading--actions">
+                    <div>
+                        <h1>Doações aguardando aceite</h1>
+                        <p>As doações com prazo de aceite mais próximo aparecem primeiro.</p>
+                    </div>
+                    <a class="management-link" th:href="@{/ong/donations}">Gerenciar doações <span aria-hidden="true">→</span></a>
+                </div>
+                <div class="ong-donations-list">
+                    <article class="ong-donation-row" th:each="intention : ${intentions}"
+                        th:attr="data-intention-id=${intention.id},data-status=${intention.status},data-deadline=${intention.acceptanceDeadline},data-created-at=${intention.createdAt}">
+                        <div class="ong-donation-icon"><img th:src="@{${intention.icon}}" alt="">
+                        </div>
+                        <div class="ong-donation-info">
+                            <strong th:text="${intention.quantity + '× ' + intention.item}">1× Monitor</strong>
+                            <span th:text="${intention.donor + ' · ' + intention.id}">Doador · Protocolo</span>
+                        </div>
+                        <div class="ong-donation-status">
+                            <span class="donation-status" data-intention-status th:classappend="${' donation-status--' + intention.statusClass}" th:text="${intention.statusLabel}">Aguardando aceite</span>
+                            <small data-intention-deadline th:text="${'Aceite até ' + intention.deadlineLabel}"></small>
+                        </div>
+                        <a class="management-link" th:href="@{/ong/donations/{id}(id=${intention.id})}">Analisar doação</a>
+                    </article>
+                    <p class="dashboard-empty" data-dashboard-empty th:if="${intentions.isEmpty()}">Não há doações aguardando aceite. Consulte o histórico em Gerenciar doações.</p>
+                </div>
+            </section>
+
+            <section class="section-block needs-section">
+                <div class="section-heading section-heading--needs">
+                    <div>
+                        <h2>Necessidades cadastradas</h2>
+                        <p>Itens atualmente ativos na sua lista de desejos institucional.</p>
+                    </div>
+                    <button class="button button--new" type="button"><img th:src="@{/images/ong/dashboard/plus.svg}" alt="">Nova necessidade</button>
+                </div>
+                <div class="needs-grid">
+                    <article class="need-card" th:each="need : ${needs}">
+                        <div class="need-card__top">
+                            <div class="need-icon"><img th:src="@{${need.icon}}" alt="">
+                            </div>
+                            <span class="priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta prioridade</span>
+                        </div>
+                        <strong th:text="${need.item}">50 Cadeiras escolares</strong>
+                        <a class="text-link" href="#edit">Editar necessidade</a>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

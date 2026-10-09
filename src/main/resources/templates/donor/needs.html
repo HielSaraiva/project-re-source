@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Necessidades', ~{::pageStyles}, 'donor')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/shared/pagination.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/priority-badges.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/needs.css}">
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/donor-header :: header('needs')}"></header>
+
+        <main>
+            <section class="search-hero">
+                <a class="back-link" th:href="@{/donor/dashboard}">
+                    <span aria-hidden="true">←</span> Voltar ao painel
+                </a>
+                <div class="needs-heading">
+                    <h1>Todas as necessidades</h1>
+                    <p>Explore as demandas de ONGs parceiras e encontre o match perfeito para a sua doação. Sua ajuda chega diretamente a quem mais precisa.</p>
+                </div>
+                <form class="filters" th:action="@{/donor/needs}" method="get">
+                    <label class="search-field">
+                        <img th:src="@{/images/donor/needs/search.svg}" alt="">
+                        <input type="search" name="query" th:value="${filter.query}" aria-label="Buscar item ou ONG" placeholder="Buscar item ou ONG...">
+                    </label>
+
+
+
+                <label class="filter-select">Categoria<select name="category" onchange="this.form.requestSubmit()"><option value="">Todas as categorias</option><option th:each="category : ${T(edu.br.resource.resourcesystem.model.enums.ItemCategory).values()}" th:value="${category.value}" th:text="${category.label}" th:selected="${filter.category == category}"></option></select></label>
+                    <label class="filter-select">Prioridade<select name="priority" onchange="this.form.requestSubmit()"><option value="">Todas</option><option th:each="priority : ${T(edu.br.resource.resourcesystem.model.enums.NecessityPriority).values()}" th:value="${priority.value}" th:text="${priority.label}" th:selected="${filter.priority == priority}"></option></select></label>
+                </form>
+            </section>
+
+            <section class="results">
+                <div class="results-meta">
+                    <div class="result-count">
+                        <img th:src="@{/images/donor/needs/city.svg}" alt="">
+                        <strong th:text="${pagination.totalElements + ' necessidades encontradas'}"></strong>
+                    </div>
+                    <span class="verified-pill">
+                        <img th:src="@{/images/donor/needs/shield.svg}" alt="">
+                        ONGs 100% Verificadas com auditoria ativa
+                    </span>
+                </div>
+                <div class="needs-grid">
+                    <article class="need-card" th:each="need : ${needs}">
+                        <div class="card-top">
+                            <div class="organization-row">
+                                <strong th:text="${need.organization}">Instituto Esperança</strong>
+                                <span class="priority-badge" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta prioridade</span>
+                            </div>
+                            <div class="location">
+                                <span class="location__icon" aria-hidden="true">
+                                    <img th:src="@{/images/donor/needs/map-pin.svg}" alt="">
+                                </span>
+                                <span th:text="${need.city + ' • '}">Curitiba, PR • </span><strong th:text="${'A ' + need.distance}">A 4.2 km</strong>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="item-visual"><img th:src="@{${need.icon}}" alt="">
+                            </div>
+                            <div class="item-info">
+                                <h2 th:text="${need.item}">Cadeira de Rodas</h2>
+                                <p th:text="${need.description}">Necessitamos de cadeiras de rodas para atendimento.</p>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="metrics"><span th:text="${need.category}">Saúde &amp; Mobilidade</span><strong th:text="${'Qtd: ' + need.quantity}">Qtd: 3 unidades</strong>
+                            </div>
+                            <a class="button" th:href="@{/donor/donation/proposal(need=${need.id})}">Ajudar agora</a>
+                        </div>
+                    </article>
+                </div>
+                <nav th:replace="~{fragments/ui/pagination :: pages('/donor/needs', ${pagination}, ${filter}, true)}"></nav>
+            </section>
+        </main>
+    </body>
+</html>

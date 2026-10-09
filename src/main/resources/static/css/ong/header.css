@@ -1,0 +1,11 @@
+.navbar {
+    background: var(--surface);
+    border-bottom-color: var(--border);
+}
+.nav-link {
+    color: var(--slate);
+}
+.nav-link--active {
+    color: var(--green);
+    border-color: var(--green);
+}

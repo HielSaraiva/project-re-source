@@ -1,0 +1,87 @@
+.options-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+}
+
+.delivery-card {
+    min-width: 0;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, .02);
+}
+
+.card-content-top {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.detail-row {
+    align-items: flex-start;
+}
+
+.detail-content {
+    gap: 4px;
+}
+
+.card-action-wrapper {
+    padding-top: 32px;
+}
+
+.action-button {
+    width: 100%;
+}
+
+.help-info-banner p {
+    line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+    .options-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+.delivery-card[hidden], .delivery-method-notice[hidden] {
+    display: none;
+}
+.delivery-method-notice {
+    margin: 0;
+    padding: 16px;
+    color: var(--status-waiting-color);
+    background: var(--status-waiting-background);
+    border-radius: 8px;
+    font-size: var(--font-body);
+    line-height: 1.5;
+}
+.options-cards:has(.delivery-card[hidden]) {
+    grid-template-columns: 1fr;
+}
+
+.options-cards[hidden], #shipping-cancellation-actions[hidden] {
+    display: none;
+}
+.delivery-status.shipping-status--cancelled, .delivery-method-notice--cancelled {
+    color: #b91c1c;
+    background: #fef2f2;
+}
+
+.action-button[aria-disabled="true"] {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+#delivery-cancelled[hidden] {
+    display: none;
+}
+
+.delivery-card .card-badge {
+    line-height: 1.6;
+}

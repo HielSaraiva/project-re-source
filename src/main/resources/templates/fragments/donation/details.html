@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <div class="detail-list" th:fragment="details(items, assetBase, highlightedLabel, highlightClass)">
+            <div class="detail-row" th:each="detail : ${items}">
+                <img th:src="@{${assetBase + '/' + detail.icon}}" alt="">
+                <div class="detail-content">
+                    <strong th:text="${detail.label}">Item Doado</strong>
+                    <span th:classappend="${detail.label == highlightedLabel ? ' ' + highlightClass : ''}"
+                        th:attr="data-detail-label=${detail.label}"
+                        th:text="${detail.value}">1x Monitor Dell 24&quot;</span>
+                </div>
+            </div>
+        </div>
+        <aside class="help-info-banner" th:fragment="impactBanner(assetBase)">
+            <img th:src="@{${assetBase + '/info.svg'}}" alt="">
+            <p>Todas as doações efetuadas através do ReSource geram impacto social auditado e contam para suas estatísticas de sustentabilidade.</p>
+        </aside>
+        <aside class="delivery-deadline" data-active-deadline th:fragment="deadline(title, deadlineLabel, eventLabel)">
+            <strong th:text="${title}">Prazo para envio</strong>
+            <span th:text="${deadlineLabel}">Até 7 dias após o aceite</span>
+            <small th:text="${eventLabel}">Aceite da ONG</small>
+        </aside>
+        <div class="details-card-header" th:fragment="cardHeading(iconPath, badge, badgeClass)">
+            <span class="icon-frame"><img th:src="@{${iconPath}}" alt=""></span>
+            <span class="card-badge" th:classappend="${badgeClass}" th:text="${badge}"></span>
+        </div>
+    </body>
+</html>

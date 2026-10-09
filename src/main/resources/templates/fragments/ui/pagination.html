@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="pages(path, pagination, filter, needs)" class="pagination" aria-label="Paginação">
+    <button th:if="${!pagination.hasPrevious()}" type="button" aria-label="Página anterior" disabled>‹</button>
+    <a th:if="${pagination.hasPrevious()}" th:href="@{${path}(page=${pagination.page - 1},query=${filter.query},size=${filter.size},status=${needs ? null : filter.status?.value},order=${needs ? null : filter.order?.value},category=${needs ? filter.category?.value : null},priority=${needs ? filter.priority?.value : null},stateId=${needs ? filter.stateId : null})}" aria-label="Página anterior">‹</a>
+    <th:block th:each="number : ${#numbers.sequence(1, pagination.totalPages == 0 ? 1 : pagination.totalPages)}">
+        <a th:if="${number == 1 or number == pagination.totalPages or T(java.lang.Math).abs(number - pagination.page) <= 1}"
+            th:classappend="${number == pagination.page ? ' current' : ''}" th:attr="aria-current=${number == pagination.page ? 'page' : null}"
+            th:href="@{${path}(page=${number},query=${filter.query},size=${filter.size},status=${needs ? null : filter.status?.value},order=${needs ? null : filter.order?.value},category=${needs ? filter.category?.value : null},priority=${needs ? filter.priority?.value : null},stateId=${needs ? filter.stateId : null})}" th:text="${number}"></a>
+        <span th:if="${number == pagination.page - 2 and number > 1 or number == pagination.page + 2 and number < pagination.totalPages}">…</span>
+    </th:block>
+    <a th:if="${pagination.hasNext()}" th:href="@{${path}(page=${pagination.page + 1},query=${filter.query},size=${filter.size},status=${needs ? null : filter.status?.value},order=${needs ? null : filter.order?.value},category=${needs ? filter.category?.value : null},priority=${needs ? filter.priority?.value : null},stateId=${needs ? filter.stateId : null})}" aria-label="Próxima página">›</a>
+    <button th:if="${!pagination.hasNext()}" type="button" aria-label="Próxima página" disabled>›</button>
+</nav>
+</body>
+</html>

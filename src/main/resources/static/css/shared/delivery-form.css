@@ -1,0 +1,60 @@
+.delivery-summary {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+}
+
+.delivery-summary dt {
+    color: var(--slate);
+    font-size: var(--font-caption);
+    line-height: 1.5;
+}
+
+.delivery-summary dd {
+    margin: 4px 0 0;
+    font-size: var(--font-body);
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.delivery-summary--columns, .delivery-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    align-items: end;
+}
+
+.delivery-optional {
+    color: var(--slate);
+    font-weight: 400;
+}
+
+.delivery-field input {
+    height: 48px;
+}
+
+.delivery-attestation {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: var(--slate);
+    font-size: var(--font-body);
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.delivery-attestation input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    accent-color: #047857;
+}
+
+@media (max-width: 600px) {
+    .delivery-fields, .delivery-summary--columns {
+        grid-template-columns: 1fr;
+    }
+
+}

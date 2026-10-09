@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Entrega presencial', ~{::pageStyles}, 'donor')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/flow.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/details.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/delivery-form.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/delivery.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/in-person-delivery.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/donation-history.css}">
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/donor-header :: header('dashboard')}"></header>
+        <main th:data-match-protocol="${protocol}" th:data-match-status="${match.status.value}"
+            th:data-match-method="${delivery == null ? '' : delivery.method.value}"
+            th:data-can-cancel="${actions.canCancel}" th:data-can-confirm-personal="${actions.canConfirmInPersonDelivery}"
+            th:data-can-confirm-shipment="${actions.canConfirmShipment}"
+            th:data-delivered-on="${delivery == null ? '' : delivery.deliveredOn}"
+            th:data-posted-on="${delivery == null ? '' : delivery.postedOn}"
+            th:data-received-by="${delivery == null ? '' : delivery.receivedByName}"
+            th:data-tracking-code="${delivery == null ? '' : delivery.trackingCode}"
+            th:data-delivery-notes="${delivery == null ? '' : delivery.notes}" class="donation-page personal-delivery" th:attr="data-shipping-url=@{/donor/donation/shipping(protocol=${protocol})},data-carrier-url=@{/donor/donation/shipping/carrier(protocol=${protocol})}">
+            <div class="header-area">
+                <a class="back-link" th:href="@{/donor/dashboard}">
+                    <span aria-hidden="true">←</span> Voltar ao painel</a>
+                <div class="heading-row">
+                    <div class="page-heading">
+                        <p class="donation-protocol" th:text="${donation.protocol}"></p>
+                        <h1>Entrega presencial</h1>
+                        <p>A <strong th:text="${donation.organization}">Instituto Esperança</strong> aceitou sua doação. Confira as orientações e informe a entrega depois de levar os itens à instituição.</p>
+                    </div>
+                    <span class="status-badge delivery-status" data-delivery-status>Aguardando entrega</span>
+                </div>
+            </div>
+
+            <section class="details-grid" aria-label="Orientações de entrega">
+                <article class="details-card">
+                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/shipping/map-pin.svg', 'Entrega direta', '')}"></div>
+                    <div class="title-block">
+                        <h2>Onde entregar</h2>
+                        <p>Combine a entrega com a instituição e respeite os horários de recebimento.</p>
+                    </div>
+                    <div th:replace="~{fragments/donation/details :: details(${receivingDetails}, '/images/donor/shipping', '', '')}"></div>
+                    <aside th:replace="~{fragments/donation/details :: deadline('Prazo para entrega presencial', ${deliveryDeadlineLabel}, ${'Modalidade escolhida em ' + methodConfirmedOnLabel})}"></aside>
+                </article>
+                <article class="details-card">
+                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/shipping/package.svg', 'Doação aceita', '')}"></div>
+                    <div class="title-block">
+                        <h2>Sua doação</h2>
+                        <p>Separe os itens aceitos antes de sair para a entrega.</p>
+                    </div>
+                    <dl class="delivery-summary">
+                        <div>
+                            <dt>Item e quantidade</dt>
+                            <dd th:text="${donation.item}">1x Monitor Dell 24"</dd>
+                        </div>
+                        <div>
+                            <dt>Categoria</dt>
+                            <dd th:text="${donation.category}">Eletrônicos</dd>
+                        </div>
+                        <div>
+                            <dt>Condição cadastrada</dt>
+                            <dd th:text="${donation.condition}">Usado (Bom estado)</dd>
+                        </div>
+                    </dl>
+                    <div class="delivery-instructions">
+                        <strong>Antes de entregar</strong>
+                        <ul>
+                            <li>Confira a quantidade e a condição dos itens.</li>
+                            <li>Proteja os itens para o transporte.</li>
+                            <li>Procure o responsável pelo recebimento na instituição.</li>
+                        </ul>
+                    </div>
+                </article>
+            </section>
+
+            <section id="delivery-report" class="details-card" aria-labelledby="report-title">
+                <div class="title-block">
+                    <h2 id="report-title">Já entregou a doação?</h2>
+                    <p>Preencha os dados somente depois de entregar os itens à ONG.</p>
+                </div>
+                <form id="in-person-delivery-form" class="delivery-form" th:action="@{/donor/donation/shipping/in-person(protocol=${protocol})}" method="get">
+                    <div class="delivery-fields">
+                        <div th:replace="~{fragments/ui/form-fields :: dateField('delivered-on', 'Data da entrega', ${methodConfirmedOn}, ${today.compareTo(deliveryDeadline) <= 0 ? today : deliveryDeadline})}"></div>
+                        <div class="delivery-field">
+                            <label for="received-by">Quem recebeu os itens? <span aria-hidden="true">*</span>
+                            </label>
+                            <input id="received-by" name="recipient" type="text" maxlength="120" placeholder="Nome da pessoa que recebeu" required>
+                        </div>
+                    </div>
+                    <div th:replace="~{fragments/ui/form-fields :: notesField('delivery-notes', 'Acrescente informações sobre a entrega, se necessário.')}"></div>
+                    <label class="delivery-attestation">
+                        <input name="delivered" type="checkbox" required>
+                        <span>Confirmo que entreguei presencialmente os itens e a quantidade aceitos pela ONG.</span>
+                    </label>
+                    <noscript>
+                        <p>Ative o JavaScript para informar a entrega.</p>
+                    </noscript>
+                </form>
+            </section>
+
+            <section id="delivery-sent" class="details-card" hidden aria-labelledby="sent-title">
+                <div class="title-block">
+                    <h2 id="sent-title" tabindex="-1">Entrega informada</h2>
+                    <p>Sua doação está <strong>Aguardando confirmação da ONG</strong>. A ONG confirmará o recebimento para concluir a doação.</p>
+                </div>
+                <dl class="delivery-summary delivery-summary--columns">
+                    <div>
+                        <dt>Data da entrega</dt>
+                        <dd data-sent-date></dd>
+                    </div>
+                    <div>
+                        <dt>Recebido por</dt>
+                        <dd data-sent-recipient></dd>
+                    </div>
+                    <div data-sent-notes-row hidden>
+                        <dt>Observações</dt>
+                        <dd data-sent-notes></dd>
+                    </div>
+                </dl>
+            </section>
+            <section th:replace="~{fragments/donation/history :: history(${donationHistory}, 'delivery', ${donorName}, ${donation.organization})}"></section>
+
+            <div class="ui-actions">
+                <button class="donation-action donation-action--cancel" type="button" data-open-cancellation th:if="${actions.canCancel}">Cancelar doação</button>
+                <button class="ui-button ui-button--primary" type="submit" form="in-person-delivery-form" disabled>Confirmar entrega</button>
+                <a class="ui-button ui-button--primary" data-sent-panel-link th:href="@{/donor/dashboard}" hidden>Voltar ao painel</a>
+            </div>
+        </main>
+        <th:block th:replace="~{fragments/donation/cancellation :: dialogs}"></th:block>
+
+        <dialog id="delivery-review" class="ui-dialog" aria-labelledby="review-title" aria-describedby="review-description">
+            <div class="ui-dialog-content">
+                <div class="title-block">
+                    <div th:replace="~{fragments/ui/dialog :: heading('review-title', 'Confirmar entrega presencial', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/donation-status/gift.svg')}"></div>
+                    <p id="review-description">Confira as informações. Ao confirmar, a doação ficará com o status Aguardando confirmação da ONG. A doação será concluída após a instituição confirmar o recebimento.</p>
+                </div>
+                <dl class="delivery-summary">
+                    <div>
+                        <dt>ONG beneficiada</dt>
+                        <dd th:text="${donation.organization}">Instituto Esperança</dd>
+                    </div>
+                    <div>
+                        <dt>Doação</dt>
+                        <dd th:text="${donation.item}">1x Monitor</dd>
+                    </div>
+                    <div>
+                        <dt>Data da entrega</dt>
+                        <dd data-review-date></dd>
+                    </div>
+                    <div>
+                        <dt>Recebido por</dt>
+                        <dd data-review-recipient></dd>
+                    </div>
+                    <div data-review-notes-row hidden>
+                        <dt>Observações</dt>
+                        <dd data-review-notes></dd>
+                    </div>
+                </dl>
+                <div class="ui-actions">
+                    <button class="ui-button ui-button--secondary" type="button" data-close-review>Voltar e editar</button>
+                    <button class="ui-button ui-button--primary" type="button" data-confirm-delivery>Confirmar entrega</button>
+                </div>
+            </div>
+        </dialog>
+        <dialog id="delivery-result" class="ui-dialog" aria-labelledby="result-title" aria-describedby="result-description">
+            <div class="ui-dialog-content">
+                <div th:replace="~{fragments/ui/dialog :: resultHeading('result-title', 'Entrega informada com sucesso', 'Aguardando confirmação da ONG', 'donation-status--waiting')}"></div>
+                <p id="result-description" class="ui-dialog-description">Obrigado pela sua contribuição! A ONG agora confirmará o recebimento dos itens. Você pode acompanhar a doação pelo painel.</p>
+                <div class="ui-actions">
+                    <button class="ui-button ui-button--secondary" type="button" data-close-result>Ver detalhes da entrega</button>
+                    <a class="ui-button ui-button--primary" th:href="@{/donor/dashboard}">Ir para o painel</a>
+                </div>
+            </div>
+        </dialog>
+    </body>
+</html>

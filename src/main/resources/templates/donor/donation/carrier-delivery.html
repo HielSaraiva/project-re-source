@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Envio pelos Correios', ~{::pageStyles}, 'donor')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/flow.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/details.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/delivery-form.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/delivery.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donation/carrier-delivery.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/donation-history.css}">
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/donor-header :: header('dashboard')}"></header>
+        <main th:data-match-protocol="${protocol}" th:data-match-status="${match.status.value}"
+            th:data-match-method="${delivery == null ? '' : delivery.method.value}"
+            th:data-can-cancel="${actions.canCancel}" th:data-can-confirm-personal="${actions.canConfirmInPersonDelivery}"
+            th:data-can-confirm-shipment="${actions.canConfirmShipment}"
+            th:data-delivered-on="${delivery == null ? '' : delivery.deliveredOn}"
+            th:data-posted-on="${delivery == null ? '' : delivery.postedOn}"
+            th:data-received-by="${delivery == null ? '' : delivery.receivedByName}"
+            th:data-tracking-code="${delivery == null ? '' : delivery.trackingCode}"
+            th:data-delivery-notes="${delivery == null ? '' : delivery.notes}" class="donation-page carrier-delivery" th:attr="data-shipping-url=@{/donor/donation/shipping(protocol=${protocol})},data-in-person-url=@{/donor/donation/shipping/in-person(protocol=${protocol})}">
+            <div class="header-area">
+                <a class="back-link" th:href="@{/donor/dashboard}"><span aria-hidden="true">←</span> Voltar ao painel</a>
+                <div class="heading-row">
+                    <div class="page-heading">
+                        <p class="donation-protocol" th:text="${donation.protocol}"></p>
+                        <h1>Envio pelos Correios</h1>
+                        <p>Você está doando <strong th:text="${donation.item}">1x Monitor Dell 24"</strong> para <strong th:text="${donation.organization}">Instituto Esperança</strong>. Prepare o pacote e registre a postagem após enviar.</p>
+                    </div>
+                    <span class="status-badge delivery-status" data-carrier-status aria-live="polite">Aguardando envio</span>
+                </div>
+            </div>
+            <section class="details-grid" aria-label="Orientações para postagem">
+                <article class="details-card">
+                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/shipping/home.svg', 'Destinatário', '')}"></div>
+                    <div class="title-block">
+                        <h2>Dados para envio</h2>
+                        <p>Envie a doação para o endereço de recebimento cadastrado pela ONG. Confira o complemento e, se tiver dúvidas, entre em contato antes de postar.</p>
+                    </div>
+                    <div th:replace="~{fragments/donation/details :: details(${recipientDetails}, '/images/donor/shipping', '', '')}"></div>
+                </article>
+                <article class="details-card">
+                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/shipping/package.svg', 'Correios', '')}"></div>
+                    <div class="title-block">
+                        <h2>Prepare sua doação</h2>
+                        <p>Confira os itens antes de levar o pacote para postagem.</p>
+                    </div>
+                    <aside th:replace="~{fragments/donation/details :: deadline('Prazo para confirmar a postagem', ${deliveryDeadlineLabel}, ${'Modalidade escolhida em ' + methodConfirmedOnLabel})}"></aside>
+                    <ol class="carrier-instructions">
+                        <li>Embale os itens com proteção adequada ao transporte.</li>
+                        <li>Leve os dados da ONG, seu documento e seu endereço completo à agência.</li>
+                        <li>Confira a documentação abaixo e escolha o serviço de envio nos Correios.</li>
+                        <li>Guarde o comprovante de postagem e o código de rastreamento.</li>
+                    </ol>
+                    <p class="carrier-note"><strong>O frete é de sua responsabilidade.</strong> Você consultará o valor e pagará diretamente nos Correios. A plataforma não contrata frete nem gera etiqueta. O prazo de transporte depende do serviço escolhido.</p>
+                    <details class="carrier-documentation">
+                        <summary>Documentação para envio</summary>
+                        <div class="carrier-documentation-content">
+                            <p>Ser uma doação não dispensa a documentação de transporte. Apresente a NF-e se estiver obrigado a emiti-la. Caso contrário, utilize a Declaração de Conteúdo Eletrônica (DC-e).</p>
+                            <p>A agência pode auxiliar na emissão da DC-e. Informe seu CPF, os dados do destinatário e os endereços completos de origem e destino. Tenha também a descrição, a quantidade e o valor unitário dos itens.</p>
+                            <p><a class="text-link" href="https://saladeimprensa.correios.com.br/arquivos/13666" target="_blank" rel="noopener noreferrer">Confira a orientação dos Correios sobre a DC-e</a>.</p>
+                        </div>
+                    </details>
+                </article>
+            </section>
+            <section id="carrier-report" class="details-card" aria-labelledby="report-title">
+                <div class="title-block">
+                    <h2 id="report-title">Já postou a doação?</h2>
+                    <p>Informe os dados do comprovante somente após entregar o pacote aos Correios.</p>
+                </div>
+                <form id="carrier-delivery-form" class="delivery-form" th:action="@{/donor/donation/shipping/carrier(protocol=${protocol})}" method="get">
+                    <div class="delivery-fields">
+                        <div th:replace="~{fragments/ui/form-fields :: dateField('posted-on', 'Data da postagem', ${methodConfirmedOn}, ${today.compareTo(deliveryDeadline) <= 0 ? today : deliveryDeadline})}"></div>
+                        <div class="delivery-field">
+                            <label for="tracking-code">Código de rastreamento <span aria-hidden="true">*</span>
+                            </label>
+                            <input id="tracking-code" name="trackingCode" type="text" minlength="13" maxlength="13" pattern="[A-Za-z]{2}[0-9]{9}[A-Za-z]{2}" placeholder="Ex.: AB123456789BR" aria-describedby="tracking-help" autocapitalize="characters" spellcheck="false" required>
+                            <small id="tracking-help">Digite as 13 posições do código, sem espaços.</small>
+                        </div>
+                    </div>
+                    <div th:replace="~{fragments/ui/form-fields :: notesField('carrier-notes', 'Informações adicionais sobre a postagem.')}"></div>
+                    <label class="delivery-attestation"><input name="posted" type="checkbox" required><span>Confirmo que postei os itens e a quantidade aceitos pela ONG e que os dados de rastreamento estão corretos.</span>
+                    </label>
+                    <noscript>
+                        <p>Ative o JavaScript para informar a postagem.</p>
+                    </noscript>
+                </form>
+            </section>
+            <section id="carrier-sent" class="details-card" aria-labelledby="sent-title" hidden>
+                <div class="title-block">
+                    <h2 id="sent-title" tabindex="-1">Postagem registrada</h2>
+                    <p>O status da sua doação é <strong>Enviado</strong>. Acompanhe o pacote com o código abaixo no rastreamento dos Correios. A doação será concluída quando a ONG confirmar o recebimento.</p>
+                </div>
+                <dl class="delivery-summary delivery-summary--columns">
+                    <div>
+                        <dt>Transportadora</dt>
+                        <dd>Correios</dd>
+                    </div>
+                    <div>
+                        <dt>Data da postagem</dt>
+                        <dd data-sent-date></dd>
+                    </div>
+                    <div>
+                        <dt>Código de rastreamento</dt>
+                        <dd data-sent-tracking></dd>
+                    </div>
+                    <div data-sent-notes-row hidden>
+                        <dt>Observações</dt>
+                        <dd data-sent-notes></dd>
+                    </div>
+                </dl>
+            </section>
+            <section th:replace="~{fragments/donation/history :: history(${donationHistory}, 'delivery', ${donorName}, ${donation.organization})}"></section>
+
+            <div class="ui-actions">
+                <button class="donation-action donation-action--cancel" type="button" data-open-cancellation th:if="${actions.canCancel}">Cancelar doação</button>
+                <button class="ui-button ui-button--primary" type="submit" form="carrier-delivery-form" disabled>Confirmar postagem</button>
+                <a class="ui-button ui-button--primary" data-sent-panel-link th:href="@{/donor/dashboard}" hidden>Voltar ao painel</a>
+            </div>
+        </main>
+        <th:block th:replace="~{fragments/donation/cancellation :: dialogs}"></th:block>
+        <dialog id="carrier-review" class="ui-dialog" aria-labelledby="review-title" aria-describedby="review-description">
+            <div class="ui-dialog-content">
+                <div class="title-block">
+                    <div th:replace="~{fragments/ui/dialog :: heading('review-title', 'Confirmar postagem', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/shipping/package.svg')}"></div>
+                    <p id="review-description">Confira os dados antes de confirmar. A doação passará para Enviado e não será mais possível cancelar o envio ou alterar os dados de postagem.</p>
+                </div>
+                <dl class="delivery-summary">
+                    <div>
+                        <dt>ONG beneficiada</dt>
+                        <dd th:text="${donation.organization}">Instituto Esperança</dd>
+                    </div>
+                    <div>
+                        <dt>Doação</dt>
+                        <dd th:text="${donation.item}">1x Monitor Dell 24"</dd>
+                    </div>
+                    <div>
+                        <dt>Tipo de entrega</dt>
+                        <dd>Envio pelos Correios</dd>
+                    </div>
+                    <div>
+                        <dt>Data da postagem</dt>
+                        <dd data-review-date></dd>
+                    </div>
+                    <div>
+                        <dt>Código de rastreamento</dt>
+                        <dd data-review-tracking></dd>
+                    </div>
+                    <div data-review-notes-row hidden>
+                        <dt>Observações</dt>
+                        <dd data-review-notes></dd>
+                    </div>
+                </dl>
+                <div class="ui-actions">
+                    <button class="ui-button ui-button--secondary" type="button" data-close-review>Voltar e editar</button>
+                    <button class="ui-button ui-button--primary" type="button" data-confirm-posting>Confirmar postagem</button>
+                </div>
+            </div>
+        </dialog>
+        <dialog id="carrier-result" class="ui-dialog" aria-labelledby="result-title" aria-describedby="result-description">
+            <div class="ui-dialog-content">
+                <div th:replace="~{fragments/ui/dialog :: resultHeading('result-title', 'Postagem informada com sucesso', 'Enviado', 'donation-status--shipped')}"></div>
+                <p id="result-description" class="ui-dialog-description">O envio foi registrado. A ONG poderá acompanhar a doação pelo código informado e confirmar o recebimento quando os itens chegarem.</p>
+                <div class="ui-actions">
+                    <button class="ui-button ui-button--secondary" type="button" data-close-result>Ver detalhes do envio</button>
+                    <a class="ui-button ui-button--primary" th:href="@{/donor/dashboard}">Ir para o painel</a>
+                </div>
+            </div>
+        </dialog>
+    </body>
+</html>
