@@ -1,9 +1,9 @@
             <aside xmlns:th="http://www.thymeleaf.org" th:fragment="brandPanel" class="auth-brand" aria-label="ReSource: economia circular">
                 <div class="auth-badge"><img th:src="@{/images/auth/badge.svg}" alt="">Economia Circular em Ação</div>
                 <div class="auth-brand-core">
-                    <div class="auth-logo"><img th:src="@{/images/auth/leaf.svg}" alt=""><span>ReSource</span></div>
+                    <a class="auth-logo" th:href="@{/}" aria-label="ReSource — página inicial"><picture><source media="(max-width: 900px)" th:srcset="@{/images/shared/leaf.svg}"><img th:src="@{/images/auth/leaf.svg}" alt="" width="36" height="36"></picture><span>ReSource</span></a>
                     <p>Transformando desperdício em oportunidades. Conectando doadores de recursos e instituições de impacto.</p>
                 </div>
-                <div class="auth-illustration"><img th:src="@{/images/auth/illustration.png}" alt="Mãos compartilhando uma caixa, cercadas por setas de reciclagem" width="500" height="428"></div>
+                <div class="auth-illustration"><img th:src="@{/images/auth/community-donation.svg}" alt="Caixa de doação fechada compartilhada entre duas mãos, conectando doadores a uma ONG representada por um prédio com coração na fachada" width="560" height="420" decoding="async"></div>
                 <footer class="auth-brand-footer"><span>© 2026 ReSource</span><div><span>Sustentabilidade</span><span>Política de Privacidade</span></div></footer>
             </aside>

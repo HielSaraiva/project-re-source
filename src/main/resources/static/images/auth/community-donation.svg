@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="420" viewBox="0 0 560 420" fill="none">
+  <title>Recursos que conectam pessoas</title>
+  <desc>Caixa de doação fechada e selada, compartilhada entre duas mãos e conectada a um prédio de ONG com um coração na fachada.</desc>
+  <!-- Quiet backdrop and a single route from resources to their destination. -->
+  <path d="M110 240c-10-80 46-142 129-150 85-9 165 34 189 104 22 63-8 127-72 146-69 20-156 4-201-34-25-20-40-39-45-66Z" fill="#ECFDF5"/>
+  <ellipse cx="277" cy="341" rx="130" ry="10" fill="#D1FAE5"/>
+  <path d="M119 199c-2-66 38-111 98-121 53-10 109 4 145 33" stroke="#86BFA5" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 9"/>
+  <path d="m351 111 13 2-2-13" stroke="#047857" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Destination: a restrained institution medallion. -->
+  <circle cx="415" cy="123" r="45" fill="#FFF" stroke="#D1FAE5" stroke-width="2"/>
+  <g stroke="#065F46" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="393" y="98" width="44" height="49" rx="3" fill="#ECFDF5"/>
+    <path d="M409 147v-14h12v14" fill="#FFF"/>
+    <path d="M401 119h4m20 0h4M401 127h4m20 0h4M387 147h56"/>
+    <path d="M408 107c0-4 5-6 7-2 3-4 7-2 7 2 0 4-7 8-7 8s-7-4-7-8Z" fill="#10B981" stroke="none"/>
+  </g>
+  <circle cx="449" cy="91" r="12" fill="#10B981"/>
+  <path d="m444 91 3 3 6-6" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Closed parcel: two side faces, a lid and a continuous sealing strip. -->
+  <g stroke="#065F46" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M185 222v89l90 25v-87l-90-27Z" fill="#E8C487"/>
+    <path d="M275 249v87l90-25v-89l-90 27Z" fill="#D5AC70"/>
+    <path d="m185 222 90-23 90 23-90 27-90-27Z" fill="#F5E4C6"/>
+    <path d="m224 212 90 25 15-4-90-25-15 4Z" fill="#FFF" stroke="none"/>
+    <path d="M314 237v25l15-4v-25" fill="#FFF" stroke="none"/>
+    <path d="m185 222 90 27 90-27" fill="none"/>
+  </g>
+  <path d="M220 291c0-7 8-10 12-4 5-5 12-1 10 6-2 5-10 9-10 9s-12-5-12-11Z" fill="#065F46"/>
+  <path d="m311 299 22-6m-22 14 14-4" stroke="#956C36" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- A human gesture, without portraits or ornamental scenery. -->
+  <g stroke="#065F46" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m113 270 35-9c10-3 15-2 25 3l17 9c7 4 3 13-4 10l-17-6 32 14c9 4 15 9 10 16-3 5-8 5-15 3l-45-12-33 8" fill="#F1CFAD"/>
+    <path d="m173 291 24 8" stroke="#B98C66"/>
+    <path d="m69 280 44-15 13 43-44 15" fill="#065F46"/>
+    <path d="m106 268 10-3 13 43-10 3" fill="#FFF"/>
+    <path d="m442 270-35-9c-10-3-15-2-25 3l-17 9c-7 4-3 13 4 10l17-6-32 14c-9 4-15 9-10 16 3 5 8 5 15 3l45-12 33 8" fill="#D9AC86"/>
+    <path d="m382 291-24 8" stroke="#A67652"/>
+    <path d="m490 280-48-15-13 43 48 15" fill="#10B981"/>
+    <path d="m449 268-10-3-13 43 10 3" fill="#FFF"/>
+  </g>
+  <circle cx="111" cy="143" r="5" fill="#E8C487"/>
+  <circle cx="438" cy="223" r="4" fill="#86BFA5"/>
+</svg>

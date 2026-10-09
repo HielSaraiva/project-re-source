@@ -24,7 +24,7 @@ public abstract class RegistrationCredentials {
     private String password;
 
     @NotBlank(message = "Confirme sua senha.")
-    @Size(max = PasswordPolicy.MAX_BYTES, message = "A confirmação deve ter no máximo 72 caracteres.")
+    @Size(max = PasswordPolicy.MAX_LENGTH, message = "A confirmação deve ter no máximo " + PasswordPolicy.MAX_LENGTH + " caracteres.")
     private String passwordConfirmation;
 
     public void setEmail(String email) {

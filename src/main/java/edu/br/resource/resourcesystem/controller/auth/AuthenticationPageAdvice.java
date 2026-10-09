@@ -22,6 +22,9 @@ public class AuthenticationPageAdvice {
     @ModelAttribute("passwordMaxBytes")
     public int passwordMaxBytes() { return PasswordPolicy.MAX_BYTES; }
 
+    @ModelAttribute("passwordMaxLength")
+    public int passwordMaxLength() { return PasswordPolicy.MAX_LENGTH; }
+
     @ModelAttribute("passwordMinLength")
     public int passwordMinLength() { return PasswordPolicy.MIN_LENGTH; }
 

@@ -22,7 +22,7 @@ Cadastro público de doadores.
 - Nome e e-mail têm espaços externos removidos; o e-mail é persistido em letras minúsculas.
 - O e-mail não pode estar utilizado por qualquer usuário, inclusive contas Google, nem por instituição.
 - Nome, e-mail, senha e confirmação são obrigatórios. Nome e e-mail têm os limites do modelo persistido.
-- A senha deve ter de 8 a 72 caracteres, conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial (espaço não conta como especial), ter no máximo 72 bytes UTF-8 e confirmação idêntica. A senha não sofre remoção de espaços e é armazenada com o PasswordEncoder compartilhado.
+- A senha deve ter de 8 a 12 caracteres, conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial (espaço não conta como especial), ter no máximo 72 bytes UTF-8 e confirmação idêntica. A senha não sofre remoção de espaços e é armazenada com o PasswordEncoder compartilhado.
 - Perfil e situação são definidos pelo servidor como doador e ativo. Campos extras enviados pelo cliente não alteram esses valores.
 - CPF e cidade são opcionais no modelo atual e não são solicitados neste cadastro.
 - O cadastro não autentica automaticamente: após o sucesso, o usuário entra pelo fluxo RF-001.

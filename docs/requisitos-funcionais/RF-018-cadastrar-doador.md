@@ -28,7 +28,7 @@ Quando configurada, a opção “Cadastrar com Google” deve reutilizar o fluxo
 
 - Nome completo, obrigatório, até 200 caracteres.
 - E-mail válido, obrigatório, até 320 caracteres.
-- Senha, obrigatória, de 8 a 72 caracteres e até 72 bytes UTF-8, com pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.
+- Senha, obrigatória, de 8 a 12 caracteres e até 72 bytes UTF-8, com pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.
 - Confirmação de senha, obrigatória e igual à senha.
 - Alternativamente, identidade Google validada pelo provedor.
 

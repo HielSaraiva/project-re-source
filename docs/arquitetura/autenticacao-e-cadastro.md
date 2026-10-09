@@ -12,7 +12,7 @@
 
 ## Validações compartilhadas
 
-`PasswordPolicy` define a expressão usada tanto pelo Bean Validation quanto pelo HTML, os limites e as mensagens. O JavaScript usa o padrão renderizado pelo backend e o limite de bytes enviado no campo. A senha exige de 8 a 72 caracteres, maiúscula, minúscula, número e símbolo; espaços não contam como símbolo. O limite de 72 bytes UTF-8 evita truncamento pelo bcrypt. O mínimo considera caracteres Unicode, sem contar pares substitutos como dois caracteres.
+`PasswordPolicy` define a expressão usada tanto pelo Bean Validation quanto pelo HTML, os limites e as mensagens. O JavaScript usa o padrão renderizado pelo backend e o limite de bytes enviado no campo. A senha exige de 8 a 12 caracteres, maiúscula, minúscula, número e símbolo; espaços não contam como símbolo. O limite de 72 bytes UTF-8 evita truncamento pelo bcrypt. O mínimo considera caracteres Unicode, sem contar pares substitutos como dois caracteres.
 
 `@StrongPassword` verifica formato e bytes; `@MatchingPasswords` verifica a confirmação e associa o erro ao campo correspondente. Essas regras são herdadas pelos dois DTOs. Não são aplicadas ao login de contas existentes nem ao provisionamento Google.
 
@@ -47,3 +47,11 @@ Não foram adicionados testes automatizados ao repositório.
 - A conferência de PDF usa assinatura e marcador de encerramento; JPG usa assinatura e dimensões. Não há análise documental, parsing completo de PDF ou antivírus.
 - A remoção dos arquivos em rollback depende da conclusão da transação no processo em execução. Banco e sistema de arquivos não constituem uma única transação distribuída; interrupções abruptas podem deixar arquivos órfãos.
 - Google exige cliente OAuth configurado no ambiente; recuperação de senha continua indisponível.
+
+## Apresentação das telas de autenticação
+
+As quatro telas compartilham o painel de marca. Em larguras até 900 px, ele se torna um cabeçalho compacto com link para a página inicial; ilustração, texto institucional e rodapé do painel ficam ocultos para priorizar o formulário. Os campos usam fonte de 16 px no celular para evitar zoom automático durante a digitação.
+
+A ilustração de desktop está em `src/main/resources/static/images/auth/community-donation.svg`, com prancheta de 560 × 420. É uma composição vetorial original, construída diretamente em SVG com formas editáveis que podem ser importadas no Figma. Usa contornos uniformes, a paleta verde da interface, tons de papelão e espaço livre. Uma caixa fechada e selada compartilhada entre duas mãos, conectada a uma instituição, representam o fluxo de doação. O SVG substitui o bitmap anterior e não depende de geração de imagens rasterizadas.
+
+Referências consultadas: [Sharing Excess](https://www.sharingexcess.com/), [Too Good To Go](https://www.toogoodtogo.com/en-us) e [Good360](https://good360.org/). Serviram como referência de comunicação de impacto e hierarquia visual; a escolha de uma ilustração vetorial decorre da linguagem já presente no ReSource, com ícones de contorno, cartões arredondados e verdes consistentes. Nenhum asset desses sites foi copiado.
