@@ -1,0 +1,26 @@
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: clamp(28px, 5vw, 48px) 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+}
+
+.empty-state__icon {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 4px;
+    border-radius: 16px;
+    background: var(--color-success-surface);
+}
+
+.empty-state__icon img { display: block; }
+.empty-state h3 { margin: 0; font: 700 var(--font-section)/1.4 Inter, sans-serif; }
+.empty-state p { max-width: 480px; margin: 0; color: var(--slate); line-height: 1.6; }
+.empty-state .button { margin-top: 8px; max-width: 100%; }

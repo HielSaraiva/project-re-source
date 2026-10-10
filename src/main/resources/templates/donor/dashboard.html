@@ -4,6 +4,7 @@
         <th:block th:fragment="pageStyles">
             <link rel="stylesheet" th:href="@{/css/shared/priority-badges.css}">
             <link rel="stylesheet" th:href="@{/css/donor/dashboard.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/empty-state.css}">
         </th:block>
     </head>
     <body>
@@ -26,11 +27,14 @@
                     <div class="section-header">
                         <div class="section-title">
                             <h2>Urgências na sua região</h2>
-                            <span class="counter-badge" th:text="${urgencies.size() + ' Novas'}">3 Novas</span>
+                            <span class="counter-badge" th:if="${!urgencies.isEmpty()}" th:text="${urgencies.size() + ' Novas'}">3 Novas</span>
                         </div>
                         <a class="text-link" th:href="@{/donor/needs}">Ver todas as necessidades <span aria-hidden="true">→</span></a>
                     </div>
-                    <div class="cards-grid">
+                    <th:block th:if="${urgencies.isEmpty()}">
+                        <div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/heart.svg', 'Nenhuma urgência por aqui', 'Quando houver necessidades urgentes, elas aparecerão aqui. Enquanto isso, conheça outras formas de apoiar as instituições.', 'Explorar necessidades', '/donor/needs')}"></div>
+                    </th:block>
+                    <div class="cards-grid" th:if="${!urgencies.isEmpty()}">
                         <article class="urgency-card" th:each="urgency : ${urgencies}">
                             <div class="card-header">
                                 <h3 th:text="${urgency.institution}">Instituto Esperança</h3>
@@ -51,9 +55,12 @@
                 <section id="shipments" class="dashboard-section">
                     <div class="section-header">
                         <h2>Acompanhe seus envios</h2>
-                        <a class="text-link" href="#shipments">Ver histórico completo <span aria-hidden="true">→</span></a>
+                        <a class="text-link" th:if="${!shipments.isEmpty()}" href="#shipments">Ver histórico completo <span aria-hidden="true">→</span></a>
                     </div>
-                    <div class="shipment-table" role="table" aria-label="Acompanhe seus envios">
+                    <th:block th:if="${shipments.isEmpty()}">
+                        <div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/package.svg', 'Sua primeira doação começa aqui', 'Você ainda não tem envios para acompanhar. Ao propor uma doação, poderá consultar aqui o aceite da ONG, o envio e a confirmação de recebimento.', 'Encontrar uma necessidade', '/donor/needs')}"></div>
+                    </th:block>
+                    <div class="shipment-table" th:if="${!shipments.isEmpty()}" role="table" aria-label="Acompanhe seus envios">
                         <div class="shipment-row shipment-row--header" role="row">
                             <span>Item doado</span><span>Destinatário</span><span>Status do envio</span><span>Ações</span>
                         </div>

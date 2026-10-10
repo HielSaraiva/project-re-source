@@ -118,7 +118,12 @@
 .profile__chevron {
     width: 16px;
     height: 16px;
+    transition: transform 180ms ease;
 }
+
+.profile[aria-expanded="true"] { background: var(--color-success-surface); }
+.profile[aria-expanded="true"] .profile__chevron { transform: rotate(180deg); }
+.profile:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
 
 .profile__identity {
     display: flex;
@@ -187,25 +192,35 @@
     right: 0;
     top: calc(100% + 8px);
     z-index: 20;
-    min-width: 180px;
-    padding: 8px;
+    width: 216px;
+    max-width: calc(100vw - 32px);
+    padding: 4px;
     border: 1px solid var(--border);
     border-radius: 12px;
     background: var(--surface);
     box-shadow: 0 8px 24px rgb(15 23 42 / 12%);
+    transform-origin: top right;
 }
 
 .profile-menu__logout button {
     width: 100%;
-    min-height: 44px;
-    padding: 8px 12px;
+    min-height: 40px;
+    padding: 6px 12px;
     border: 0;
     border-radius: 8px;
     background: transparent;
     color: var(--color-danger);
     text-align: left;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font: 600 var(--font-body)/1.4 Inter, sans-serif;
+    transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
 }
+
+.profile-menu__logout button svg { flex-shrink: 0; }
+.profile-menu__logout button:active { transform: scale(.98); }
 
 .profile-menu__logout button:hover {
     background: var(--color-danger-surface);
@@ -214,4 +229,8 @@
 .profile-menu__logout button:focus-visible {
     outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .profile__chevron, .profile-menu__logout button { transition: none; }
 }

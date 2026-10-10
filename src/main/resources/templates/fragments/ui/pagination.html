@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <body>
-<nav th:fragment="pages(path, pagination, filter, needs)" class="pagination" aria-label="Paginação">
+<nav th:fragment="pages(path, pagination, filter, needs)" th:if="${pagination.totalElements > 0}" class="pagination" aria-label="Paginação">
     <button th:if="${!pagination.hasPrevious()}" type="button" aria-label="Página anterior" disabled>‹</button>
     <a th:if="${pagination.hasPrevious()}" th:href="@{${path}(page=${pagination.page - 1},query=${filter.query},size=${filter.size},status=${needs ? null : filter.status?.value},order=${needs ? null : filter.order?.value},category=${needs ? filter.category?.value : null},priority=${needs ? filter.priority?.value : null},stateId=${needs ? filter.stateId : null})}" aria-label="Página anterior">‹</a>
     <th:block th:each="number : ${#numbers.sequence(1, pagination.totalPages == 0 ? 1 : pagination.totalPages)}">

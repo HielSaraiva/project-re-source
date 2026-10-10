@@ -183,22 +183,6 @@
     gap: 8px;
 }
 
-.ong-donation-empty {
-    padding: 40px 24px;
-    text-align: center;
-}
-
-.ong-donation-empty h2 {
-    margin: 0;
-    font-size: var(--font-section);
-}
-
-.ong-donation-empty p {
-    color: var(--slate);
-    font-size: var(--font-body);
-    line-height: 1.6;
-}
-
 .ong-donation-detail-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

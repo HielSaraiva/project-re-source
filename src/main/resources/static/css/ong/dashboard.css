@@ -245,15 +245,8 @@ body {
     min-height: 44px;
 }
 
-.ong-donation-row[hidden], .dashboard-empty[hidden] {
+.ong-donation-row[hidden] {
     display: none;
-}
-
-.dashboard-empty {
-    margin: 0;
-    padding: 24px;
-    color: var(--slate);
-    line-height: 1.6;
 }
 
 @media (max-width: 680px) {

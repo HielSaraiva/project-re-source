@@ -3,6 +3,7 @@
     <head th:replace="~{fragments/layout/head :: head('Painel da ONG', ~{::pageStyles}, 'ong')}">
         <th:block th:fragment="pageStyles">
             <link rel="stylesheet" th:href="@{/css/ong/dashboard.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/empty-state.css}">
         </th:block>
     </head>
     <body>
@@ -47,7 +48,9 @@
                         </div>
                         <a class="management-link" th:href="@{/ong/donations/{id}(id=${intention.id})}">Analisar doação</a>
                     </article>
-                    <p class="dashboard-empty" data-dashboard-empty th:if="${intentions.isEmpty()}">Não há doações aguardando aceite. Consulte o histórico em Gerenciar doações.</p>
+                    <th:block th:if="${intentions.isEmpty()}">
+                        <div data-dashboard-empty><div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/package.svg', 'Nenhuma proposta aguardando aceite', 'Quando um doador oferecer recursos à sua instituição, as propostas aparecerão aqui para análise. Consulte também as doações em andamento e o histórico.', 'Gerenciar doações', '/ong/donations')}"></div></div>
+                    </th:block>
                 </div>
             </section>
 
@@ -59,7 +62,10 @@
                     </div>
                     <button class="button button--new" type="button"><img th:src="@{/images/ong/dashboard/plus.svg}" alt="">Nova necessidade</button>
                 </div>
-                <div class="needs-grid">
+                <th:block th:if="${needs.isEmpty()}">
+                    <div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/heart.svg', 'Nenhuma necessidade disponível', 'Este espaço reúne os itens que sua instituição precisa receber. Quando houver necessidades com unidades disponíveis para doação, elas aparecerão aqui.', null, null)}"></div>
+                </th:block>
+                <div class="needs-grid" th:if="${!needs.isEmpty()}">
                     <article class="need-card" th:each="need : ${needs}">
                         <div class="need-card__top">
                             <div class="need-icon"><img th:src="@{${need.icon}}" alt="">
