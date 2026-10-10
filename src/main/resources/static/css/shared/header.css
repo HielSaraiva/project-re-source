@@ -4,8 +4,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #fff;
-    border-bottom: 1px solid #e2e8f0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
     box-shadow: 0 2px 4px rgba(15, 23, 42, .04);
 }
 
@@ -28,7 +28,7 @@
 }
 
 .nav-links {
-    --nav-hover-background: #ecfdf5;
+    --nav-hover-background: var(--color-success-surface);
     height: 100%;
     gap: 32px;
 }
@@ -38,7 +38,7 @@
     padding: 0 8px;
     display: flex;
     align-items: center;
-    color: #475569;
+    color: var(--color-text-secondary);
     border-bottom: 3px solid transparent;
     font-size: var(--font-body);
     font-weight: 600;
@@ -46,20 +46,20 @@
 }
 
 .nav-link:focus-visible {
-    color: #065f46;
+    color: var(--color-success-dark);
     background-color: var(--nav-hover-background);
 }
 
 @media (hover: hover) and (pointer: fine) {
     .nav-link:hover {
-        color: #065f46;
+        color: var(--color-success-dark);
         background-color: var(--nav-hover-background);
     }
 }
 
 .nav-link--active {
-    color: #10b981;
-    border-color: #10b981;
+    color: var(--color-brand);
+    border-color: var(--color-brand);
 }
 
 .nav-actions {
@@ -97,7 +97,7 @@
     min-height: 52px;
     gap: 10px;
     padding: 6px 8px;
-    color: #0f172a;
+    color: var(--color-text-primary);
     font-size: var(--font-body);
     font-weight: 600;
 }
@@ -109,8 +109,8 @@
     place-items: center;
     flex-shrink: 0;
     border-radius: 50%;
-    color: #047857;
-    background: #d1fae5;
+    color: var(--color-success);
+    background: var(--color-success-soft);
     border: 1px solid #a7f3d0;
     font: 700 var(--font-body)/1 Inter, sans-serif;
 }
@@ -155,12 +155,12 @@
 
 @media (hover: hover) and (pointer: fine) {
     .navbar :is(.icon-button, .profile):hover {
-        background: #f1f5f9;
+        background: var(--color-neutral-surface);
     }
 }
 
 .navbar :is(.icon-button, .profile):active {
-    background: #ecfdf5;
+    background: var(--color-success-surface);
 }
 
 @media (min-width: 1101px) and (max-width: 1280px) {

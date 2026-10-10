@@ -10,23 +10,15 @@
     const previous = menu.querySelector('[data-notification-previous]');
     const next = menu.querySelector('[data-notification-next]');
     const retry = menu.querySelector('[data-notification-retry]');
-    const context = (document.querySelector('meta[name="context-path"]')?.content || '/').replace(/\/$/, '');
-    const endpoint = `${context}/api/notifications`;
+    const {context} = window.ResourceHttp;
+    const endpoint = '/api/notifications';
     let page = 0, loading = false, mutating = false;
     panel.inert = true;
     const close = (restoreFocus = false) => {
         menu.open = false;
         if (restoreFocus) trigger.focus();
     };
-    const request = async (url, method = 'GET') => {
-        const headers = {Accept: 'application/json'};
-        if (method === 'POST') {
-            headers[document.querySelector('meta[name="_csrf_header"]').content] = document.querySelector('meta[name="_csrf"]').content;
-        }
-        const response = await fetch(url, {method, headers, credentials: 'same-origin', cache: 'no-store'});
-        if (!response.ok || response.redirected) throw new Error('request_failed');
-        return method === 'GET' ? response.json() : null;
-    };
+    const request = (path, method = 'GET') => window.ResourceHttp.json(path, {method, cache: 'no-store'});
     const setBadge = (count) => {
         badge.hidden = count === 0;
         badge.textContent = count > 99 ? '99+' : String(count);

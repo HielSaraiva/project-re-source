@@ -93,7 +93,7 @@
         <dialog id="delivery-method-confirmation" class="ui-dialog" aria-labelledby="method-title" aria-describedby="method-description">
             <div class="ui-dialog-content">
                 <div class="title-block">
-                    <div th:replace="~{fragments/ui/dialog :: heading('method-title', 'Confirmar entrega presencial', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/shipping/package.svg')}"></div>
+                    <div th:replace="~{fragments/ui/dialog :: heading('method-title', 'Confirmar entrega presencial', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/shared/categories/package.svg')}"></div>
                     <p id="method-description"><span data-method-summary>Você escolheu levar a doação diretamente à </span><strong th:text="${donation.organization}">Instituto Esperança</strong>.</p>
                 </div>
                 <p>Ao confirmar a modalidade, você terá mais <strong>7 dias para confirmar a entrega presencial ou a postagem</strong>. Caso o prazo termine sem confirmação, a doação será cancelada automaticamente e a reserva será liberada.</p>

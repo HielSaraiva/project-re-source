@@ -3,10 +3,12 @@ package edu.br.resource.resourcesystem.presentation;
 import edu.br.resource.resourcesystem.dto.response.*;
 import edu.br.resource.resourcesystem.model.enums.*;
 import edu.br.resource.resourcesystem.service.match.MatchDtoMapper;
+
+import org.springframework.stereotype.Component;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import org.springframework.stereotype.Component;
 
 @Component
 public class MatchViewAssembler {
@@ -183,20 +185,7 @@ public class MatchViewAssembler {
     }
 
     public String address(AddressResponse a) {
-        return a == null
-                ? "Endereço não cadastrado"
-                : a.street()
-                        + ", "
-                        + a.number()
-                        + (a.complement() == null ? "" : " — " + a.complement())
-                        + ", "
-                        + a.district()
-                        + ", "
-                        + a.location().city()
-                        + "/"
-                        + a.location().state()
-                        + ", CEP "
-                        + a.postalCode();
+        return a == null ? "Endereço não cadastrado" : a.formatted();
     }
 
     private List<DonationDetailResponse> recipient(RecipientResponse r) {
@@ -228,27 +217,44 @@ public class MatchViewAssembler {
         return switch (match.status()) {
             case PROPOSED -> "A proposta foi criada e ainda aguarda o envio para análise da ONG.";
             case AWAITING_ACCEPTANCE ->
-                    "Analise a proposta antes do prazo de aceite. A ONG tem 7 dias desde o envio para aceitar ou recusar. Sem aceite, a doação será cancelada automaticamente e a reserva será liberada.";
+                    "Analise a proposta antes do prazo de aceite. A ONG tem 7 dias desde o envio"
+                        + " para aceitar ou recusar. Sem aceite, a doação será cancelada"
+                        + " automaticamente e a reserva será liberada.";
             case ACCEPTED, AWAITING_SHIPMENT ->
                     match.delivery() == null
-                            ? "A proposta foi aceita. O doador tem 7 dias desde o aceite para escolher entre entrega presencial e Correios. Sem escolha no prazo, a doação será cancelada automaticamente e a reserva será liberada."
-                            : "O doador escolheu enviar pelos Correios e tem 7 dias desde a escolha para informar a postagem e o rastreamento. Sem confirmação no prazo, a doação será cancelada automaticamente e a reserva será liberada.";
+                            ? "A proposta foi aceita. O doador tem 7 dias desde o aceite para"
+                                  + " escolher entre entrega presencial e Correios. Sem escolha no"
+                                  + " prazo, a doação será cancelada automaticamente e a reserva"
+                                  + " será liberada."
+                            : "O doador escolheu enviar pelos Correios e tem 7 dias desde a escolha"
+                                  + " para informar a postagem e o rastreamento. Sem confirmação no"
+                                  + " prazo, a doação será cancelada automaticamente e a reserva"
+                                  + " será liberada.";
             case AWAITING_DELIVERY ->
-                    "O doador escolheu a entrega presencial e tem 7 dias desde a escolha para informar a entrega à ONG. Sem confirmação no prazo, a doação será cancelada automaticamente e a reserva será liberada.";
+                    "O doador escolheu a entrega presencial e tem 7 dias desde a escolha para"
+                        + " informar a entrega à ONG. Sem confirmação no prazo, a doação será"
+                        + " cancelada automaticamente e a reserva será liberada.";
             case AWAITING_NGO_CONFIRMATION ->
-                    "O doador informou a entrega presencial. Confira os itens e a quantidade e confirme o recebimento para concluir a doação.";
+                    "O doador informou a entrega presencial. Confira os itens e a quantidade e"
+                        + " confirme o recebimento para concluir a doação.";
             case IN_TRANSIT ->
-                    "O doador informou a postagem pelos Correios. Acompanhe o rastreamento e confirme o recebimento somente após receber e conferir todos os itens.";
+                    "O doador informou a postagem pelos Correios. Acompanhe o rastreamento e"
+                        + " confirme o recebimento somente após receber e conferir todos os itens.";
             case COMPLETED ->
                     "A ONG confirmou o recebimento em "
                             + time(match.completedAt())
-                            + ". A doação está concluída. Os dados da entrega e os eventos permanecem disponíveis no histórico.";
+                            + ". A doação está concluída. Os dados da entrega e os eventos"
+                            + " permanecem disponíveis no histórico.";
             case REJECTED ->
-                    "A ONG recusou a proposta. A data e o motivo estão registrados no histórico. Os itens e a quantidade reservada da necessidade foram liberados; esta proposta não pode ser reaberta.";
+                    "A ONG recusou a proposta. A data e o motivo estão registrados no histórico. Os"
+                        + " itens e a quantidade reservada da necessidade foram liberados; esta"
+                        + " proposta não pode ser reaberta.";
             case CANCELLED ->
                     match.expiredStage() != null
                             ? cancellationReason(match)
-                            : "A doação foi cancelada pelo doador. Os itens e a quantidade reservada da necessidade foram liberados. O cancelamento não pode ser desfeito; uma nova doação exige outra proposta.";
+                            : "A doação foi cancelada pelo doador. Os itens e a quantidade"
+                                  + " reservada da necessidade foram liberados. O cancelamento não"
+                                  + " pode ser desfeito; uma nova doação exige outra proposta.";
         };
     }
 
@@ -396,7 +402,8 @@ public class MatchViewAssembler {
                         "title",
                         "Envio via Correios",
                         "description",
-                        "Confira o destinatário, poste a doação e informe o rastreamento. O frete é de responsabilidade do doador.",
+                        "Confira o destinatário, poste a doação e informe o rastreamento. O frete é"
+                            + " de responsabilidade do doador.",
                         "badge",
                         "Envio pelos Correios",
                         "action",

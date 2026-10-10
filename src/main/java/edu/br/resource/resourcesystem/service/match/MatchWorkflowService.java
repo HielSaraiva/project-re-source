@@ -2,21 +2,25 @@ package edu.br.resource.resourcesystem.service.match;
 
 import edu.br.resource.resourcesystem.dto.request.*;
 import edu.br.resource.resourcesystem.dto.response.*;
+import edu.br.resource.resourcesystem.messaging.MatchEventOutbox;
 import edu.br.resource.resourcesystem.model.entity.*;
 import edu.br.resource.resourcesystem.model.enums.*;
+import edu.br.resource.resourcesystem.observability.TransactionLog;
 import edu.br.resource.resourcesystem.repository.*;
-import edu.br.resource.resourcesystem.messaging.MatchEventOutbox;
-import java.time.*;
-import java.util.*;
+
+import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import edu.br.resource.resourcesystem.observability.TransactionLog;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import jakarta.validation.Valid;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.*;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -206,19 +210,7 @@ public class MatchWorkflowService {
                         .match(m)
                         .method(method)
                         .methodConfirmedAt(now)
-                        .deliveryAddress(
-                                a.street()
-                                        + ", "
-                                        + a.number()
-                                        + (a.complement() == null ? "" : " — " + a.complement())
-                                        + ", "
-                                        + a.district()
-                                        + ", "
-                                        + a.location().city()
-                                        + "/"
-                                        + a.location().state()
-                                        + ", CEP "
-                                        + a.postalCode())
+                        .deliveryAddress(a.formatted())
                         .build();
         if (method == DeliveryMethod.IN_PERSON) d.setInPersonDeadline(now.plus(DEADLINE));
         else {
@@ -302,7 +294,8 @@ public class MatchWorkflowService {
         if (m.getStatus() != MatchStatus.IN_TRANSIT
                 && m.getStatus() != MatchStatus.AWAITING_NGO_CONFIRMATION)
             throw conflict(
-                    "O doador ainda não informou a entrega ou postagem, ou o recebimento já foi confirmado.");
+                    "O doador ainda não informou a entrega ou postagem, ou o recebimento já foi"
+                        + " confirmado.");
         var d = deliveries.findForUpdateByMatchId(m.getId()).orElseThrow(this::missing);
         boolean postal =
                 m.getStatus() == MatchStatus.IN_TRANSIT
@@ -367,7 +360,8 @@ public class MatchWorkflowService {
     private void requireLive(DonationMatch m) {
         if (expireIfDue(m))
             throw conflict(
-                    "O prazo terminou. A doação foi cancelada automaticamente e a reserva foi liberada.");
+                    "O prazo terminou. A doação foi cancelada automaticamente e a reserva foi"
+                        + " liberada.");
     }
 
     private boolean expireIfDue(DonationMatch m) {
@@ -427,7 +421,8 @@ public class MatchWorkflowService {
         outbox.append(m, type);
         TransactionLog.afterCommit(
                 log,
-                "event=match_transition protocol={} matchId={} action={} previousStatus={} status={} actorType={} actorId={} expiredStage={}",
+                "event=match_transition protocol={} matchId={} action={} previousStatus={}"
+                    + " status={} actorType={} actorId={} expiredStage={}",
                 m.getProtocol(),
                 m.getId(),
                 type.getValue(),
@@ -476,7 +471,8 @@ public class MatchWorkflowService {
     private void requirePendingDelivery(Delivery delivery) {
         if (delivery.getStatus() != DeliveryStatus.PENDING || delivery.getReportedAt() != null)
             throw conflict(
-                    "Esta entrega já foi informada ou não está mais disponível. Atualize a página.");
+                    "Esta entrega já foi informada ou não está mais disponível. Atualize a"
+                        + " página.");
     }
 
     private void validateDate(LocalDate date, Delivery d) {

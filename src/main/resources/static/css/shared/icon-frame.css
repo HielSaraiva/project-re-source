@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #ecfdf5;
+    background: var(--color-success-surface);
     border-radius: 8px;
 }
 

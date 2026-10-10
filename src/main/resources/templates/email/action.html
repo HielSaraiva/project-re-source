@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <table th:fragment="button(url, label)" role="presentation" cellpadding="0" cellspacing="0">
+            <tr>
+                <td bgcolor="#10b981" style="border-radius:8px;">
+                    <a th:href="${url}" th:text="${label}" style="display:inline-block;padding:15px 24px;border:1px solid #10b981;border-radius:8px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;"></a>
+                </td>
+            </tr>
+        </table>
+        <th:block th:fragment="fallback(url, margin)">
+            <p th:style="${'margin:' + margin + ';font-size:12px;line-height:1.6;color:#64748b;'}">Se o botão não funcionar, copie este endereço para o navegador:</p>
+            <a th:href="${url}" th:text="${url}" style="font-size:12px;line-height:1.7;color:#047857;word-break:break-all;overflow-wrap:anywhere;"></a>
+        </th:block>
+    </body>
+</html>

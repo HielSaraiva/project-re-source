@@ -62,56 +62,6 @@ A interface de gerenciamento do RabbitMQ estará disponível em `http://localhos
 
 ---
 
-## Autenticação
-
-Acesse `/login` para entrar como doador com e-mail e senha, ou `/login?profile=ong` para entrar como instituição com CNPJ e senha. O CNPJ pode ser informado com ou sem máscara. O login institucional por e-mail continua disponível no backend. O sistema verifica a situação da conta e direciona doadores ao painel do doador e instituições aprovadas ao painel da ONG. As abas identificam o perfil esperado; o backend obtém as permissões da conta persistida. HTTP Basic continua disponível para integrações. O menu do perfil permite sair por POST protegido por CSRF.
-
-Para habilitar o login de doadores com Google, crie um cliente OAuth do tipo **Aplicativo da Web** no Google Cloud e configure a URI de redirecionamento `http://localhost:8080/login/oauth2/code/google` (em produção, use o domínio HTTPS). Preencha `GOOGLE_LOGIN_ENABLED=true`, `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` no `.env` da raiz do projeto e reinicie a aplicação. Também é possível configurar essas variáveis no ambiente de execução da IDE ou do servidor.
-
-O login Google usa OpenID Connect, exige e-mail verificado e cria uma conta de doador ativo no primeiro acesso. Contas locais com o mesmo e-mail não são vinculadas automaticamente: devem continuar usando senha. Contas bloqueadas, perfis administrativos e e-mails em conflito com instituições são rejeitados. Sem as credenciais Google, o botão aparece indisponível e o login local permanece funcional.
-
-O cadastro local de doadores está disponível em `/register/donor`, com nome, e-mail, senha e confirmação. Nome e e-mail são normalizados; e-mails utilizados por usuários ou instituições são rejeitados. A senha deve ter de 8 a 12 caracteres, conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial (espaço não conta como especial), e ter até 72 bytes UTF-8 e é armazenada com o PasswordEncoder compartilhado. O cadastro cria um doador ativo e redireciona ao login com confirmação, sem autenticar automaticamente. CPF e cidade não são obrigatórios no modelo atual.
-
-O cadastro institucional está disponível em `/register/institution`, com CNPJ, e-mail oficial, nome e CPF do representante, senha, confirmação e dois anexos obrigatórios (identidade e documentação da organização). A razão social é obtida pela [BrasilAPI](https://brasilapi.com.br/docs#tag/CNPJ) e conferida novamente pelo servidor no envio. O cadastro exige CNPJ ativo, valida os dígitos verificadores de CNPJ e CPF e aceita CNPJ numérico ou alfanumérico, com ou sem máscara. CNPJ, e-mail e CPF do representante não podem estar cadastrados. A criação de contas compartilha a proteção contra e-mails duplicados entre usuários, instituições e Google, inclusive em requisições simultâneas.
-
-Os documentos aceitam PDF ou JPG de até 5 MB cada, com conferência do conteúdo, e são armazenados fora dos arquivos públicos. A conta é criada como `pending_approval`, com dois documentos `pending`, e não pode entrar até ser aprovada. A tela administrativa de análise/aprovação não faz parte deste cadastro. Senhas e anexos devem ser informados novamente após erro; falhas na transação removem os arquivos recém-gravados.
-
-Configure `INSTITUTION_DOCUMENT_DIRECTORY` com um diretório privado e persistente, gravável pelo processo da aplicação; inclua esse diretório nos backups junto ao banco. O padrão é `var/private/institution-documents`. `BRASIL_API_URL` permite configurar a base da consulta (padrão `https://brasilapi.com.br/api`). Essas configurações podem ser preenchidas no `.env` ou no ambiente de execução. Uma falha da BrasilAPI impede a criação da conta e permite nova tentativa pelo formulário.
-
-A recuperação de senha está disponível em `/password/forgot` para contas locais de doador e instituição. O link enviado por e-mail expira em 30 minutos, funciona uma única vez e permite criar uma senha com as mesmas regras do cadastro. Após salvar, os outros links de recuperação e as sessões existentes da conta são invalidados. Contas que usam somente Google devem continuar entrando com Google.
-
-Para habilitar o envio, substitua os valores genéricos no `.env` e reinicie:
-
-```dotenv
-MAIL_ENABLED=true
-MAIL_HOST=smtp.seu-provedor.com
-MAIL_PORT=587
-MAIL_USERNAME=seu-email@seu-dominio.com
-MAIL_PASSWORD=sua-credencial-smtp
-MAIL_FROM=seu-email@seu-dominio.com
-MAIL_SMTP_AUTH=true
-MAIL_STARTTLS=true
-MAIL_SSL=false
-APP_BASE_URL=http://localhost:8080
-```
-
-`MAIL_FROM` deve ser um remetente autorizado pelo provedor. Use a credencial SMTP ou senha de aplicativo exigida por ele. Para SMTP com TLS implícito, normalmente configure porta 465, `MAIL_SSL=true` e `MAIL_STARTTLS=false`, conforme o provedor. Em produção, `APP_BASE_URL` deve ser o endereço público HTTPS do site, incluindo o contexto da aplicação se existir. O link é construído a partir dessa configuração, sem confiar no cabeçalho Host da requisição. As mensagens possuem HTML com identidade visual do ReSource e alternativa em texto simples.
-
-Os valores `smtp.example.com` e `nao-responda@example.com` são exemplos, não um serviço de envio. `MAIL_ENABLED=false` mantém o envio desativado até configurar um SMTP real. Senhas e credenciais ficam somente no `.env` ignorado pelo Git. Há limite de cinco solicitações por endereço cliente a cada 15 minutos e intervalo de um minuto entre e-mails para a mesma conta. As solicitações são processadas em fila limitada, com resposta pública genérica para não revelar contas cadastradas. Falhas de SMTP não alteram senhas e desfazem a emissão do link.
-
-As responsabilidades, validações compartilhadas, verificações e limites atuais estão descritos em [Autenticação e cadastro](docs/arquitetura/autenticacao-e-cadastro.md).
-
-### Notificações no site e por e-mail
-
-O sino do header exibe as atualizações de interesse do doador e da ONG: propostas, aceite/recusa, modalidade, entrega/postagem, recebimento, necessidade atendida e cancelamento por solicitação ou prazo. Possui contador de não lidas, paginação, marcação de leitura e estado vazio. Os avisos são persistidos junto com a operação e ficam disponíveis mesmo se o RabbitMQ estiver indisponível.
-
-O RabbitMQ existente libera a entrega de e-mails, que reutiliza o logo, o template de marca e a configuração SMTP da recuperação de senha. Não é necessário configurar outro remetente. Com `MAIL_ENABLED=true`, os e-mails de notificações ficam habilitados por padrão. Para suspender apenas esse envio, configure `NOTIFICATION_EMAIL_ENABLED=false`; os avisos continuam aparecendo no site. Em produção, ajuste `APP_BASE_URL` para o endereço público HTTPS e mantenha os serviços RabbitMQ/PostgreSQL disponíveis com armazenamento persistente.
-
-Há controle de duplicação por evento/destinatário e novas tentativas persistidas para falhas SMTP. Após oito falhas, a entrega exige retomada administrativa. O header consulta atualizações a cada minuto com a aba visível e ao abrir o menu. Detalhes, destinatários, endpoints e operação estão em [Notificações](docs/arquitetura/notificacoes.md).
-
-
----
-
 ## Executando os Testes
 
 ### Testes unitários e de integração

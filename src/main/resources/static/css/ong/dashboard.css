@@ -22,7 +22,7 @@ body {
     gap: 12px;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    background: #fff;
+    background: var(--color-surface);
     box-shadow: 0 4px 3px rgba(0, 0, 0, .02);
 }
 
@@ -80,7 +80,7 @@ body {
     overflow: hidden;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    background: #fff;
+    background: var(--color-surface);
     box-shadow: 0 4px 3px rgba(0, 0, 0, .02);
 }
 
@@ -105,7 +105,7 @@ body {
     display: grid;
     place-items: center;
     border-radius: 8px;
-    background: #ecfdf5;
+    background: var(--color-success-surface);
     flex: 0 0 auto;
 }
 
@@ -158,7 +158,7 @@ body {
     flex-direction: column;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    background: #fff;
+    background: var(--color-surface);
     box-shadow: 0 4px 3px rgba(0, 0, 0, .02);
 }
 
@@ -184,7 +184,7 @@ body {
 
 .priority--medium {
     color: #b45309;
-    background: #fef3c7;
+    background: var(--color-warning-surface);
 }
 
 .need-card>strong {

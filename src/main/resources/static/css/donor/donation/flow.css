@@ -103,7 +103,7 @@ h1 {
     align-items: center;
     gap: 16px;
     padding: 24px;
-    background: #ecfdf5;
+    background: var(--color-success-surface);
     border: 1px solid var(--green);
     border-radius: 8px;
 }

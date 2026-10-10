@@ -69,8 +69,8 @@
     display: none;
 }
 .delivery-status.shipping-status--cancelled, .delivery-method-notice--cancelled {
-    color: #b91c1c;
-    background: #fef2f2;
+    color: var(--color-danger);
+    background: var(--color-danger-surface);
 }
 
 .action-button[aria-disabled="true"] {

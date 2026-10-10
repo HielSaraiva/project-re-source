@@ -1,7 +1,7 @@
 main :is(.page-heading, .ong-donation-heading) .donation-protocol,
 dialog .donation-protocol {
     margin: 0;
-    color: #047857;
+    color: var(--color-success);
     font: 600 var(--font-body)/1.6 Inter, sans-serif;
 }
 

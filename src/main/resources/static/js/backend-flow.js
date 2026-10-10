@@ -1,6 +1,5 @@
 (() => {
-    const base = document.querySelector('meta[name="context-path"]')?.content || '/';
-    const url = path => base.replace(/\/$/, '') + path;
+    const {url} = window.ResourceHttp;
     const page = document.querySelector('[data-match-protocol]');
     const protocol = page?.dataset.matchProtocol;
     const showError = (error, container = document.querySelector('main')) => {
@@ -18,14 +17,7 @@
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 20000);
         try {
-            const token = document.querySelector('meta[name="_csrf"]')?.content;
-            const header = document.querySelector('meta[name="_csrf_header"]')?.content;
-            const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
-            if (token && header) headers[header] = token;
-            const response = await fetch(url(path), { method: 'POST', headers, credentials: 'same-origin', signal: controller.signal, body: JSON.stringify(data) });
-            const body = await response.json().catch(() => ({}));
-            if (!response.ok) throw new Error(body.detail || 'Não foi possível concluir a operação. Atualize a página e tente novamente.');
-            return body;
+            return await window.ResourceHttp.json(path, {method: 'POST', data, signal: controller.signal});
         } catch (error) {
             if (error.name === 'AbortError' || error instanceof TypeError) error = new Error('Não foi possível confirmar o resultado a tempo. Atualize a página e consulte o histórico antes de enviar novamente.');
             showError(error, container); return null;
@@ -202,7 +194,7 @@
             form.querySelector('[data-receipt-attestation]').hidden = !receiving;
             form.querySelector('[data-postal-review]').hidden = !receiving || document.querySelector('[data-intention-detail]').dataset.deliveryMethod !== 'carrier';
             const decisionIcon = decision.querySelector('[data-dialog-icon]');
-            if (decisionIcon) decisionIcon.src = url(receiving ? '/images/donor/donation-status/gift.svg' : rejection ? '/images/donor/donation-status/info.svg' : '/images/donor/donation-status/check-circle.svg');
+            if (decisionIcon) decisionIcon.src = url(receiving ? '/images/donor/donation-status/gift.svg' : rejection ? '/images/shared/icons/info.svg' : '/images/donor/donation-status/check-circle.svg');
             text(form, '[data-confirm-decision]', receiving ? 'Confirmar recebimento' : rejection ? 'Recusar proposta' : 'Aceitar proposta');
             text(decision, '#decision-title', receiving ? 'Confirmar recebimento?' : rejection ? 'Recusar proposta?' : 'Aceitar proposta?');
             text(decision, '#decision-description', receiving ? 'Confirme após conferir e receber todos os itens. A doação será concluída.' : rejection ? 'Informe o motivo da recusa. Esta ação não pode ser desfeita.' : 'Ao aceitar, o doador terá 7 dias para escolher a modalidade de entrega.');

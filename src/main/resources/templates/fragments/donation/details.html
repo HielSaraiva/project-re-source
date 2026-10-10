@@ -3,7 +3,7 @@
     <body>
         <div class="detail-list" th:fragment="details(items, assetBase, highlightedLabel, highlightClass)">
             <div class="detail-row" th:each="detail : ${items}">
-                <img th:src="@{${assetBase + '/' + detail.icon}}" alt="">
+                <img th:with="iconPath=${@sharedAssets.resolve(assetBase + '/' + detail.icon)}" th:src="@{${iconPath}}" alt="">
                 <div class="detail-content">
                     <strong th:text="${detail.label}">Item Doado</strong>
                     <span th:classappend="${detail.label == highlightedLabel ? ' ' + highlightClass : ''}"
@@ -13,7 +13,7 @@
             </div>
         </div>
         <aside class="help-info-banner" th:fragment="impactBanner(assetBase)">
-            <img th:src="@{${assetBase + '/info.svg'}}" alt="">
+            <img th:with="iconPath=${@sharedAssets.resolve(assetBase + '/info.svg')}" th:src="@{${iconPath}}" alt="">
             <p>Todas as doações efetuadas através do ReSource geram impacto social auditado e contam para suas estatísticas de sustentabilidade.</p>
         </aside>
         <aside class="delivery-deadline" data-active-deadline th:fragment="deadline(title, deadlineLabel, eventLabel)">
@@ -22,7 +22,7 @@
             <small th:text="${eventLabel}">Aceite da ONG</small>
         </aside>
         <div class="details-card-header" th:fragment="cardHeading(iconPath, badge, badgeClass)">
-            <span class="icon-frame"><img th:src="@{${iconPath}}" alt=""></span>
+            <span class="icon-frame"><img th:with="resolvedIcon=${@sharedAssets.resolve(iconPath)}" th:src="@{${resolvedIcon}}" alt=""></span>
             <span class="card-badge" th:classappend="${badgeClass}" th:text="${badge}"></span>
         </div>
     </body>

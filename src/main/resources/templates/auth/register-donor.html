@@ -1,39 +1,25 @@
 <!DOCTYPE html>
-<html class="auth-page" lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="~{fragments/layout/head :: head('Crie sua conta', ~{::pageStyles}, 'auth')}">
-        <th:block th:fragment="pageStyles" th:replace="~{fragments/auth/page-styles :: styles(true)}"></th:block>
-    </head>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/auth/layout :: page('Crie sua conta', true, 'auth-layout--register', ~{::content})}">
     <body>
-        <main class="auth-layout auth-layout--register">
-            <aside th:replace="~{fragments/auth/brand-panel :: brandPanel}"></aside>
-            <section class="auth-panel" aria-labelledby="register-title">
-                <div class="auth-card">
-                    <header class="auth-heading"><h1 id="register-title">Crie sua conta</h1><p>Junte-se à rede e ajude a reduzir o desperdício.</p></header>
-                    <nav th:replace="~{fragments/auth/profiles :: profiles(true, false)}"></nav>
-                    <div class="auth-content">
-                        <div class="auth-body">
-                            <form class="auth-form" method="post" th:action="@{/register/donor}" th:object="${registration}">
-                                <p th:if="${#fields.hasErrors('*')}" class="backend-error auth-feedback" role="alert" tabindex="-1" data-registration-errors>Não foi possível cadastrar. Confira os campos indicados e informe as senhas novamente.</p>
-                                <div class="proposal-field auth-field">
-                                    <label for="fullName">Nome Completo</label>
-                                    <div class="auth-input"><svg th:replace="~{fragments/auth/icon :: icon('user')}"></svg><input id="fullName" th:field="*{fullName}" type="text" placeholder="Seu nome completo" autocomplete="name" maxlength="200" required th:attr="aria-invalid=${#fields.hasErrors('fullName') ? 'true' : null}" aria-describedby="fullName-error"></div>
-                                    <small id="fullName-error" class="auth-field-error"><th:block th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></th:block></small>
-                                </div>
-                                <div class="proposal-field auth-field">
-                                    <label for="email">E-mail</label>
-                                    <div class="auth-input"><svg th:replace="~{fragments/auth/icon :: icon('mail')}"></svg><input id="email" th:field="*{email}" type="email" placeholder="seu@email.com" autocomplete="email" maxlength="320" autocapitalize="none" spellcheck="false" required th:attr="aria-invalid=${#fields.hasErrors('email') ? 'true' : null}" aria-describedby="email-error"></div>
-                                    <small id="email-error" class="auth-field-error"><th:block th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></th:block></small>
-                                </div>
-                                <div th:replace="~{fragments/auth/password-field :: passwordField('password', 'Senha', 'new-password', true)}"></div>
-                                <div th:replace="~{fragments/auth/password-field :: passwordField('passwordConfirmation', 'Confirmar Senha', 'new-password', true)}"></div>
-                                <button class="button auth-submit" type="submit">Cadastrar</button>
-                            </form>
-                            <th:block th:replace="~{fragments/auth/google-entry :: googleEntry('Cadastrar com Google')}"></th:block>
-                        </div>
-                        <footer class="auth-footer">Já possui uma conta? <a class="text-link" th:href="@{/login}">Faça Login</a></footer>
+        <section th:fragment="content" class="auth-panel" aria-labelledby="register-title">
+            <div class="auth-card">
+                <header class="auth-heading"><h1 id="register-title">Crie sua conta</h1><p>Junte-se à rede e ajude a reduzir o desperdício.</p></header>
+                <nav th:replace="~{fragments/auth/profiles :: profiles(true, false)}"></nav>
+                <div class="auth-content">
+                    <div class="auth-body">
+                        <form class="auth-form" method="post" th:action="@{/register/donor}" th:object="${registration}">
+                            <p th:if="${#fields.hasErrors('*')}" class="backend-error auth-feedback" role="alert" tabindex="-1" data-registration-errors>Não foi possível cadastrar. Confira os campos indicados e informe as senhas novamente.</p>
+                            <div th:replace="~{fragments/auth/text-field :: field('fullName', 'Nome Completo', 'user', 'text', 'Seu nome completo', 'name', 200)}"></div>
+                            <div th:replace="~{fragments/auth/text-field :: field('email', 'E-mail', 'mail', 'email', 'seu@email.com', 'email', 320)}"></div>
+                            <div th:replace="~{fragments/auth/password-field :: passwordField('password', 'Senha', 'new-password', true)}"></div>
+                            <div th:replace="~{fragments/auth/password-field :: passwordField('passwordConfirmation', 'Confirmar Senha', 'new-password', true)}"></div>
+                            <button class="button auth-submit" type="submit">Cadastrar</button>
+                        </form>
+                        <th:block th:replace="~{fragments/auth/google-entry :: googleEntry('Cadastrar com Google')}"></th:block>
                     </div>
+                    <footer class="auth-footer">Já possui uma conta? <a class="text-link" th:href="@{/login}">Faça Login</a></footer>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
     </body>
 </html>

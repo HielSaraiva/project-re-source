@@ -70,7 +70,7 @@
                         <a class="ui-button ui-button--primary" th:href="@{/donor/needs}">Ver outras necessidades</a>
                     </div>
                     <div id="inventory-empty" class="proposal-empty" th:hidden="${!inventoryDonations.isEmpty()}">
-                        <span class="icon-frame"><img th:src="@{/images/donor/shipping/package.svg}" alt=""></span>
+                        <span class="icon-frame"><img th:src="@{/images/shared/categories/package.svg}" alt=""></span>
                         <h3>Você ainda não tem uma doação disponível nesta categoria</h3>
                         <p>Cadastre os itens que possui em <strong th:text="${need.category}">Saúde &amp; Mobilidade</strong>. Eles ficam disponíveis em Minhas doações com o status <strong>Registrado</strong> e podem ser selecionados aqui.</p>
                         <button class="ui-button ui-button--primary" type="button" data-open-registration disabled>Cadastrar doação</button>
@@ -146,7 +146,7 @@
         <dialog id="proposal-confirmation" class="ui-dialog" aria-labelledby="confirmation-title" aria-describedby="confirmation-description">
             <div class="ui-dialog-content">
                 <div class="title-block">
-                    <div th:replace="~{fragments/ui/dialog :: heading('confirmation-title', 'Confira sua proposta', 'Proposta em preparação', '', '/images/donor/donation-status/file-text.svg')}"></div>
+                    <div th:replace="~{fragments/ui/dialog :: heading('confirmation-title', 'Confira sua proposta', 'Proposta em preparação', '', '/images/shared/icons/file-text.svg')}"></div>
                     <p id="confirmation-description">Revise as informações antes de enviar. A ONG analisará sua proposta e, após o aceite, você poderá combinar a entrega.</p>
                 </div>
                 <dl class="proposal-summary">

@@ -9,7 +9,7 @@
     line-height: 1.4;
     text-align: center;
     color: var(--slate);
-    background: #f1f5f9;
+    background: var(--color-neutral-surface);
 }
 
 .donation-status--waiting {
@@ -18,16 +18,16 @@
 }
 
 .donation-status--shipped {
-    color: #1e40af;
-    background: #dbeafe;
+    color: var(--color-info);
+    background: var(--color-info-surface);
 }
 
 .donation-status--completed {
     color: var(--green);
-    background: #d1fae5;
+    background: var(--color-success-soft);
 }
 
 .donation-status--rejected, .donation-status--cancelled {
-    color: #b91c1c;
-    background: #fef2f2;
+    color: var(--color-danger);
+    background: var(--color-danger-surface);
 }

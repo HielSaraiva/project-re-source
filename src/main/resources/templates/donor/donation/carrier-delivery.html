@@ -43,7 +43,7 @@
                     <div th:replace="~{fragments/donation/details :: details(${recipientDetails}, '/images/donor/shipping', '', '')}"></div>
                 </article>
                 <article class="details-card">
-                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/shipping/package.svg', 'Correios', '')}"></div>
+                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/shared/categories/package.svg', 'Correios', '')}"></div>
                     <div class="title-block">
                         <h2>Prepare sua doação</h2>
                         <p>Confira os itens antes de levar o pacote para postagem.</p>
@@ -125,7 +125,7 @@
         <dialog id="carrier-review" class="ui-dialog" aria-labelledby="review-title" aria-describedby="review-description">
             <div class="ui-dialog-content">
                 <div class="title-block">
-                    <div th:replace="~{fragments/ui/dialog :: heading('review-title', 'Confirmar postagem', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/shipping/package.svg')}"></div>
+                    <div th:replace="~{fragments/ui/dialog :: heading('review-title', 'Confirmar postagem', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/shared/categories/package.svg')}"></div>
                     <p id="review-description">Confira os dados antes de confirmar. A doação passará para Enviado e não será mais possível cancelar o envio ou alterar os dados de postagem.</p>
                 </div>
                 <dl class="delivery-summary">

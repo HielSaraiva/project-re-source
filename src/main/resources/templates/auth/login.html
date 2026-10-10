@@ -1,47 +1,41 @@
 <!DOCTYPE html>
-<html class="auth-page" lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="~{fragments/layout/head :: head('Acesse sua conta', ~{::pageStyles}, 'auth')}">
-        <th:block th:fragment="pageStyles" th:replace="~{fragments/auth/page-styles :: styles(false)}"></th:block>
-    </head>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/auth/layout :: page('Acesse sua conta', false, '', ~{::content})}">
     <body>
-        <main class="auth-layout">
-            <aside th:replace="~{fragments/auth/brand-panel :: brandPanel}"></aside>
-            <section class="auth-panel" aria-labelledby="login-title">
-                <div class="auth-card">
-                    <header class="auth-heading"><h1 id="login-title">Acesse sua conta</h1><p th:text="${institutionLogin ? 'Faça login para receber recursos para sua organização.' : 'Faça login para doar recursos e apoiar organizações.'}">Faça login para doar recursos e apoiar organizações.</p></header>
-                    <nav th:replace="~{fragments/auth/profiles :: profiles(false, ${institutionLogin})}"></nav>
-                    <div class="auth-content">
-                        <p class="backend-error auth-feedback" role="alert" th:if="${param.error != null}" th:text="${institutionLogin ? 'Não foi possível entrar. Verifique o CNPJ, a senha e a aprovação da instituição.' : 'Não foi possível entrar. Verifique o e-mail, a senha e a situação da sua conta.'}">Não foi possível entrar. Verifique suas credenciais.</p>
-                        <p class="backend-error auth-feedback" role="alert" th:if="${param.oauthError != null}">Não foi possível entrar com Google. Tente novamente. Se sua conta foi cadastrada com senha, use e-mail e senha.</p>
-                        <p class="auth-feedback auth-feedback--success" role="status" th:if="${param.logout != null}">Você saiu da sua conta com segurança.</p>
-                        <p class="auth-feedback auth-feedback--success" role="status" th:if="${param.registered != null}">Conta criada com sucesso! Entre com seu e-mail e senha.</p>
-                        <p class="auth-feedback auth-feedback--success" role="status" th:if="${param.passwordReset != null}">Senha alterada com sucesso! Entre com sua nova senha.</p>
-                        <p class="auth-feedback" role="status" th:if="${param.sessionExpired != null}">Sua sessão foi encerrada. Entre novamente para continuar.</p>
-                        <p class="auth-feedback auth-feedback--success" role="status" th:if="${param.institutionRegistered != null}">Solicitação enviada! Sua instituição aguarda análise. O acesso será liberado após a aprovação.</p>
-                        <div class="auth-body">
+        <section th:fragment="content" class="auth-panel" aria-labelledby="login-title">
+            <div class="auth-card">
+                <header class="auth-heading"><h1 id="login-title">Acesse sua conta</h1><p th:text="${institutionLogin ? 'Faça login para receber recursos para sua organização.' : 'Faça login para doar recursos e apoiar organizações.'}">Faça login para doar recursos e apoiar organizações.</p></header>
+                <nav th:replace="~{fragments/auth/profiles :: profiles(false, ${institutionLogin})}"></nav>
+                <div class="auth-content">
+                    <p class="backend-error auth-feedback" role="alert" th:if="${param.error != null}" th:text="${institutionLogin ? 'Não foi possível entrar. Verifique o CNPJ, a senha e a aprovação da instituição.' : 'Não foi possível entrar. Verifique o e-mail, a senha e a situação da sua conta.'}">Não foi possível entrar. Verifique suas credenciais.</p>
+                    <p class="backend-error auth-feedback" role="alert" th:if="${param.oauthError != null}">Não foi possível entrar com Google. Tente novamente. Se sua conta foi cadastrada com senha, use e-mail e senha.</p>
+                    <p class="auth-feedback auth-feedback--success" role="status" th:if="${param.logout != null}">Você saiu da sua conta com segurança.</p>
+                    <p class="auth-feedback auth-feedback--success" role="status" th:if="${param.registered != null}">Conta criada com sucesso! Entre com seu e-mail e senha.</p>
+                    <p class="auth-feedback auth-feedback--success" role="status" th:if="${param.passwordReset != null}">Senha alterada com sucesso! Entre com sua nova senha.</p>
+                    <p class="auth-feedback" role="status" th:if="${param.sessionExpired != null}">Sua sessão foi encerrada. Entre novamente para continuar.</p>
+                    <p class="auth-feedback auth-feedback--success" role="status" th:if="${param.institutionRegistered != null}">Solicitação enviada! Sua instituição aguarda análise. O acesso será liberado após a aprovação.</p>
+                    <div class="auth-body">
 
-                            <form class="auth-form" method="post" th:action="@{/login}">
-                                <input type="hidden" name="profile" th:value="${institutionLogin ? 'ong' : 'donor'}">
-                                <div class="proposal-field auth-field" th:unless="${institutionLogin}">
-                                    <label for="email">E-mail</label>
-                                    <div class="auth-input"><svg th:replace="~{fragments/auth/icon :: icon('mail')}"></svg><input id="email" name="identifier" type="email" placeholder="seu@email.com" autocomplete="username" maxlength="320" autocapitalize="none" spellcheck="false" required></div>
-                                </div>
-                                <div class="proposal-field auth-field" th:if="${institutionLogin}">
-                                    <label for="cnpj">CNPJ</label>
-                                    <div class="auth-input"><svg th:replace="~{fragments/auth/icon :: icon('building')}"></svg><input id="cnpj" name="identifier" type="text" placeholder="00.000.000/0000-00" autocapitalize="characters" autocomplete="username" minlength="14" maxlength="18" pattern="[A-Za-z0-9]{12}[0-9]{2}|[A-Za-z0-9]{2}\.[A-Za-z0-9]{3}\.[A-Za-z0-9]{3}/[A-Za-z0-9]{4}\x2D[0-9]{2}" title="Informe os 14 caracteres do CNPJ, com ou sem pontuação." spellcheck="false" required></div>
-                                </div>
-                                <div th:replace="~{fragments/auth/password-field :: passwordField('password', 'Senha', 'current-password', false)}"></div>
-                                <div class="auth-forgot"><a class="text-link" th:href="@{/password/forgot}">Esqueceu a senha?</a></div>
-                                <button class="button auth-submit" type="submit" th:text="${institutionLogin ? 'Entrar como Instituição' : 'Entrar'}">Entrar</button>
-                            </form>
-                            <th:block th:if="${!institutionLogin}">
-                                <th:block th:replace="~{fragments/auth/google-entry :: googleEntry('Entrar com Google')}"></th:block>
-                            </th:block>
-                        </div>
-                        <footer class="auth-footer">Não possui conta? <th:block th:if="${institutionLogin}">Cadastre-se como </th:block><a class="text-link" th:href="@{/register/donor}">Pessoa Física</a> ou <a class="text-link" th:href="@{/register/institution}">Instituição</a></footer>
+                        <form class="auth-form" method="post" th:action="@{/login}">
+                            <input type="hidden" name="profile" th:value="${institutionLogin ? 'ong' : 'donor'}">
+                            <div class="proposal-field auth-field" th:unless="${institutionLogin}">
+                                <label for="email">E-mail</label>
+                                <div class="auth-input"><svg th:replace="~{fragments/auth/icon :: icon('mail')}"></svg><input id="email" name="identifier" type="email" placeholder="seu@email.com" autocomplete="username" maxlength="320" autocapitalize="none" spellcheck="false" required></div>
+                            </div>
+                            <div class="proposal-field auth-field" th:if="${institutionLogin}">
+                                <label for="cnpj">CNPJ</label>
+                                <div class="auth-input"><svg th:replace="~{fragments/auth/icon :: icon('building')}"></svg><input id="cnpj" name="identifier" type="text" placeholder="00.000.000/0000-00" autocapitalize="characters" autocomplete="username" minlength="14" maxlength="18" pattern="[A-Za-z0-9]{12}[0-9]{2}|[A-Za-z0-9]{2}\.[A-Za-z0-9]{3}\.[A-Za-z0-9]{3}/[A-Za-z0-9]{4}\x2D[0-9]{2}" title="Informe os 14 caracteres do CNPJ, com ou sem pontuação." spellcheck="false" required></div>
+                            </div>
+                            <div th:replace="~{fragments/auth/password-field :: passwordField('password', 'Senha', 'current-password', false)}"></div>
+                            <div class="auth-forgot"><a class="text-link" th:href="@{/password/forgot}">Esqueceu a senha?</a></div>
+                            <button class="button auth-submit" type="submit" th:text="${institutionLogin ? 'Entrar como Instituição' : 'Entrar'}">Entrar</button>
+                        </form>
+                        <th:block th:if="${!institutionLogin}">
+                            <th:block th:replace="~{fragments/auth/google-entry :: googleEntry('Entrar com Google')}"></th:block>
+                        </th:block>
                     </div>
+                    <footer class="auth-footer">Não possui conta? <th:block th:if="${institutionLogin}">Cadastre-se como </th:block><a class="text-link" th:href="@{/register/donor}">Pessoa Física</a> ou <a class="text-link" th:href="@{/register/institution}">Instituição</a></footer>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
     </body>
 </html>

@@ -9,8 +9,8 @@
 }
 
 .status-badge.status-badge--cancelled {
-    color: #b91c1c;
-    background: #fef2f2;
+    color: var(--color-danger);
+    background: var(--color-danger-surface);
 }
 
 .donation-page [hidden] {

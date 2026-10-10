@@ -42,17 +42,17 @@
                         <h2>Detalhes da Doação</h2>
                         <p>Item oferecido e datas da proposta e do aceite.</p>
                     </div>
-                    <img class="section-divider" th:src="@{/images/donor/donation-completed/details-divider.svg}" alt="">
+                    <img class="section-divider" th:src="@{/images/shared/icons/line.svg}" alt="">
                     <div th:replace="~{fragments/donation/details :: details(${donationDetails}, '/images/donor/donation-completed', '', '')}"></div>
                 </article>
 
                 <article class="details-card">
-                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/donation-completed/home.svg', 'Dados da instituição', 'card-badge--blue')}"></div>
+                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/shared/icons/home.svg', 'Dados da instituição', 'card-badge--blue')}"></div>
                     <div class="title-block">
                         <h2>Informações da ONG</h2>
                         <p>Instituição beneficiada e seus dados de contato.</p>
                     </div>
-                    <img class="section-divider" th:src="@{/images/donor/donation-completed/details-divider.svg}" alt="">
+                    <img class="section-divider" th:src="@{/images/shared/icons/line.svg}" alt="">
                     <div th:replace="~{fragments/donation/details :: details(${organizationDetails}, '/images/donor/donation-completed', '', '')}"></div>
                 </article>
             </section>
