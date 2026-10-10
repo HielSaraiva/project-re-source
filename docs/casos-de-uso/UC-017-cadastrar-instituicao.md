@@ -7,12 +7,16 @@
 | **ID** | UC-017 |
 | **Nome** | Cadastrar instituição |
 | **Ator(es)** | Representante legal, visitante |
-| **Versão** | 1.0 |
+| **Versão** | 1.1 |
 | **Status** | Ativo |
+
+## Descrição
+
+Solicitar verificação da instituição e enviar a documentação exigida, conforme RF-019 e RN-017. A consulta cadastral não substitui a futura decisão administrativa.
 
 ## Pré-condições
 
-- Visitante não autenticado, com CNPJ ativo e acesso aos documentos exigidos.
+- Visitante não autenticado, com CNPJ ativo e acesso aos documentos exigidos; credenciais devem cumprir RN-018.
 - BrasilAPI disponível e armazenamento privado gravável.
 
 ## Fluxo Principal
@@ -47,4 +51,5 @@ A instituição e os dois documentos aguardam análise. O visitante não está a
 
 | Versão | Data | Autor | Descrição |
 |--------|------|-------|-----------|
-| 1.0 | 2026-10-09 | Codex | Solicitação de cadastro institucional |
+| 1.0 | 2026-10-09 | Hiel Saraiva | Solicitação de cadastro institucional |
+| 1.1 | 2026-10-10 | Hiel Saraiva | Objetivo do cadastro, política de senha e limite da consulta cadastral |

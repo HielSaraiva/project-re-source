@@ -7,7 +7,7 @@
 | **ID**         | UC-006                       |
 | **Nome**       | Consultar painel da ONG |
 | **Ator(es)**   | ONG |
-| **Versão**     | 1.0                          |
+| **Versão**     | 1.1                          |
 | **Status**     | Ativo |
 
 ## Descrição
@@ -30,7 +30,7 @@ Apresentar os indicadores e as pendências da instituição.
 ### FA-01: Ausência de pendências
 
 1. Não existem propostas aguardando aceite ou necessidades com saldo.
-2. O sistema apresenta os indicadores correspondentes e listas vazias.
+2. O sistema apresenta os indicadores correspondentes, inclusive zero, e mensagens descritivas nas seções vazias. Na ausência de propostas pendentes, oferece acesso ao gerenciamento de doações, conforme RF-006.
 
 ## Fluxos de Exceção
 
@@ -49,3 +49,4 @@ Apresentar os indicadores e as pendências da instituição.
 | Versão | Data       | Autor  | Descrição            |
 |--------|------------|--------|----------------------|
 | 1.0    | 2026-10-09 | Hiel Saraiva | Criação do documento |
+| 1.1 | 2026-10-10 | Hiel Saraiva | Tratamento do primeiro acesso sem propostas ou necessidades |

@@ -7,7 +7,7 @@
 | **ID**         | UC-002                       |
 | **Nome**       | Consultar painel do doador |
 | **Ator(es)**   | Doador |
-| **Versão**     | 1.0                          |
+| **Versão**     | 1.1                          |
 | **Status**     | Ativo |
 
 ## Descrição
@@ -30,7 +30,7 @@ Apresentar necessidades urgentes e o acompanhamento das propostas do doador.
 ### FA-01: Ausência de resultados
 
 1. Não existem necessidades urgentes ou propostas vinculadas ao doador.
-2. O sistema apresenta as respectivas listas vazias.
+2. O sistema apresenta mensagens descritivas nas seções vazias e ações para explorar necessidades, conforme RF-002.
 
 ## Fluxos de Exceção
 
@@ -49,3 +49,4 @@ Apresentar necessidades urgentes e o acompanhamento das propostas do doador.
 | Versão | Data       | Autor  | Descrição            |
 |--------|------------|--------|----------------------|
 | 1.0    | 2026-10-09 | Hiel Saraiva | Criação do documento |
+| 1.1 | 2026-10-10 | Hiel Saraiva | Orientação ao doador sem urgências ou envios |

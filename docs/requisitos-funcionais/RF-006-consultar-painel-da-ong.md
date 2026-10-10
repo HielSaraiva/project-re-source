@@ -7,7 +7,7 @@
 | **ID**         | RF-006                                  |
 | **Nome**       | Consultar painel da ONG |
 | **Prioridade** | Média |
-| **Versão**     | 1.1                                     |
+| **Versão**     | 1.2                                     |
 | **Status**     | Implementado |
 
 ## Descrição
@@ -21,13 +21,18 @@ O sistema deve apresentar à ONG indicadores de suas doações e necessidades, a
 ## Entradas e Saídas
 
 ### Entradas (Dados necessários)
+
 - Conta da ONG autenticada (identificação obtida da autenticação, por sessão ou HTTP Basic, obrigatória).
 
 ### Saídas (Resultados esperados)
+
 - Nome da instituição e identificação de seu papel no painel.
 - Quantidade de propostas concluídas, propostas aguardando aceite e necessidades ativas da instituição.
 - Até três propostas aguardando aceite, ordenadas pelo menor prazo, com desempate por criação e identificador.
 - Até seis necessidades da instituição com status ativo e saldo positivo.
+
+- Indicadores com valor zero e mensagens descritivas quando não houver propostas aguardando aceite ou necessidades disponíveis. A seção de propostas oferece acesso ao gerenciamento de doações, sem simular registros.
+- Header com notificações de RF-023 e menu de saída de RF-024.
 
 ## Histórico de Alterações
 
@@ -35,3 +40,4 @@ O sistema deve apresentar à ONG indicadores de suas doações e necessidades, a
 |--------|------------|--------|----------------------|
 | 1.0    | 2026-10-09 | Hiel Saraiva | Criação do documento |
 | 1.1    | 2026-10-09 | Hiel Saraiva | Precisão sobre a origem da identificação do ator |
+| 1.2 | 2026-10-10 | Hiel Saraiva | Painel inicial sem dados e acesso às funcionalidades do header |

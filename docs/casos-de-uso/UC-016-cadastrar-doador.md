@@ -7,7 +7,7 @@
 | **ID** | UC-016 |
 | **Nome** | Cadastrar doador |
 | **Ator(es)** | Visitante |
-| **Versão** | 1.0 |
+| **Versão** | 1.1 |
 | **Status** | Ativo |
 
 ## Descrição
@@ -21,10 +21,10 @@ Permitir que um visitante crie uma conta de doador para utilizar a plataforma.
 
 ## Fluxo Principal
 
-1. O visitante abre “Pessoa Física” na tela de login ou acessa `/register/donor`.
+1. O visitante seleciona a opção de cadastro de doador no login ou acessa `/register/donor`.
 2. O sistema apresenta o formulário de nome completo, e-mail, senha e confirmação.
 3. O visitante preenche os campos e seleciona “Cadastrar”.
-4. O sistema valida os dados e cria uma conta de doador ativo com senha protegida por hash.
+4. O sistema valida os dados conforme RN-016 e RN-018 e cria uma conta de doador ativo com senha protegida.
 5. O sistema redireciona ao login e informa que a conta foi criada.
 6. O visitante entra pela autenticação descrita em UC-001.
 
@@ -61,4 +61,5 @@ Permitir que um visitante crie uma conta de doador para utilizar a plataforma.
 
 | Versão | Data | Autor | Descrição |
 |--------|------|-------|-----------|
-| 1.0 | 2026-10-09 | Codex | Cadastro de doador |
+| 1.0 | 2026-10-09 | Hiel Saraiva | Cadastro de doador |
+| 1.1 | 2026-10-10 | Hiel Saraiva | Terminologia da navegação e referências às políticas de cadastro |

@@ -7,16 +7,16 @@
 | **ID** | RF-018 |
 | **Nome** | Cadastrar doador |
 | **Prioridade** | Alta |
-| **Versão** | 1.0 |
+| **Versão** | 1.1 |
 | **Status** | Implementado |
 
 ## Descrição
 
 O sistema deve oferecer a página pública `/register/donor`, com nome completo, e-mail, senha e confirmação de senha. Deve validar os dados, criar uma conta local de doador ativo com senha armazenada como hash e redirecionar à página de login com confirmação de sucesso.
 
-O formulário deve permitir mostrar e ocultar cada senha separadamente. Em caso de erro, deve preservar nome e e-mail, indicar os campos inválidos e solicitar novamente as senhas, sem devolvê-las no HTML.
+O formulário deve permitir mostrar e ocultar cada senha separadamente, com os controles de visibilidade e troca de perfil descritos em RF-001. Em dispositivos móveis, deve priorizar o formulário e apresentar a marca em header compacto; em telas maiores, deve manter o painel de marca lateral. Em caso de erro, deve preservar nome e e-mail, indicar os campos inválidos e solicitar novamente as senhas, sem devolvê-las no HTML.
 
-Quando configurada, a opção “Cadastrar com Google” deve reutilizar o fluxo OAuth 2.0 / OpenID Connect descrito em RF-001. O link de cadastro nas telas de login deve abrir este formulário. Contas já autenticadas devem ser redirecionadas ao respectivo painel.
+Quando configurada, a opção “Cadastrar com Google” deve reutilizar o fluxo OAuth 2.0 / OpenID Connect descrito em RF-001. O link de cadastro do perfil doador na tela de login deve abrir este formulário. Contas já autenticadas devem ser redirecionadas ao respectivo painel.
 
 ## Atores
 
@@ -28,7 +28,7 @@ Quando configurada, a opção “Cadastrar com Google” deve reutilizar o fluxo
 
 - Nome completo, obrigatório, até 200 caracteres.
 - E-mail válido, obrigatório, até 320 caracteres.
-- Senha, obrigatória, de 8 a 12 caracteres e até 72 bytes UTF-8, com pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.
+- Senha obrigatória conforme [RN-018](../regras-de-negocio/RN-018-politica-de-senhas.md).
 - Confirmação de senha, obrigatória e igual à senha.
 - Alternativamente, identidade Google validada pelo provedor.
 
@@ -43,4 +43,5 @@ Quando configurada, a opção “Cadastrar com Google” deve reutilizar o fluxo
 
 | Versão | Data | Autor | Descrição |
 |--------|------|-------|-----------|
-| 1.0 | 2026-10-09 | Codex | Cadastro local do doador e integração com o login |
+| 1.0 | 2026-10-09 | Hiel Saraiva | Cadastro local do doador e integração com o login |
+| 1.1 | 2026-10-10 | Hiel Saraiva | Política de senha centralizada e comportamento compartilhado das telas |

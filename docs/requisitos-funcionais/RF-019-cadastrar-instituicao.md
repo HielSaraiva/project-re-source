@@ -7,7 +7,7 @@
 | **ID** | RF-019 |
 | **Nome** | Cadastrar instituição |
 | **Prioridade** | Alta |
-| **Versão** | 1.0 |
+| **Versão** | 1.1 |
 | **Status** | Implementado |
 
 ## Descrição
@@ -16,7 +16,7 @@ O sistema deve oferecer a página pública `/register/institution` para solicita
 
 A consulta pública `GET /register/institution/cnpj?cnpj=...` deve validar o CNPJ e retornar sua razão social oficial quando ativo. O servidor deve repetir a consulta no envio, sem confiar na razão social ou situação enviadas pelo navegador. Deve aceitar CNPJ numérico e alfanumérico conforme RN-017.
 
-O cadastro deve persistir a instituição pendente de aprovação e dois documentos pendentes, armazenar a senha como hash e redirecionar ao login institucional com confirmação e orientação de aguardar aprovação. O formulário deve reutilizar os componentes e comportamentos das demais telas de autenticação.
+O cadastro deve persistir a instituição pendente de aprovação e dois documentos pendentes, armazenar a senha como hash e redirecionar ao login institucional com confirmação e orientação de aguardar aprovação. A apresentação deve manter os controles de senha, a seleção de perfil e a adaptação a dispositivos móveis descritos em RF-001 e RF-018.
 
 ## Atores
 
@@ -27,7 +27,7 @@ O cadastro deve persistir a instituição pendente de aprovação e dois documen
 ### Entradas
 
 - CNPJ ativo, e-mail válido (até 320 caracteres), representante (até 200 caracteres) e CPF válido.
-- Senha e confirmação conforme os limites compartilhados de RN-016.
+- Senha e confirmação conforme [RN-018](../regras-de-negocio/RN-018-politica-de-senhas.md).
 - Documento de identidade e estatuto social ou comprovante, em PDF ou JPG, até 5 MB cada.
 
 ### Saídas
@@ -39,10 +39,11 @@ O cadastro deve persistir a instituição pendente de aprovação e dois documen
 
 ## Limites
 
-A análise administrativa dos documentos e a decisão de aprovação são um fluxo posterior. Esta tela apenas solicita a verificação; contas não aprovadas continuam impedidas de entrar por RF-001.
+A análise administrativa dos documentos e a decisão de aprovação são um fluxo posterior. Esta tela apenas solicita a verificação; contas não aprovadas continuam impedidas de entrar por RF-001. Não existe tela ou endpoint de análise administrativa implementado no escopo atual.
 
 ## Histórico de Alterações
 
 | Versão | Data | Autor | Descrição |
 |--------|------|-------|-----------|
-| 1.0 | 2026-10-09 | Codex | Cadastro institucional, consulta de CNPJ e documentos privados |
+| 1.0 | 2026-10-09 | Hiel Saraiva | Cadastro institucional, consulta de CNPJ e documentos privados |
+| 1.1 | 2026-10-10 | Hiel Saraiva | Política de senha independente e delimitação da aprovação administrativa |

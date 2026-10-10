@@ -6,7 +6,7 @@
 |-------------|--------------------|
 | **ID**      | RN-006             |
 | **Nome**    | Unicidade e identificação da proposta |
-| **Versão**  | 1.0                |
+| **Versão**  | 1.1                |
 | **Status**  | Ativa |
 
 ## Descrição
@@ -21,7 +21,7 @@ Criação e identificação das propostas de doação.
 
 - Uma proposta é ativa quando não está recusada, cancelada nem concluída.
 - Uma proposta ativa para o mesmo par de doação e necessidade impede nova proposta para esse par.
-- Cada proposta recebe protocolo no formato INT-AAAA-N, com o ano em America/Fortaleza e o número obtido da sequência de protocolos.
+- Cada proposta recebe protocolo único no formato INT-AAAA-N, com o ano considerado em America/Fortaleza.
 - A proposta inicia aguardando aceite, com quantidade alocada e mensagem opcional de até 1.000 caracteres.
 
 ## Exceções
@@ -33,3 +33,4 @@ Uma proposta anterior recusada, cancelada ou concluída não impede outra para o
 | Versão | Data       | Autor  | Descrição          |
 |--------|------------|--------|--------------------|
 | 1.0    | 2026-10-09 | Hiel Saraiva | Criação do documento |
+| 1.1 | 2026-10-10 | Hiel Saraiva | Remoção do mecanismo de geração de identificadores da política de negócio |
