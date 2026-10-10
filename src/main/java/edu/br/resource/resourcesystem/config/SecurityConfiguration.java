@@ -36,6 +36,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(a -> a.requestMatchers("/", "/login", "/password/forgot", "/password/reset", "/register/donor", "/register/institution", "/register/institution/cnpj", "/css/**", "/js/**", "/images/**", "/error").permitAll()
                         .requestMatchers("/donor/**").hasRole("DONOR").requestMatchers("/ong/**").hasRole("ONG")
+                        .requestMatchers("/api/notifications/**").hasAnyRole("DONOR", "ONG")
                         .anyRequest().authenticated())
                 .formLogin(f -> f.loginPage("/login").usernameParameter("identifier")
                         .successHandler(success).failureHandler((request, response, exception) ->

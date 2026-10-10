@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class MatchEventRepository {
     private final JdbcTemplate jdbc;
+    private final edu.br.resource.resourcesystem.service.notification.NotificationService notifications;
 
     public void append(DonationMatch match, MatchEventType type) {
         UUID eventId = UUID.randomUUID();
@@ -23,6 +24,7 @@ public class MatchEventRepository {
             values (?, ?, ?, ?, ?, ?)
             """, eventId, match.getId(), match.getProtocol(), type.getValue(),
                 match.getDonation().getDonor().getId(), match.getNecessity().getInstitution().getId());
+        notifications.record(eventId);
         TransactionLog.afterCommit(log, "event=outbox_created eventId={} protocol={} action={}",
                 eventId, match.getProtocol(), type.getValue());
     }
@@ -72,6 +74,8 @@ public class MatchEventRepository {
         if (inserted == 0 && !Boolean.TRUE.equals(jdbc.queryForObject(
                 "select exists(select 1 from match_event_outbox where id=?)", Boolean.class, id)))
             throw new IllegalArgumentException("Evento desconhecido.");
+        notifications.record(id);
+        jdbc.update("UPDATE user_notifications SET email_ready=true WHERE event_id=?", id);
         if (inserted > 0)
             TransactionLog.afterCommit(log, "event=notification_recorded eventId={}", id);
         else

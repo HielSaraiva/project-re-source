@@ -101,6 +101,15 @@ Os valores `smtp.example.com` e `nao-responda@example.com` são exemplos, não u
 
 As responsabilidades, validações compartilhadas, verificações e limites atuais estão descritos em [Autenticação e cadastro](docs/arquitetura/autenticacao-e-cadastro.md).
 
+### Notificações no site e por e-mail
+
+O sino do header exibe as atualizações de interesse do doador e da ONG: propostas, aceite/recusa, modalidade, entrega/postagem, recebimento, necessidade atendida e cancelamento por solicitação ou prazo. Possui contador de não lidas, paginação, marcação de leitura e estado vazio. Os avisos são persistidos junto com a operação e ficam disponíveis mesmo se o RabbitMQ estiver indisponível.
+
+O RabbitMQ existente libera a entrega de e-mails, que reutiliza o logo, o template de marca e a configuração SMTP da recuperação de senha. Não é necessário configurar outro remetente. Com `MAIL_ENABLED=true`, os e-mails de notificações ficam habilitados por padrão. Para suspender apenas esse envio, configure `NOTIFICATION_EMAIL_ENABLED=false`; os avisos continuam aparecendo no site. Em produção, ajuste `APP_BASE_URL` para o endereço público HTTPS e mantenha os serviços RabbitMQ/PostgreSQL disponíveis com armazenamento persistente.
+
+Há controle de duplicação por evento/destinatário e novas tentativas persistidas para falhas SMTP. Após oito falhas, a entrega exige retomada administrativa. O header consulta atualizações a cada minuto com a aba visível e ao abrir o menu. Detalhes, destinatários, endpoints e operação estão em [Notificações](docs/arquitetura/notificacoes.md).
+
+
 ---
 
 ## Executando os Testes

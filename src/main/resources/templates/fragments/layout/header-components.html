@@ -6,9 +6,19 @@
             <span>ReSource</span>
         </a>
         <div class="nav-actions" th:fragment="actions(name, role, label)">
-            <button class="icon-button" type="button" aria-label="Notificações: há notificações não lidas" title="Notificações">
-                <img th:src="@{/images/shared/notification.svg}" alt="">
-            </button>
+            <details class="notification-menu" data-notifications>
+                <summary class="icon-button notification-trigger" aria-label="Notificações" aria-expanded="false" aria-controls="notification-panel" title="Notificações">
+                    <img th:src="@{/images/shared/notification.svg}" alt="">
+                    <span class="notification-badge" data-notification-count hidden aria-hidden="true"></span>
+                </summary>
+                <section class="notification-panel" id="notification-panel" aria-label="Suas notificações">
+                    <div class="notification-panel__header"><h2>Notificações</h2><button type="button" class="notification-text-button" data-read-all disabled>Marcar todas como lidas</button></div>
+                    <p class="notification-status" data-notification-status role="status" aria-live="polite">Carregando suas atualizações…</p>
+                    <ul class="notification-list" data-notification-list></ul>
+                    <div class="notification-panel__footer"><button type="button" class="notification-text-button" data-notification-previous disabled>Anterior</button><span data-notification-page>Página 1</span><button type="button" class="notification-text-button" data-notification-next disabled>Próxima</button></div>
+                    <button type="button" class="notification-retry notification-text-button" data-notification-retry hidden>Tentar novamente</button>
+                </section>
+            </details>
             <details class="profile-menu">
                 <summary class="profile" th:attr="aria-label=${label + ': ' + name},title=${name + (role == null ? '' : ' — ' + role)}"
                     th:with="cleanName=${name == null ? '' : name.trim().replaceAll('\s+', ' ')},words=${#strings.arraySplit(#strings.isEmpty(cleanName) ? '?' : cleanName, ' ')}">
