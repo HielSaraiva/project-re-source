@@ -1,5 +1,7 @@
 package edu.br.resource.resourcesystem.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import edu.br.resource.resourcesystem.validation.MatchingPasswords;
@@ -22,6 +24,7 @@ public abstract class RegistrationCredentials
 
     @NotBlank(message = "Informe uma senha.")
     @StrongPassword
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotBlank(message = "Confirme sua senha.")
@@ -31,6 +34,7 @@ public abstract class RegistrationCredentials
                     "A confirmação deve ter no máximo "
                             + PasswordPolicy.MAX_LENGTH
                             + " caracteres.")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String passwordConfirmation;
 
     public void setEmail(String email) {

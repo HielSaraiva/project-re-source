@@ -37,7 +37,7 @@ public class PasswordRecoveryService {
     private final SessionRegistry sessions;
 
     private record Account(
-            int id, boolean institution, String email, String name, String password) {
+            int id, boolean institution, String email, String name, boolean hasPassword) {
         String table() {
             return institution ? "institutions" : "users";
         }
@@ -53,9 +53,9 @@ public class PasswordRecoveryService {
         var accounts =
                 db.query(
                         """
-                SELECT id, false AS institution, email, full_name AS name, password_hash FROM users WHERE lower(email) = lower(?)
+                SELECT id, false AS institution, email, full_name AS name, (password_hash IS NOT NULL) AS has_password FROM users WHERE lower(email) = lower(?)
                 UNION ALL
-                SELECT id, true AS institution, email, legal_name AS name, password_hash FROM institutions WHERE lower(email) = lower(?)
+                SELECT id, true AS institution, email, legal_name AS name, (password_hash IS NOT NULL) AS has_password FROM institutions WHERE lower(email) = lower(?)
                 """,
                         (rs, row) ->
                                 new Account(
@@ -63,11 +63,11 @@ public class PasswordRecoveryService {
                                         rs.getBoolean("institution"),
                                         rs.getString("email"),
                                         rs.getString("name"),
-                                        rs.getString("password_hash")),
+                                        rs.getBoolean("has_password")),
                         email,
                         email);
 
-        if (accounts.size() != 1 || accounts.getFirst().password() == null) return;
+        if (accounts.size() != 1 || !accounts.getFirst().hasPassword()) return;
         Account account = accounts.getFirst();
         db.queryForObject(
                 "SELECT id FROM " + account.table() + " WHERE id = ? FOR UPDATE",
@@ -140,10 +140,10 @@ public class PasswordRecoveryService {
         List<Account> accounts =
                 db.query(
                         """
-                SELECT u.id, false AS institution, u.email, u.full_name AS name, u.password_hash
+                SELECT u.id, false AS institution, u.email, u.full_name AS name, (u.password_hash IS NOT NULL) AS has_password
                   FROM password_reset_tokens t JOIN users u ON t.user_id = u.id WHERE t.token_hash = ?
                 UNION ALL
-                SELECT i.id, true AS institution, i.email, i.legal_name AS name, i.password_hash
+                SELECT i.id, true AS institution, i.email, i.legal_name AS name, (i.password_hash IS NOT NULL) AS has_password
                   FROM password_reset_tokens t JOIN institutions i ON t.institution_id = i.id WHERE t.token_hash = ?
                 """,
                         (rs, row) ->
@@ -152,10 +152,10 @@ public class PasswordRecoveryService {
                                         rs.getBoolean("institution"),
                                         rs.getString("email"),
                                         rs.getString("name"),
-                                        rs.getString("password_hash")),
+                                        rs.getBoolean("has_password")),
                         hash,
                         hash);
-        if (accounts.size() != 1 || accounts.getFirst().password() == null) return Optional.empty();
+        if (accounts.size() != 1 || !accounts.getFirst().hasPassword()) return Optional.empty();
         Account account = accounts.getFirst();
 
         db.queryForObject(
