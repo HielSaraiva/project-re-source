@@ -15,12 +15,18 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DonationRepository extends JpaRepository<Donation, Integer>, JpaSpecificationExecutor<Donation> {
+public interface DonationRepository
+        extends JpaRepository<Donation, Integer>, JpaSpecificationExecutor<Donation> {
     @Override
     @EntityGraph(attributePaths = {"donationPackage.item.itemType"})
     Page<Donation> findAll(Specification<Donation> specification, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"donationPackage", "donationPackage.item", "donationPackage.item.itemType"})
+    @EntityGraph(
+            attributePaths = {
+                "donationPackage",
+                "donationPackage.item",
+                "donationPackage.item.itemType"
+            })
     Optional<Donation> findByIdAndDonorId(Integer id, Integer donorId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

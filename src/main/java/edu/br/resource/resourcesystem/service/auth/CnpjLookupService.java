@@ -17,8 +17,12 @@ import org.springframework.web.client.RestClientResponseException;
 public class CnpjLookupService {
     private final RestClient api;
 
-    public CnpjLookupService(@Value("${resource.registration.brasil-api-url:https://brasilapi.com.br/api}") String baseUrl) {
-        var factory = new JdkClientHttpRequestFactory(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3)).build());
+    public CnpjLookupService(
+            @Value("${resource.registration.brasil-api-url:https://brasilapi.com.br/api}")
+                    String baseUrl) {
+        var factory =
+                new JdkClientHttpRequestFactory(
+                        HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3)).build());
         factory.setReadTimeout(Duration.ofSeconds(8));
         api = RestClient.builder().baseUrl(baseUrl).requestFactory(factory).build();
     }
@@ -29,15 +33,24 @@ public class CnpjLookupService {
             throw new LookupException(HttpStatus.BAD_REQUEST, "Informe um CNPJ válido.");
         try {
             var response = api.get().uri("/cnpj/v1/{cnpj}", cnpj).retrieve().body(ApiCompany.class);
-            if (response == null || !cnpj.equals(BrazilianDocuments.normalizeCnpj(response.cnpj()))
-                    || response.legalName() == null || response.legalName().isBlank() || response.legalName().length() > 200)
-                throw new LookupException(HttpStatus.SERVICE_UNAVAILABLE, "A consulta retornou dados incompletos. Tente novamente mais tarde.");
+            if (response == null
+                    || !cnpj.equals(BrazilianDocuments.normalizeCnpj(response.cnpj()))
+                    || response.legalName() == null
+                    || response.legalName().isBlank()
+                    || response.legalName().length() > 200)
+                throw new LookupException(
+                        HttpStatus.SERVICE_UNAVAILABLE,
+                        "A consulta retornou dados incompletos. Tente novamente mais tarde.");
             if (!Integer.valueOf(2).equals(response.status()))
-                throw new LookupException(HttpStatus.UNPROCESSABLE_CONTENT, "O CNPJ precisa estar ativo para solicitar o cadastro.");
+                throw new LookupException(
+                        HttpStatus.UNPROCESSABLE_CONTENT,
+                        "O CNPJ precisa estar ativo para solicitar o cadastro.");
             return new Company(cnpj, response.legalName().strip());
         } catch (RestClientResponseException ex) {
             if (ex.getStatusCode().value() == 404 || ex.getStatusCode().value() == 400)
-                throw new LookupException(HttpStatus.UNPROCESSABLE_CONTENT, "CNPJ não encontrado. Confira o número informado.");
+                throw new LookupException(
+                        HttpStatus.UNPROCESSABLE_CONTENT,
+                        "CNPJ não encontrado. Confira o número informado.");
             throw unavailable();
         } catch (RestClientException ex) {
             throw unavailable();
@@ -45,18 +58,29 @@ public class CnpjLookupService {
     }
 
     private LookupException unavailable() {
-        return new LookupException(HttpStatus.SERVICE_UNAVAILABLE, "Consulta de CNPJ indisponível no momento. Tente novamente mais tarde.");
+        return new LookupException(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                "Consulta de CNPJ indisponível no momento. Tente novamente mais tarde.");
     }
 
     public record Company(String cnpj, String legalName) {}
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private record ApiCompany(String cnpj, @JsonProperty("razao_social") String legalName,
-                              @JsonProperty("situacao_cadastral") Integer status) {}
+    private record ApiCompany(
+            String cnpj,
+            @JsonProperty("razao_social") String legalName,
+            @JsonProperty("situacao_cadastral") Integer status) {}
 
     public static class LookupException extends RegistrationFieldException {
         private final HttpStatus status;
-        public LookupException(HttpStatus status, String message) { super("cnpj", message); this.status = status; }
-        public HttpStatus status() { return status; }
+
+        public LookupException(HttpStatus status, String message) {
+            super("cnpj", message);
+            this.status = status;
+        }
+
+        public HttpStatus status() {
+            return status;
+        }
     }
 }

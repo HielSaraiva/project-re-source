@@ -9,8 +9,15 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = BrazilianDocumentValidator.class)
 public @interface BrazilianDocument {
     Type value();
+
     String message() default "Informe um documento válido.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
-    enum Type { CNPJ, CPF }
+
+    enum Type {
+        CNPJ,
+        CPF
+    }
 }

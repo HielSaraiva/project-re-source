@@ -11,7 +11,9 @@ public enum DocumentStatus implements DatabaseEnum {
     APPROVED("approved"),
     REJECTED("rejected");
 
-    @EnumeratedValue
-    private final String value;
-    public String getLabel() { return value; }
+    @EnumeratedValue private final String value;
+
+    public String getLabel() {
+        return value;
+    }
 }

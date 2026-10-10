@@ -7,8 +7,8 @@ final class AuthenticationPageSupport {
     private AuthenticationPageSupport() {}
 
     static boolean signedIn(Authentication authentication) {
-        return authentication != null && authentication.isAuthenticated()
+        return authentication != null
+                && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken);
     }
-
 }

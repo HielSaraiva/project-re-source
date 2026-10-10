@@ -13,16 +13,24 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/api/notifications")
 public class NotificationController {
     private final NotificationService notifications;
+
     @GetMapping
-    public ResponseEntity<NotificationService.Inbox> inbox(Authentication auth,@RequestParam(defaultValue="0") int page) {
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(notifications.inbox(notifications.owner(auth),page));
+    public ResponseEntity<NotificationService.Inbox> inbox(
+            Authentication auth, @RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .body(notifications.inbox(notifications.owner(auth), page));
     }
+
     @PostMapping("/{id}/read")
-    public ResponseEntity<Void> read(Authentication auth,@PathVariable UUID id) {
-        notifications.read(notifications.owner(auth),id);return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> read(Authentication auth, @PathVariable UUID id) {
+        notifications.read(notifications.owner(auth), id);
+        return ResponseEntity.noContent().build();
     }
+
     @PostMapping("/read-all")
     public ResponseEntity<Void> readAll(Authentication auth) {
-        notifications.readAll(notifications.owner(auth));return ResponseEntity.noContent().build();
+        notifications.readAll(notifications.owner(auth));
+        return ResponseEntity.noContent().build();
     }
 }

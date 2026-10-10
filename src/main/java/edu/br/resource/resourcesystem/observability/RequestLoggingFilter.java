@@ -22,6 +22,7 @@ import org.springframework.web.servlet.HandlerMapping;
 @Slf4j
 public class RequestLoggingFilter extends OncePerRequestFilter {
     public static final String REQUEST_ID_HEADER = "X-Request-ID";
+
     @Value("${resource.logging.slow-request-ms:1000}")
     private long slowRequestMs = 1000;
 
@@ -32,7 +33,8 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         Map<String, String> previous = MDC.getCopyOfContextMap();
 
@@ -54,15 +56,21 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             String route = mapping == null ? "unmapped" : mapping.toString();
             int status = failed ? 500 : response.getStatus();
             if (status >= 500 || elapsed >= Math.max(1, slowRequestMs))
-                log.warn("event=http_completed method={} route={} status={} durationMs={}",
-                        request.getMethod(), route, status, elapsed);
+                log.warn(
+                        "event=http_completed method={} route={} status={} durationMs={}",
+                        request.getMethod(),
+                        route,
+                        status,
+                        elapsed);
             else
-                log.info("event=http_completed method={} route={} status={} durationMs={}",
-                        request.getMethod(), route, status, elapsed);
-            if (previous == null)
-                MDC.clear();
-            else
-                MDC.setContextMap(previous);
+                log.info(
+                        "event=http_completed method={} route={} status={} durationMs={}",
+                        request.getMethod(),
+                        route,
+                        status,
+                        elapsed);
+            if (previous == null) MDC.clear();
+            else MDC.setContextMap(previous);
         }
     }
 }

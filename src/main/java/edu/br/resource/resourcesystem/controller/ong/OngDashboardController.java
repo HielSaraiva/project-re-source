@@ -17,7 +17,8 @@ public class OngDashboardController {
 
     @GetMapping
     public String page(Authentication authentication, Model model) {
-        model.addAllAttributes(views.institutionDashboard(actors.institution(authentication).getId()));
+        model.addAllAttributes(
+                views.institutionDashboard(actors.institution(authentication).getId()));
         return "ong/dashboard";
     }
 }

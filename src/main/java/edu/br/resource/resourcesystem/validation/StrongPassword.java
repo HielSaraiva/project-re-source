@@ -9,6 +9,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = StrongPasswordValidator.class)
 public @interface StrongPassword {
     String message() default PasswordPolicy.MESSAGE;
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

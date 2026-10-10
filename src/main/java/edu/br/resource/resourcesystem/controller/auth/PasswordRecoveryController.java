@@ -34,10 +34,14 @@ public class PasswordRecoveryController {
     }
 
     @InitBinder("recovery")
-    void recoveryFields(WebDataBinder binder) { binder.setAllowedFields("email"); }
+    void recoveryFields(WebDataBinder binder) {
+        binder.setAllowedFields("email");
+    }
 
     @InitBinder("reset")
-    void resetFields(WebDataBinder binder) { binder.setAllowedFields("token", "password", "passwordConfirmation"); }
+    void resetFields(WebDataBinder binder) {
+        binder.setAllowedFields("token", "password", "passwordConfirmation");
+    }
 
     @GetMapping("/forgot")
     public String forgot(Model model) {
@@ -46,11 +50,16 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/forgot")
-    public String request(@Valid @ModelAttribute("recovery") PasswordRecoveryRequest request,
-            BindingResult errors, HttpServletRequest http) {
+    public String request(
+            @Valid @ModelAttribute("recovery") PasswordRecoveryRequest request,
+            BindingResult errors,
+            HttpServletRequest http) {
         if (errors.hasErrors()) return "auth/forgot-password";
-        try { delivery.submit(request.getEmail(), http.getRemoteAddr()); }
-        catch (TaskRejectedException exception) { log.warn("Fila de recuperação de senha temporariamente cheia."); }
+        try {
+            delivery.submit(request.getEmail(), http.getRemoteAddr());
+        } catch (TaskRejectedException exception) {
+            log.warn("Fila de recuperação de senha temporariamente cheia.");
+        }
         return "redirect:/password/forgot?sent";
     }
 
@@ -64,7 +73,10 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/reset")
-    public String change(@Valid @ModelAttribute("reset") PasswordResetRequest request, BindingResult errors, Model model) {
+    public String change(
+            @Valid @ModelAttribute("reset") PasswordResetRequest request,
+            BindingResult errors,
+            Model model) {
         if (!errors.hasErrors()) {
             var profile = recovery.reset(request);
             if (profile.isPresent()) {
@@ -73,7 +85,9 @@ public class PasswordRecoveryController {
             }
         }
         request.clearPasswords();
-        model.addAttribute("validToken", !errors.hasFieldErrors("token") && recovery.validToken(request.getToken()));
+        model.addAttribute(
+                "validToken",
+                !errors.hasFieldErrors("token") && recovery.validToken(request.getToken()));
         return "auth/reset-password";
     }
 }

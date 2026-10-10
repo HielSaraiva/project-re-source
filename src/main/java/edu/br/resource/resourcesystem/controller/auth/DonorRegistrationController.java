@@ -27,15 +27,19 @@ public class DonorRegistrationController {
 
     @GetMapping
     public String form(Model model, Authentication authentication) {
-        if (AuthenticationPageSupport.signedIn(authentication)) return "redirect:" + ProfileAuthenticationSuccessHandler.destination(authentication);
+        if (AuthenticationPageSupport.signedIn(authentication))
+            return "redirect:" + ProfileAuthenticationSuccessHandler.destination(authentication);
         model.addAttribute("registration", new DonorRegistrationRequest());
         return "auth/register-donor";
     }
 
     @PostMapping
-    public String register(@Valid @ModelAttribute("registration") DonorRegistrationRequest request,
-            BindingResult errors, Authentication authentication) {
-        if (AuthenticationPageSupport.signedIn(authentication)) return "redirect:" + ProfileAuthenticationSuccessHandler.destination(authentication);
+    public String register(
+            @Valid @ModelAttribute("registration") DonorRegistrationRequest request,
+            BindingResult errors,
+            Authentication authentication) {
+        if (AuthenticationPageSupport.signedIn(authentication))
+            return "redirect:" + ProfileAuthenticationSuccessHandler.destination(authentication);
         if (!errors.hasErrors()) {
             try {
                 registrations.register(request);
@@ -44,11 +48,13 @@ public class DonorRegistrationController {
             } catch (RegistrationFieldException ex) {
                 errors.rejectValue(ex.field(), "registration.unavailable", ex.getMessage());
             } catch (DataIntegrityViolationException ex) {
-                errors.rejectValue("email", "email.unavailable", "Já existe uma conta com este e-mail. Utilize o login.");
+                errors.rejectValue(
+                        "email",
+                        "email.unavailable",
+                        "Já existe uma conta com este e-mail. Utilize o login.");
             }
         }
         request.clearPasswords();
         return "auth/register-donor";
     }
-
 }

@@ -4,7 +4,12 @@ public final class SearchPatterns {
     private SearchPatterns() {}
 
     public static String contains(String query) {
-        return "%" + query.strip().toLowerCase(java.util.Locale.ROOT)
-                .replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%";
+        return "%"
+                + query.strip()
+                        .toLowerCase(java.util.Locale.ROOT)
+                        .replace("\\", "\\\\")
+                        .replace("%", "\\%")
+                        .replace("_", "\\_")
+                + "%";
     }
 }

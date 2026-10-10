@@ -9,6 +9,12 @@ public final class EnumValues {
         return Arrays.stream(type.getEnumConstants())
                 .filter(constant -> constant.getValue().equals(value))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Valor inválido para " + type.getSimpleName() + ": " + value));
+                .orElseThrow(
+                        () ->
+                                new IllegalArgumentException(
+                                        "Valor inválido para "
+                                                + type.getSimpleName()
+                                                + ": "
+                                                + value));
     }
 }

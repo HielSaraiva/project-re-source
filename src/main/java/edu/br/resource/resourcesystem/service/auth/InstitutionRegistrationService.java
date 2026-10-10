@@ -25,26 +25,44 @@ public class InstitutionRegistrationService {
     private final PasswordEncoder passwords;
 
     @Transactional
-    public void register(@Valid InstitutionRegistrationRequest request, CnpjLookupService.Company company,
-                         InstitutionDocumentStorage.Upload identity, InstitutionDocumentStorage.Upload organization) {
+    public void register(
+            @Valid InstitutionRegistrationRequest request,
+            CnpjLookupService.Company company,
+            InstitutionDocumentStorage.Upload identity,
+            InstitutionDocumentStorage.Upload organization) {
         emails.requireAvailable(request.getEmail());
         if (institutions.findByCnpj(company.cnpj()).isPresent())
             throw new RegistrationFieldException("cnpj", "Este CNPJ já possui cadastro.");
         if (institutions.existsByRepresentativeCpf(request.getRepresentativeCpf()))
-            throw new RegistrationFieldException("representativeCpf", "Este CPF já está associado a uma instituição.");
-        var institution = institutions.saveAndFlush(Institution.builder().cnpj(company.cnpj()).legalName(company.legalName())
-                .email(request.getEmail()).representativeFullName(request.getRepresentativeFullName())
-                .representativeCpf(request.getRepresentativeCpf()).passwordHash(passwords.encode(request.getPassword()))
-                .status(InstitutionStatus.PENDING_APPROVAL).build());
+            throw new RegistrationFieldException(
+                    "representativeCpf", "Este CPF já está associado a uma instituição.");
+        var institution =
+                institutions.saveAndFlush(
+                        Institution.builder()
+                                .cnpj(company.cnpj())
+                                .legalName(company.legalName())
+                                .email(request.getEmail())
+                                .representativeFullName(request.getRepresentativeFullName())
+                                .representativeCpf(request.getRepresentativeCpf())
+                                .passwordHash(passwords.encode(request.getPassword()))
+                                .status(InstitutionStatus.PENDING_APPROVAL)
+                                .build());
         saveDocument(institution, DocumentType.IDENTITY_DOCUMENT, identity);
         saveDocument(institution, DocumentType.ORGANIZATION_DOCUMENT, organization);
         documents.flush();
     }
 
-    private void saveDocument(Institution institution, DocumentType type, InstitutionDocumentStorage.Upload upload) {
+    private void saveDocument(
+            Institution institution, DocumentType type, InstitutionDocumentStorage.Upload upload) {
         String key = storage.store(upload);
-        documents.save(InstitutionDocument.builder().institution(institution).type(type)
-                .originalFileName(upload.originalName()).storageKey(key).contentType(upload.contentType())
-                .fileSizeBytes(upload.bytes().length).build());
+        documents.save(
+                InstitutionDocument.builder()
+                        .institution(institution)
+                        .type(type)
+                        .originalFileName(upload.originalName())
+                        .storageKey(key)
+                        .contentType(upload.contentType())
+                        .fileSizeBytes(upload.bytes().length)
+                        .build());
     }
 }

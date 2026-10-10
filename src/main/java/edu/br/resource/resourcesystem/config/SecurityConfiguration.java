@@ -30,25 +30,69 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    SecurityFilterChain security(HttpSecurity http, ProfileAuthenticationSuccessHandler success,
-            GoogleOidcUserService googleUsers, ObjectProvider<ClientRegistrationRepository> clients,
-            org.springframework.security.core.session.SessionRegistry sessions) throws Exception {
-        http
-                .authorizeHttpRequests(a -> a.requestMatchers("/", "/login", "/password/forgot", "/password/reset", "/register/donor", "/register/institution", "/register/institution/cnpj", "/css/**", "/js/**", "/images/**", "/error").permitAll()
-                        .requestMatchers("/donor/**").hasRole("DONOR").requestMatchers("/ong/**").hasRole("ONG")
-                        .requestMatchers("/api/notifications/**").hasAnyRole("DONOR", "ONG")
-                        .anyRequest().authenticated())
-                .formLogin(f -> f.loginPage("/login").usernameParameter("identifier")
-                        .successHandler(success).failureHandler((request, response, exception) ->
-                                response.sendRedirect(request.getContextPath() + "/login?error&profile="
-                                        + ("ong".equals(request.getParameter("profile")) ? "ong" : "donor")))
-                        .permitAll())
+    SecurityFilterChain security(
+            HttpSecurity http,
+            ProfileAuthenticationSuccessHandler success,
+            GoogleOidcUserService googleUsers,
+            ObjectProvider<ClientRegistrationRepository> clients,
+            org.springframework.security.core.session.SessionRegistry sessions)
+            throws Exception {
+        http.authorizeHttpRequests(
+                        a ->
+                                a.requestMatchers(
+                                                "/",
+                                                "/login",
+                                                "/password/forgot",
+                                                "/password/reset",
+                                                "/register/donor",
+                                                "/register/institution",
+                                                "/register/institution/cnpj",
+                                                "/css/**",
+                                                "/js/**",
+                                                "/images/**",
+                                                "/error")
+                                        .permitAll()
+                                        .requestMatchers("/donor/**")
+                                        .hasRole("DONOR")
+                                        .requestMatchers("/ong/**")
+                                        .hasRole("ONG")
+                                        .requestMatchers("/api/notifications/**")
+                                        .hasAnyRole("DONOR", "ONG")
+                                        .anyRequest()
+                                        .authenticated())
+                .formLogin(
+                        f ->
+                                f.loginPage("/login")
+                                        .usernameParameter("identifier")
+                                        .successHandler(success)
+                                        .failureHandler(
+                                                (request, response, exception) ->
+                                                        response.sendRedirect(
+                                                                request.getContextPath()
+                                                                        + "/login?error&profile="
+                                                                        + ("ong"
+                                                                                        .equals(
+                                                                                                request
+                                                                                                        .getParameter(
+                                                                                                                "profile"))
+                                                                                ? "ong"
+                                                                                : "donor")))
+                                        .permitAll())
                 .logout(l -> l.logoutSuccessUrl("/login?logout").permitAll())
                 .httpBasic(Customizer.withDefaults())
-                .sessionManagement(s -> s.maximumSessions(-1).sessionRegistry(sessions).expiredUrl("/login?sessionExpired"));
+                .sessionManagement(
+                        s ->
+                                s.maximumSessions(-1)
+                                        .sessionRegistry(sessions)
+                                        .expiredUrl("/login?sessionExpired"));
         if (clients.getIfAvailable() != null) {
-            http.oauth2Login(o -> o.loginPage("/login").userInfoEndpoint(u -> u.oidcUserService(googleUsers))
-                    .successHandler(success).failureUrl("/login?oauthError").permitAll());
+            http.oauth2Login(
+                    o ->
+                            o.loginPage("/login")
+                                    .userInfoEndpoint(u -> u.oidcUserService(googleUsers))
+                                    .successHandler(success)
+                                    .failureUrl("/login?oauthError")
+                                    .permitAll());
         }
         return http.build();
     }

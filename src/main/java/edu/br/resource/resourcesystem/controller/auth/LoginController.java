@@ -11,12 +11,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
     @GetMapping("/")
     public String home(Authentication authentication) {
-        return "redirect:" + (AuthenticationPageSupport.signedIn(authentication)
-                ? ProfileAuthenticationSuccessHandler.destination(authentication) : "/login");
+        return "redirect:"
+                + (AuthenticationPageSupport.signedIn(authentication)
+                        ? ProfileAuthenticationSuccessHandler.destination(authentication)
+                        : "/login");
     }
 
     @GetMapping("/login")
-    public String login(@RequestParam(defaultValue = "donor") String profile, Model model,
+    public String login(
+            @RequestParam(defaultValue = "donor") String profile,
+            Model model,
             Authentication authentication) {
         if (AuthenticationPageSupport.signedIn(authentication)) {
             return "redirect:" + ProfileAuthenticationSuccessHandler.destination(authentication);
@@ -24,5 +28,4 @@ public class LoginController {
         model.addAttribute("institutionLogin", "ong".equals(profile));
         return "auth/login";
     }
-
 }

@@ -19,19 +19,25 @@ public class ProfileAuthenticationSuccessHandler extends SimpleUrlAuthentication
     private final UserRepository users;
 
     public static String destination(Authentication authentication) {
-        return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ONG"))
-                ? "/ong/dashboard" : "/donor/dashboard";
+        return authentication.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority().equals("ROLE_ONG"))
+                ? "/ong/dashboard"
+                : "/donor/dashboard";
     }
 
     @Override
     @Transactional
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) throws IOException, ServletException {
-        if (authentication.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ONG"))) {
-            users.findByEmailIgnoreCase(authentication.getName()).ifPresent(user -> {
-                user.setLastLoginAt(Instant.now());
-                users.save(user);
-            });
+    public void onAuthenticationSuccess(
+            HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+            throws IOException, ServletException {
+        if (authentication.getAuthorities().stream()
+                .noneMatch(a -> a.getAuthority().equals("ROLE_ONG"))) {
+            users.findByEmailIgnoreCase(authentication.getName())
+                    .ifPresent(
+                            user -> {
+                                user.setLastLoginAt(Instant.now());
+                                users.save(user);
+                            });
         }
         clearAuthenticationAttributes(request);
         new HttpSessionRequestCache().removeRequest(request, response);

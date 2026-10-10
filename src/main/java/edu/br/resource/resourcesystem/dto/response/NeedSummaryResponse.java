@@ -18,5 +18,4 @@ public record NeedSummaryResponse(
         Integer requestedQuantity,
         long remainingQuantity,
         LocationResponse location,
-        BigDecimal distanceKm) {
-}
+        BigDecimal distanceKm) {}

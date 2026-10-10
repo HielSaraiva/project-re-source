@@ -13,10 +13,13 @@ public class PasswordRecoveryDelivery {
 
     @Async("passwordRecoveryExecutor")
     public void submit(String email, String address) {
-        try { recovery.request(email, address); }
-        catch (RuntimeException exception) {
-            // Do not log recipients, tokens, URLs or SMTP exception messages.
-            log.warn("Não foi possível enviar recuperação de senha. Tipo: {}", exception.getClass().getSimpleName());
+        try {
+            recovery.request(email, address);
+        } catch (RuntimeException exception) {
+
+            log.warn(
+                    "Não foi possível enviar recuperação de senha. Tipo: {}",
+                    exception.getClass().getSimpleName());
         }
     }
 }

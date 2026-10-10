@@ -23,8 +23,7 @@ public enum MatchStatus implements DatabaseEnum {
     AWAITING_DELIVERY("awaiting_delivery", "Aguardando entrega"),
     AWAITING_NGO_CONFIRMATION("awaiting_ngo_confirmation", "Aguardando confirmação da ONG");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue
@@ -37,7 +36,8 @@ public enum MatchStatus implements DatabaseEnum {
     }
 
     public static Set<MatchStatus> activeStatuses() {
-        return Collections.unmodifiableSet(EnumSet.complementOf(EnumSet.of(REJECTED, CANCELLED, COMPLETED)));
+        return Collections.unmodifiableSet(
+                EnumSet.complementOf(EnumSet.of(REJECTED, CANCELLED, COMPLETED)));
     }
 
     @JsonCreator

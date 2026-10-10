@@ -19,35 +19,58 @@ import org.springframework.web.server.ResponseStatusException;
 public class MatchApiExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     ResponseEntity<ProblemDetail> business(ResponseStatusException exception) {
-        log.info("event=operation_rejected status={} failure={}",
-                exception.getStatusCode().value(), exception.getClass().getSimpleName());
+        log.info(
+                "event=operation_rejected status={} failure={}",
+                exception.getStatusCode().value(),
+                exception.getClass().getSimpleName());
         return ResponseEntity.status(exception.getStatusCode())
-                .body(problem(exception.getStatusCode(),
-                        exception.getReason() == null ? "Operação indisponível." : exception.getReason()));
+                .body(
+                        problem(
+                                exception.getStatusCode(),
+                                exception.getReason() == null
+                                        ? "Operação indisponível."
+                                        : exception.getReason()));
     }
 
-    @ExceptionHandler({ MethodArgumentNotValidException.class, ConstraintViolationException.class,
-            HttpMessageNotReadableException.class })
+    @ExceptionHandler({
+        MethodArgumentNotValidException.class,
+        ConstraintViolationException.class,
+        HttpMessageNotReadableException.class
+    })
     ResponseEntity<ProblemDetail> validation(Exception exception) {
         log.info("event=validation_rejected failure={}", exception.getClass().getSimpleName());
-        return ResponseEntity.badRequest().body(problem(HttpStatus.BAD_REQUEST,
-                "Confira os campos obrigatórios, as quantidades, as datas e as confirmações do formulário."));
+        return ResponseEntity.badRequest()
+                .body(
+                        problem(
+                                HttpStatus.BAD_REQUEST,
+                                "Confira os campos obrigatórios, as quantidades, as datas e as confirmações do formulário."));
     }
 
-    @ExceptionHandler({ DataIntegrityViolationException.class, PessimisticLockingFailureException.class })
+    @ExceptionHandler({
+        DataIntegrityViolationException.class,
+        PessimisticLockingFailureException.class
+    })
     ResponseEntity<ProblemDetail> concurrent(Exception exception) {
         log.warn("event=operation_conflict failure={}", exception.getClass().getSimpleName());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(problem(HttpStatus.CONFLICT,
-                "Os dados foram alterados por outra operação. Atualize a página antes de tentar novamente."));
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(
+                        problem(
+                                HttpStatus.CONFLICT,
+                                "Os dados foram alterados por outra operação. Atualize a página antes de tentar novamente."));
     }
 
-    @ExceptionHandler({ CannotCreateTransactionException.class, DataAccessResourceFailureException.class })
+    @ExceptionHandler({
+        CannotCreateTransactionException.class,
+        DataAccessResourceFailureException.class
+    })
     ResponseEntity<ProblemDetail> temporarilyUnavailable(Exception exception) {
         log.error("event=database_unavailable failure={}", FailureDetails.describe(exception));
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .header(HttpHeaders.RETRY_AFTER, "3")
-                .body(problem(HttpStatus.SERVICE_UNAVAILABLE,
-                        "O serviço está temporariamente indisponível. Aguarde e atualize a página antes de tentar novamente."));
+                .body(
+                        problem(
+                                HttpStatus.SERVICE_UNAVAILABLE,
+                                "O serviço está temporariamente indisponível. Aguarde e atualize a página antes de tentar novamente."));
     }
 
     private ProblemDetail problem(HttpStatusCode status, String detail) {
@@ -56,5 +79,4 @@ public class MatchApiExceptionHandler {
         if (requestId != null) problem.setProperty("requestId", requestId);
         return problem;
     }
-
 }

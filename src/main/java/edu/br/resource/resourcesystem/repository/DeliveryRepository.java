@@ -24,23 +24,29 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Integer> {
     @Query("select d from Delivery d where d.match.id = :matchId")
     Optional<Delivery> findForUpdateByMatchId(@Param("matchId") Integer matchId);
 
-    @Query("""
+    @Query(
+            """
         select d from Delivery d join d.match m
         where d.method = :method and d.status in :deliveryStatuses and m.status in :matchStatuses
           and d.inPersonDeadline <= :deadline
         """)
-    Slice<Delivery> findExpiredInPersonDeliveries(@Param("method") DeliveryMethod method,
+    Slice<Delivery> findExpiredInPersonDeliveries(
+            @Param("method") DeliveryMethod method,
             @Param("deliveryStatuses") Collection<DeliveryStatus> deliveryStatuses,
             @Param("matchStatuses") Collection<MatchStatus> matchStatuses,
-            @Param("deadline") Instant deadline, Pageable pageable);
+            @Param("deadline") Instant deadline,
+            Pageable pageable);
 
-    @Query("""
+    @Query(
+            """
         select d from Delivery d join d.match m
         where d.method = :method and d.status in :deliveryStatuses and m.status in :matchStatuses
           and d.shippingDeadline <= :deadline
         """)
-    Slice<Delivery> findExpiredShipments(@Param("method") DeliveryMethod method,
+    Slice<Delivery> findExpiredShipments(
+            @Param("method") DeliveryMethod method,
             @Param("deliveryStatuses") Collection<DeliveryStatus> deliveryStatuses,
             @Param("matchStatuses") Collection<MatchStatus> matchStatuses,
-            @Param("deadline") Instant deadline, Pageable pageable);
+            @Param("deadline") Instant deadline,
+            Pageable pageable);
 }

@@ -10,6 +10,8 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = MatchingPasswordsValidator.class)
 public @interface MatchingPasswords {
     String message() default "As senhas devem ser iguais.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

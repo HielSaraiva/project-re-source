@@ -13,8 +13,7 @@ public enum NecessityStatus implements DatabaseEnum {
     FULFILLED("fulfilled", "Atendida"),
     CANCELLED("cancelled", "Cancelada");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

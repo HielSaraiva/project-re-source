@@ -13,11 +13,18 @@ import org.springframework.util.Assert;
 @ConditionalOnProperty(name = "resource.auth.google.enabled", havingValue = "true")
 public class GoogleOAuthConfiguration {
     @Bean
-    ClientRegistrationRepository googleClients(@Value("${resource.auth.google.client-id}") String clientId,
+    ClientRegistrationRepository googleClients(
+            @Value("${resource.auth.google.client-id}") String clientId,
             @Value("${resource.auth.google.client-secret}") String clientSecret) {
         Assert.hasText(clientId, "Configure GOOGLE_CLIENT_ID para habilitar o login Google.");
-        Assert.hasText(clientSecret, "Configure GOOGLE_CLIENT_SECRET para habilitar o login Google.");
-        return new InMemoryClientRegistrationRepository(CommonOAuth2Provider.GOOGLE.getBuilder("google")
-                .clientId(clientId).clientSecret(clientSecret).scope("openid", "profile", "email").build());
+        Assert.hasText(
+                clientSecret, "Configure GOOGLE_CLIENT_SECRET para habilitar o login Google.");
+        return new InMemoryClientRegistrationRepository(
+                CommonOAuth2Provider.GOOGLE
+                        .getBuilder("google")
+                        .clientId(clientId)
+                        .clientSecret(clientSecret)
+                        .scope("openid", "profile", "email")
+                        .build());
     }
 }

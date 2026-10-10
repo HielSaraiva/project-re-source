@@ -10,7 +10,9 @@ public enum DocumentType implements DatabaseEnum {
     IDENTITY_DOCUMENT("identity_document"),
     ORGANIZATION_DOCUMENT("organization_document");
 
-    @EnumeratedValue
-    private final String value;
-    public String getLabel() { return value; }
+    @EnumeratedValue private final String value;
+
+    public String getLabel() {
+        return value;
+    }
 }

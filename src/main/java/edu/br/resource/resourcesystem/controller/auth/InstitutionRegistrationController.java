@@ -25,8 +25,15 @@ public class InstitutionRegistrationController {
 
     @InitBinder("registration")
     void registrationFields(WebDataBinder binder) {
-        binder.setAllowedFields("cnpj", "email", "representativeFullName", "representativeCpf",
-                "password", "passwordConfirmation", "identityDocument", "organizationDocument");
+        binder.setAllowedFields(
+                "cnpj",
+                "email",
+                "representativeFullName",
+                "representativeCpf",
+                "password",
+                "passwordConfirmation",
+                "identityDocument",
+                "organizationDocument");
     }
 
     @GetMapping
@@ -43,17 +50,21 @@ public class InstitutionRegistrationController {
         try {
             return ResponseEntity.ok(companies.lookup(cnpj));
         } catch (CnpjLookupService.LookupException ex) {
-            return ResponseEntity.status(ex.status()).body(ProblemDetail.forStatusAndDetail(ex.status(), ex.getMessage()));
+            return ResponseEntity.status(ex.status())
+                    .body(ProblemDetail.forStatusAndDetail(ex.status(), ex.getMessage()));
         }
     }
 
     @PostMapping
-    public String register(@Valid @ModelAttribute("registration") InstitutionRegistrationRequest request,
-            BindingResult errors, Authentication authentication) {
+    public String register(
+            @Valid @ModelAttribute("registration") InstitutionRegistrationRequest request,
+            BindingResult errors,
+            Authentication authentication) {
         if (AuthenticationPageSupport.signedIn(authentication))
             return "redirect:" + ProfileAuthenticationSuccessHandler.destination(authentication);
         var identity = validateUpload(request.getIdentityDocument(), "identityDocument", errors);
-        var organization = validateUpload(request.getOrganizationDocument(), "organizationDocument", errors);
+        var organization =
+                validateUpload(request.getOrganizationDocument(), "organizationDocument", errors);
         if (!errors.hasErrors()) {
             try {
                 var company = companies.lookup(request.getCnpj());
@@ -64,7 +75,9 @@ public class InstitutionRegistrationController {
             } catch (RegistrationFieldException ex) {
                 errors.rejectValue(ex.field(), "registration.unavailable", ex.getMessage());
             } catch (DataIntegrityViolationException ex) {
-                errors.reject("registration.conflict", "Já existe cadastro com estes dados. Confira o CNPJ, o e-mail e o CPF do representante.");
+                errors.reject(
+                        "registration.conflict",
+                        "Já existe cadastro com estes dados. Confira o CNPJ, o e-mail e o CPF do representante.");
             }
         }
         request.clearPasswords();
@@ -73,9 +86,15 @@ public class InstitutionRegistrationController {
         return "auth/register-institution";
     }
 
-    private InstitutionDocumentStorage.Upload validateUpload(org.springframework.web.multipart.MultipartFile file,
-            String field, BindingResult errors) {
-        try { return documents.validate(file, field); }
-        catch (RegistrationFieldException ex) { errors.rejectValue(field, "document.invalid", ex.getMessage()); return null; }
+    private InstitutionDocumentStorage.Upload validateUpload(
+            org.springframework.web.multipart.MultipartFile file,
+            String field,
+            BindingResult errors) {
+        try {
+            return documents.validate(file, field);
+        } catch (RegistrationFieldException ex) {
+            errors.rejectValue(field, "document.invalid", ex.getMessage());
+            return null;
+        }
     }
 }

@@ -19,24 +19,26 @@ import org.springframework.web.multipart.MultipartResolver;
 @RequiredArgsConstructor
 public class RegistrationUploadLimitFilter extends OncePerRequestFilter {
     private final MultipartResolver multipartResolver;
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !request.getServletPath().equals("/register/institution") || !request.getMethod().equals("POST");
+        return !request.getServletPath().equals("/register/institution")
+                || !request.getMethod().equals("POST");
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         MultipartHttpServletRequest multipart = null;
         try {
-            // Resolve with the configured parser before CSRF reads the multipart parameters.
-            if (multipartResolver.isMultipart(request)) multipart = multipartResolver.resolveMultipart(request);
+
+            if (multipartResolver.isMultipart(request))
+                multipart = multipartResolver.resolveMultipart(request);
             chain.doFilter(multipart == null ? request : multipart, response);
-        }
-        catch (MaxUploadSizeExceededException ex) {
+        } catch (MaxUploadSizeExceededException ex) {
             response.sendRedirect(request.getContextPath() + "/register/institution?uploadError");
-        }
-        finally {
+        } finally {
             if (multipart != null) multipartResolver.cleanupMultipart(multipart);
         }
     }

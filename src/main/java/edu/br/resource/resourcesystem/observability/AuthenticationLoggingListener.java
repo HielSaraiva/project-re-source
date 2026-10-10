@@ -16,6 +16,8 @@ public class AuthenticationLoggingListener {
 
     @EventListener
     public void failure(AbstractAuthenticationFailureEvent event) {
-        log.info("event=authentication_failed errorType={}", event.getException().getClass().getSimpleName());
+        log.info(
+                "event=authentication_failed errorType={}",
+                event.getException().getClass().getSimpleName());
     }
 }

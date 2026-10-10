@@ -17,7 +17,9 @@ public class DonorInPersonDeliveryController {
     @GetMapping("/donor/donation/shipping/in-person")
     public String page(@RequestParam String protocol, Authentication authentication, Model model) {
         var attributes = views.donorDetail(actors.donor(authentication).getId(), protocol);
-        var match = (edu.br.resource.resourcesystem.dto.response.MatchDetailResponse) attributes.get("match");
+        var match =
+                (edu.br.resource.resourcesystem.dto.response.MatchDetailResponse)
+                        attributes.get("match");
         String actual = views.canonicalPath(match);
         if (!actual.equals("shipping/in-person"))
             return "redirect:/donor/donation/" + actual + "?protocol=" + match.protocol();

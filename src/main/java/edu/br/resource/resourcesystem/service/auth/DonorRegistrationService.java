@@ -23,9 +23,13 @@ public class DonorRegistrationService {
     @Transactional
     public void register(@Valid DonorRegistrationRequest request) {
         emails.requireAvailable(request.getEmail());
-        users.saveAndFlush(User.builder().fullName(request.getFullName()).email(request.getEmail())
-                .passwordHash(passwords.encode(request.getPassword()))
-                .role(AccountRole.DONOR).status(AccountStatus.ACTIVE).build());
+        users.saveAndFlush(
+                User.builder()
+                        .fullName(request.getFullName())
+                        .email(request.getEmail())
+                        .passwordHash(passwords.encode(request.getPassword()))
+                        .role(AccountRole.DONOR)
+                        .status(AccountStatus.ACTIVE)
+                        .build());
     }
-
 }

@@ -18,8 +18,13 @@ public class PasswordResetRequest implements PasswordConfirmation {
     private String password;
 
     @NotBlank(message = "Confirme sua nova senha.")
-    @Size(max = PasswordPolicy.MAX_LENGTH, message = "A confirmação deve ter no máximo 12 caracteres.")
+    @Size(
+            max = PasswordPolicy.MAX_LENGTH,
+            message = "A confirmação deve ter no máximo 12 caracteres.")
     private String passwordConfirmation;
 
-    public void clearPasswords() { password = null; passwordConfirmation = null; }
+    public void clearPasswords() {
+        password = null;
+        passwordConfirmation = null;
+    }
 }

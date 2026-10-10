@@ -13,8 +13,7 @@ public enum NecessityPriority implements DatabaseEnum {
     MEDIUM("medium", "Média prioridade"),
     LOW("low", "Baixa prioridade");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

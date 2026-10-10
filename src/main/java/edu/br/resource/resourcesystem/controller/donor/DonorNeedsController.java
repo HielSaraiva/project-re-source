@@ -18,7 +18,10 @@ public class DonorNeedsController {
     private final CurrentActor actors;
 
     @GetMapping
-    public String page(Authentication authentication, Model model, @Valid @ModelAttribute NeedFilterRequest filter) {
+    public String page(
+            Authentication authentication,
+            Model model,
+            @Valid @ModelAttribute NeedFilterRequest filter) {
         model.addAllAttributes(views.needs(actors.donor(authentication).getId(), filter));
         return "donor/needs";
     }

@@ -15,8 +15,7 @@ public enum InstitutionSector implements DatabaseEnum {
     ENVIRONMENT("environment", "Meio ambiente"),
     OTHER("other", "Outros");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

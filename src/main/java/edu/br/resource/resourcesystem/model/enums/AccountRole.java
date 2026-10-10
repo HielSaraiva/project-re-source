@@ -12,8 +12,7 @@ public enum AccountRole implements DatabaseEnum {
     DONOR("donor", "Doador"),
     ADMINISTRATOR("administrator", "Administrador");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

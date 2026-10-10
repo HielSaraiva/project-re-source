@@ -21,8 +21,7 @@ public enum ItemCategory implements DatabaseEnum {
     FURNITURE("furniture", "Móveis"),
     BEDDING("bedding", "Vestuário & Cama");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

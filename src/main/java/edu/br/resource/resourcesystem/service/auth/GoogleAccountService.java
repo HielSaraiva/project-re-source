@@ -24,38 +24,53 @@ public class GoogleAccountService {
     public User resolve(OidcUser identity) {
         String subject = identity.getSubject();
         String email = identity.getEmail();
-        if (!Boolean.TRUE.equals(identity.getEmailVerified()) || subject == null || subject.isBlank()
-                || subject.length() > 255 || email == null || email.isBlank() || email.length() > 320) {
+        if (!Boolean.TRUE.equals(identity.getEmailVerified())
+                || subject == null
+                || subject.isBlank()
+                || subject.length() > 255
+                || email == null
+                || email.isBlank()
+                || email.length() > 320) {
             throw rejected();
         }
         email = email.trim().toLowerCase(Locale.ROOT);
         emails.lock(email);
-        // A verified email alone must never link Google to an existing local account.
+
         var linked = users.findByOauthProviderAndOauthSubject("google", subject);
         var sameEmail = users.findByEmailIgnoreCase(email);
         if (institutions.findByEmailIgnoreCase(email).isPresent()
-                || sameEmail.isPresent() && (linked.isEmpty() || !sameEmail.get().getId().equals(linked.get().getId()))) {
+                || sameEmail.isPresent()
+                        && (linked.isEmpty()
+                                || !sameEmail.get().getId().equals(linked.get().getId()))) {
             throw rejected();
         }
         if (linked.isPresent()) {
             var account = linked.get();
-            if (account.getRole() != AccountRole.DONOR || account.getStatus() != AccountStatus.ACTIVE) {
+            if (account.getRole() != AccountRole.DONOR
+                    || account.getStatus() != AccountStatus.ACTIVE) {
                 throw rejected();
             }
-            // Keep the application's canonical email stable when the provider email changes.
-            if (institutions.findByEmailIgnoreCase(account.getEmail()).isPresent()) throw rejected();
+
+            if (institutions.findByEmailIgnoreCase(account.getEmail()).isPresent())
+                throw rejected();
             return account;
         }
         String name = identity.getFullName();
         if (name == null || name.isBlank()) name = email;
-        return users.saveAndFlush(User.builder().email(email)
-                .fullName(name.substring(0, Math.min(name.length(), 200)))
-                .role(AccountRole.DONOR).status(AccountStatus.ACTIVE)
-                .oauthProvider("google").oauthSubject(subject).build());
+        return users.saveAndFlush(
+                User.builder()
+                        .email(email)
+                        .fullName(name.substring(0, Math.min(name.length(), 200)))
+                        .role(AccountRole.DONOR)
+                        .status(AccountStatus.ACTIVE)
+                        .oauthProvider("google")
+                        .oauthSubject(subject)
+                        .build());
     }
 
     private OAuth2AuthenticationException rejected() {
-        return new OAuth2AuthenticationException(new OAuth2Error("account_unavailable"),
+        return new OAuth2AuthenticationException(
+                new OAuth2Error("account_unavailable"),
                 "Não foi possível acessar esta conta com Google.");
     }
 }

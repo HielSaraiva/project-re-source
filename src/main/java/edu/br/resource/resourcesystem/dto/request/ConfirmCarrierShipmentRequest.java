@@ -12,5 +12,4 @@ public record ConfirmCarrierShipmentRequest(
         @NotNull @PastOrPresent LocalDate date,
         @NotBlank @Pattern(regexp = "(?i)[A-Z]{2}[0-9]{9}[A-Z]{2}") String trackingCode,
         @Size(max = 1000) String notes,
-        @NotNull @AssertTrue Boolean posted) {
-}
+        @NotNull @AssertTrue Boolean posted) {}

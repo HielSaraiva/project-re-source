@@ -18,14 +18,20 @@ public class OngDonationIntentionController {
     private final CurrentActor actors;
 
     @GetMapping
-    public String page(Authentication authentication, Model model, @Valid @ModelAttribute MatchFilterRequest filter) {
-        model.addAllAttributes(views.institutionMatches(actors.institution(authentication).getId(), filter));
+    public String page(
+            Authentication authentication,
+            Model model,
+            @Valid @ModelAttribute MatchFilterRequest filter) {
+        model.addAllAttributes(
+                views.institutionMatches(actors.institution(authentication).getId(), filter));
         return "ong/donations/list";
     }
 
     @GetMapping("/{protocol}")
-    public String detail(@PathVariable String protocol, Authentication authentication, Model model) {
-        model.addAllAttributes(views.institutionDetail(actors.institution(authentication).getId(), protocol));
+    public String detail(
+            @PathVariable String protocol, Authentication authentication, Model model) {
+        model.addAllAttributes(
+                views.institutionDetail(actors.institution(authentication).getId(), protocol));
         return "ong/donations/details";
     }
 }

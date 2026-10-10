@@ -28,10 +28,10 @@ public class GoogleOidcUserService implements OAuth2UserService<OidcUserRequest,
         var identity = delegate.loadUser(request);
         try {
             var account = accounts.resolve(identity);
-            // CurrentActor and the existing services look up the principal by local email.
+
             return new LocalGoogleUser(identity, account.getEmail());
         } catch (DataIntegrityViolationException ex) {
-            // Unique email/subject constraints also protect concurrent first sign-ins.
+
             throw new OAuth2AuthenticationException(new OAuth2Error("account_unavailable"), ex);
         }
     }
@@ -41,7 +41,10 @@ public class GoogleOidcUserService implements OAuth2UserService<OidcUserRequest,
         private final String localEmail;
 
         private LocalGoogleUser(OidcUser identity, String localEmail) {
-            super(List.of(new SimpleGrantedAuthority("ROLE_DONOR")), identity.getIdToken(), identity.getUserInfo());
+            super(
+                    List.of(new SimpleGrantedAuthority("ROLE_DONOR")),
+                    identity.getIdToken(),
+                    identity.getUserInfo());
             this.localEmail = localEmail;
         }
 

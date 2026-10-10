@@ -6,10 +6,11 @@ import jakarta.validation.ConstraintValidatorContext;
 public class StrongPasswordValidator implements ConstraintValidator<StrongPassword, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null || value.isBlank()) return true; // @NotBlank owns required-field feedback.
+        if (value == null || value.isBlank()) return true;
         if (!PasswordPolicy.withinByteLimit(value)) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(PasswordPolicy.BYTE_LIMIT_MESSAGE).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(PasswordPolicy.BYTE_LIMIT_MESSAGE)
+                    .addConstraintViolation();
             return false;
         }
         return PasswordPolicy.validFormat(value);

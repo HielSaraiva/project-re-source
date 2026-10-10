@@ -8,31 +8,51 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-@ControllerAdvice(assignableTypes = {LoginController.class, DonorRegistrationController.class, InstitutionRegistrationController.class, PasswordRecoveryController.class})
+@ControllerAdvice(
+        assignableTypes = {
+            LoginController.class,
+            DonorRegistrationController.class,
+            InstitutionRegistrationController.class,
+            PasswordRecoveryController.class
+        })
 @RequiredArgsConstructor
 public class AuthenticationPageAdvice {
     private final ObjectProvider<ClientRegistrationRepository> clients;
 
     @ModelAttribute("passwordPattern")
-    public String passwordPattern() { return PasswordPolicy.PATTERN; }
+    public String passwordPattern() {
+        return PasswordPolicy.PATTERN;
+    }
 
     @ModelAttribute("passwordPolicyMessage")
-    public String passwordPolicyMessage() { return PasswordPolicy.MESSAGE; }
+    public String passwordPolicyMessage() {
+        return PasswordPolicy.MESSAGE;
+    }
 
     @ModelAttribute("passwordMaxBytes")
-    public int passwordMaxBytes() { return PasswordPolicy.MAX_BYTES; }
+    public int passwordMaxBytes() {
+        return PasswordPolicy.MAX_BYTES;
+    }
 
     @ModelAttribute("passwordMaxLength")
-    public int passwordMaxLength() { return PasswordPolicy.MAX_LENGTH; }
+    public int passwordMaxLength() {
+        return PasswordPolicy.MAX_LENGTH;
+    }
 
     @ModelAttribute("passwordMinLength")
-    public int passwordMinLength() { return PasswordPolicy.MIN_LENGTH; }
+    public int passwordMinLength() {
+        return PasswordPolicy.MIN_LENGTH;
+    }
 
     @ModelAttribute("passwordByteLimitMessage")
-    public String passwordByteLimitMessage() { return PasswordPolicy.BYTE_LIMIT_MESSAGE; }
+    public String passwordByteLimitMessage() {
+        return PasswordPolicy.BYTE_LIMIT_MESSAGE;
+    }
 
     @ModelAttribute("documentMaxBytes")
-    public long documentMaxBytes() { return InstitutionDocumentStorage.MAX_FILE_BYTES; }
+    public long documentMaxBytes() {
+        return InstitutionDocumentStorage.MAX_FILE_BYTES;
+    }
 
     @ModelAttribute("googleEnabled")
     public boolean googleEnabled() {

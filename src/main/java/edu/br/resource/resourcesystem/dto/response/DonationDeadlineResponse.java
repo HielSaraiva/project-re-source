@@ -9,5 +9,4 @@ public record DonationDeadlineResponse(
         Instant inPersonDelivery,
         Instant carrierShipment,
         DonationStage activeStage,
-        Instant activeDeadline) {
-}
+        Instant activeDeadline) {}
