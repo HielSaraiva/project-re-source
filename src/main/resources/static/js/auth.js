@@ -41,10 +41,10 @@
             password.setCustomValidity(new TextEncoder().encode(password.value).length > Number(password.dataset.passwordMaxBytes)
                 ? password.dataset.passwordByteLimitMessage
                 : password.validity.patternMismatch ? form.querySelector('#password-help').textContent : '');
-            name.setCustomValidity(name.value && !name.value.trim() ? 'Informe seu nome completo.' : '');
+            name?.setCustomValidity(name.value && !name.value.trim() ? 'Informe seu nome completo.' : '');
         };
         if (confirmation) {
-            [password, confirmation, name].forEach(input => input.addEventListener('input', validateRegistration));
+            [password, confirmation, name].filter(Boolean).forEach(input => input.addEventListener('input', validateRegistration));
             form.querySelector('[data-registration-errors]')?.focus();
         }
         let submitting = false;

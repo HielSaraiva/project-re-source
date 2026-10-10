@@ -336,14 +336,6 @@ main .auth-input input {
     font-size: 15px;
 }
 
-.auth-pending {
-    padding: 0;
-    border: 0;
-    background: transparent;
-    font: inherit;
-    cursor: not-allowed;
-}
-
 .auth-help {
     margin: 0;
     color: var(--slate);

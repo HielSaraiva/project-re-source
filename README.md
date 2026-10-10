@@ -78,7 +78,26 @@ Os documentos aceitam PDF ou JPG de até 5 MB cada, com conferência do conteúd
 
 Configure `INSTITUTION_DOCUMENT_DIRECTORY` com um diretório privado e persistente, gravável pelo processo da aplicação; inclua esse diretório nos backups junto ao banco. O padrão é `var/private/institution-documents`. `BRASIL_API_URL` permite configurar a base da consulta (padrão `https://brasilapi.com.br/api`). Essas configurações podem ser preenchidas no `.env` ou no ambiente de execução. Uma falha da BrasilAPI impede a criação da conta e permite nova tentativa pelo formulário.
 
-A recuperação de senha ainda não está disponível; sua ação permanece desabilitada.
+A recuperação de senha está disponível em `/password/forgot` para contas locais de doador e instituição. O link enviado por e-mail expira em 30 minutos, funciona uma única vez e permite criar uma senha com as mesmas regras do cadastro. Após salvar, os outros links de recuperação e as sessões existentes da conta são invalidados. Contas que usam somente Google devem continuar entrando com Google.
+
+Para habilitar o envio, substitua os valores genéricos no `.env` e reinicie:
+
+```dotenv
+MAIL_ENABLED=true
+MAIL_HOST=smtp.seu-provedor.com
+MAIL_PORT=587
+MAIL_USERNAME=seu-email@seu-dominio.com
+MAIL_PASSWORD=sua-credencial-smtp
+MAIL_FROM=seu-email@seu-dominio.com
+MAIL_SMTP_AUTH=true
+MAIL_STARTTLS=true
+MAIL_SSL=false
+APP_BASE_URL=http://localhost:8080
+```
+
+`MAIL_FROM` deve ser um remetente autorizado pelo provedor. Use a credencial SMTP ou senha de aplicativo exigida por ele. Para SMTP com TLS implícito, normalmente configure porta 465, `MAIL_SSL=true` e `MAIL_STARTTLS=false`, conforme o provedor. Em produção, `APP_BASE_URL` deve ser o endereço público HTTPS do site, incluindo o contexto da aplicação se existir. O link é construído a partir dessa configuração, sem confiar no cabeçalho Host da requisição. As mensagens possuem HTML com identidade visual do ReSource e alternativa em texto simples.
+
+Os valores `smtp.example.com` e `nao-responda@example.com` são exemplos, não um serviço de envio. `MAIL_ENABLED=false` mantém o envio desativado até configurar um SMTP real. Senhas e credenciais ficam somente no `.env` ignorado pelo Git. Há limite de cinco solicitações por endereço cliente a cada 15 minutos e intervalo de um minuto entre e-mails para a mesma conta. As solicitações são processadas em fila limitada, com resposta pública genérica para não revelar contas cadastradas. Falhas de SMTP não alteram senhas e desfazem a emissão do link.
 
 As responsabilidades, validações compartilhadas, verificações e limites atuais estão descritos em [Autenticação e cadastro](docs/arquitetura/autenticacao-e-cadastro.md).
 

@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-@ControllerAdvice(assignableTypes = {LoginController.class, DonorRegistrationController.class, InstitutionRegistrationController.class})
+@ControllerAdvice(assignableTypes = {LoginController.class, DonorRegistrationController.class, InstitutionRegistrationController.class, PasswordRecoveryController.class})
 @RequiredArgsConstructor
 public class AuthenticationPageAdvice {
     private final ObjectProvider<ClientRegistrationRepository> clients;
