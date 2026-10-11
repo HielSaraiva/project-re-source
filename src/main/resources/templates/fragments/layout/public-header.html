@@ -11,6 +11,6 @@
         </div>
     </div>
     <div class="nav-actions">
-        <a class="public-header__action" th:href="@{/login}"><span>Entrar</span><svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
+        <a class="public-header__action" th:href="@{${errorHomePath != null and errorHomePath != '/' ? errorHomePath : '/login'}}"><span th:text="${errorHomePath != null and errorHomePath != '/' ? 'Meu painel' : 'Entrar'}">Entrar</span><svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
     </div>
 </header>

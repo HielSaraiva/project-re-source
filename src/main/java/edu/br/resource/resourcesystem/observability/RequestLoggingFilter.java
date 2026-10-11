@@ -4,11 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
@@ -16,6 +14,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerMapping;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 10)
@@ -40,6 +43,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
 
         String requestId = UUID.randomUUID().toString();
         MDC.put("requestId", requestId);
+        request.setAttribute(REQUEST_ID_HEADER, requestId);
         response.setHeader(REQUEST_ID_HEADER, requestId);
         long started = System.nanoTime();
         boolean failed = false;

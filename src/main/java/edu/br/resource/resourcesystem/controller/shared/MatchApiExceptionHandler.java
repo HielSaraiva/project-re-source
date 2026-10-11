@@ -1,20 +1,25 @@
 package edu.br.resource.resourcesystem.controller.shared;
 
 import edu.br.resource.resourcesystem.observability.FailureDetails;
+
 import jakarta.validation.ConstraintViolationException;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.slf4j.MDC;
-import org.springframework.transaction.CannotCreateTransactionException;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
+@Order(0)
 @RestControllerAdvice(assignableTypes = MatchOperationsController.class)
 public class MatchApiExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
@@ -43,7 +48,8 @@ public class MatchApiExceptionHandler {
                 .body(
                         problem(
                                 HttpStatus.BAD_REQUEST,
-                                "Confira os campos obrigatórios, as quantidades, as datas e as confirmações do formulário."));
+                                "Confira os campos obrigatórios, as quantidades, as datas e as"
+                                        + " confirmações do formulário."));
     }
 
     @ExceptionHandler({
@@ -56,7 +62,8 @@ public class MatchApiExceptionHandler {
                 .body(
                         problem(
                                 HttpStatus.CONFLICT,
-                                "Os dados foram alterados por outra operação. Atualize a página antes de tentar novamente."));
+                                "Os dados foram alterados por outra operação. Atualize a página"
+                                        + " antes de tentar novamente."));
     }
 
     @ExceptionHandler({
@@ -70,7 +77,8 @@ public class MatchApiExceptionHandler {
                 .body(
                         problem(
                                 HttpStatus.SERVICE_UNAVAILABLE,
-                                "O serviço está temporariamente indisponível. Aguarde e atualize a página antes de tentar novamente."));
+                                "O serviço está temporariamente indisponível. Aguarde e atualize a"
+                                        + " página antes de tentar novamente."));
     }
 
     private ProblemDetail problem(HttpStatusCode status, String detail) {
