@@ -1,6 +1,10 @@
 # Project ReSource
 
-O **ReSource** é uma plataforma web desenvolvida para facilitar o cadastro, a gestão e a validação de Organizações Não Governamentais (ONGs). O sistema fornece um ambiente seguro onde as ONGs podem se registrar, validar seus dados jurídicos automaticamente (via integração com a BrasilAPI) e submeter documentos institucionais sensíveis. A plataforma centraliza essas informações para otimizar processos burocráticos e estabelecer uma base confiável para futuras interações de apoio, logística e doações.
+O **ReSource** conecta recursos em bom estado às necessidades de Organizações Não Governamentais (ONGs). Doadores podem cadastrar itens, propor doações e acompanhar cada etapa até a confirmação de recebimento. Instituições podem solicitar cadastro, consultar propostas e acompanhar as entregas. O cadastro institucional consulta dados cadastrais pela BrasilAPI e recebe documentos privados para análise; o acesso da instituição depende de aprovação.
+
+A rota `/` apresenta publicamente a proposta da plataforma, seu funcionamento e as opções de participação. Visitantes podem seguir para login ou cadastro; contas autenticadas continuam sendo direcionadas diretamente ao painel do perfil. O login permanece em `/login`.
+
+As páginas `/sustentabilidade` e `/politica-de-privacidade` ficam disponíveis sem login. A apresentação da plataforma também pode ser consultada em `/sobre`, inclusive por contas autenticadas. Consulte o [guia das páginas institucionais](docs/guias/paginas-institucionais.md) para atualizar o contato de privacidade e o conteúdo.
 
 ---
 

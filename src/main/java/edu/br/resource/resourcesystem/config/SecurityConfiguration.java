@@ -41,6 +41,9 @@ public class SecurityConfiguration {
                         a ->
                                 a.requestMatchers(
                                                 "/",
+                                                "/sobre",
+                                                "/sustentabilidade",
+                                                "/politica-de-privacidade",
                                                 "/login",
                                                 "/password/forgot",
                                                 "/password/reset",

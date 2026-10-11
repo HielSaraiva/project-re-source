@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
     @GetMapping("/")
     public String home(Authentication authentication) {
-        return "redirect:"
-                + (AuthenticationPageSupport.signedIn(authentication)
-                        ? ProfileAuthenticationSuccessHandler.destination(authentication)
-                        : "/login");
+        if (AuthenticationPageSupport.signedIn(authentication)) {
+            return "redirect:" + ProfileAuthenticationSuccessHandler.destination(authentication);
+        }
+        return "public/home";
     }
 
     @GetMapping("/login")
