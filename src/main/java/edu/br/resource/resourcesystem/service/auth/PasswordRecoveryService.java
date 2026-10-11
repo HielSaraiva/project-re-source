@@ -2,18 +2,12 @@ package edu.br.resource.resourcesystem.service.auth;
 
 import edu.br.resource.resourcesystem.config.PasswordRecoveryProperties;
 import edu.br.resource.resourcesystem.dto.request.PasswordResetRequest;
+import edu.br.resource.resourcesystem.service.mail.TransactionalMailService;
+
 import jakarta.validation.Valid;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Base64;
-import java.util.HexFormat;
-import java.util.List;
-import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.session.SessionRegistry;
@@ -25,6 +19,17 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.validation.annotation.Validated;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Validated
 @RequiredArgsConstructor
@@ -33,6 +38,7 @@ public class PasswordRecoveryService {
     private final JdbcTemplate db;
     private final PasswordEncoder passwords;
     private final PasswordRecoveryMailService mail;
+    private final TransactionalMailService transactionalMail;
     private final PasswordRecoveryProperties settings;
     private final SessionRegistry sessions;
 
@@ -53,10 +59,10 @@ public class PasswordRecoveryService {
         var accounts =
                 db.query(
                         """
-                SELECT id, false AS institution, email, full_name AS name, (password_hash IS NOT NULL) AS has_password FROM users WHERE lower(email) = lower(?)
-                UNION ALL
-                SELECT id, true AS institution, email, legal_name AS name, (password_hash IS NOT NULL) AS has_password FROM institutions WHERE lower(email) = lower(?)
-                """,
+                        SELECT id, false AS institution, email, full_name AS name, (password_hash IS NOT NULL) AS has_password FROM users WHERE lower(email) = lower(?)
+                        UNION ALL
+                        SELECT id, true AS institution, email, legal_name AS name, (password_hash IS NOT NULL) AS has_password FROM institutions WHERE lower(email) = lower(?)
+                        """,
                         (rs, row) ->
                                 new Account(
                                         rs.getInt("id"),
@@ -100,15 +106,15 @@ public class PasswordRecoveryService {
     private boolean allowRequest(String address) {
         return db.update(
                         """
-                INSERT INTO password_reset_rate_limits(client_hash, window_started_at, requests) VALUES (?, now(), 1)
-                ON CONFLICT (client_hash) DO UPDATE SET
-                  window_started_at = CASE WHEN password_reset_rate_limits.window_started_at <= now() - interval '15 minutes'
-                    THEN now() ELSE password_reset_rate_limits.window_started_at END,
-                  requests = CASE WHEN password_reset_rate_limits.window_started_at <= now() - interval '15 minutes'
-                    THEN 1 ELSE password_reset_rate_limits.requests + 1 END
-                WHERE password_reset_rate_limits.window_started_at <= now() - interval '15 minutes'
-                  OR password_reset_rate_limits.requests < 5
-                """,
+                        INSERT INTO password_reset_rate_limits(client_hash, window_started_at, requests) VALUES (?, now(), 1)
+                        ON CONFLICT (client_hash) DO UPDATE SET
+                          window_started_at = CASE WHEN password_reset_rate_limits.window_started_at <= now() - interval '15 minutes'
+                            THEN now() ELSE password_reset_rate_limits.window_started_at END,
+                          requests = CASE WHEN password_reset_rate_limits.window_started_at <= now() - interval '15 minutes'
+                            THEN 1 ELSE password_reset_rate_limits.requests + 1 END
+                        WHERE password_reset_rate_limits.window_started_at <= now() - interval '15 minutes'
+                          OR password_reset_rate_limits.requests < 5
+                        """,
                         digest(address))
                 == 1;
     }
@@ -120,7 +126,8 @@ public class PasswordRecoveryService {
     public void cleanExpired() {
         db.update("DELETE FROM password_reset_tokens WHERE expires_at < now() - interval '1 day'");
         db.update(
-                "DELETE FROM password_reset_rate_limits WHERE window_started_at < now() - interval '1 day'");
+                "DELETE FROM password_reset_rate_limits WHERE window_started_at < now() - interval"
+                    + " '1 day'");
     }
 
     @Transactional(readOnly = true)
@@ -140,12 +147,12 @@ public class PasswordRecoveryService {
         List<Account> accounts =
                 db.query(
                         """
-                SELECT u.id, false AS institution, u.email, u.full_name AS name, (u.password_hash IS NOT NULL) AS has_password
-                  FROM password_reset_tokens t JOIN users u ON t.user_id = u.id WHERE t.token_hash = ?
-                UNION ALL
-                SELECT i.id, true AS institution, i.email, i.legal_name AS name, (i.password_hash IS NOT NULL) AS has_password
-                  FROM password_reset_tokens t JOIN institutions i ON t.institution_id = i.id WHERE t.token_hash = ?
-                """,
+                        SELECT u.id, false AS institution, u.email, u.full_name AS name, (u.password_hash IS NOT NULL) AS has_password
+                          FROM password_reset_tokens t JOIN users u ON t.user_id = u.id WHERE t.token_hash = ?
+                        UNION ALL
+                        SELECT i.id, true AS institution, i.email, i.legal_name AS name, (i.password_hash IS NOT NULL) AS has_password
+                          FROM password_reset_tokens t JOIN institutions i ON t.institution_id = i.id WHERE t.token_hash = ?
+                        """,
                         (rs, row) ->
                                 new Account(
                                         rs.getInt("id"),
@@ -179,6 +186,7 @@ public class PasswordRecoveryService {
                         + account.tokenColumn()
                         + " = ? AND consumed_at IS NULL",
                 account.id());
+        transactionalMail.passwordChanged(account.id(), account.institution(), hash);
         TransactionSynchronizationManager.registerSynchronization(
                 new TransactionSynchronization() {
                     @Override

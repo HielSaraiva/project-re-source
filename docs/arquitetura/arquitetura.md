@@ -42,7 +42,7 @@ A aplicação está organizada em camadas bem delimitadas:
 
 ### Infraestrutura e Serviços de Apoio (Rede Virtual Docker)
 
-* **Message Broker (RabbitMQ):** Transporta os identificadores dos eventos do fluxo de doação; o consumo confirma os eventos e libera as notificações para envio por e-mail. A recuperação de senha usa executor assíncrono próprio. Os documentos institucionais são validados e armazenados durante o cadastro, sem processamento pelo broker.
+* **Message Broker (RabbitMQ):** Transporta os identificadores dos eventos do fluxo de doação; o consumo confirma os eventos e libera as notificações para a fila persistente `transactional_mail_outbox`. Boas-vindas, confirmação de cadastro institucional, comprovante da proposta e confirmação de redefinição de senha são gravados diretamente nessa fila, na transação da operação. Um único dispatcher envia os e-mails com o template visual compartilhado, reserva registros para processamento concorrente e aplica até oito tentativas com espera progressiva. Chaves únicas evitam duplicar a fila para o mesmo evento; SMTP não garante entrega exatamente uma vez se houver interrupção após o envio. Falhas SMTP não desfazem as operações já confirmadas. `MAIL_ENABLED` controla o envio geral; `NOTIFICATION_EMAIL_ENABLED` controla notificações e confirmações não relacionadas à segurança. A confirmação de senha ignora esta segunda opção. O link de recuperação continua usando executor assíncrono próprio. Os documentos institucionais são validados e armazenados durante o cadastro, sem processamento pelo broker.
 * **Banco de Dados (PostgreSQL):** Armazenamento relacional principal para persistência de dados transacionais, entidades e auditoria.
 
 ---

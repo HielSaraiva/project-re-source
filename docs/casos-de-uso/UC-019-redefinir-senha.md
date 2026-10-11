@@ -7,7 +7,7 @@
 | **ID** | UC-019 |
 | **Nome** | Redefinir senha |
 | **Ator(es)** | Doador, representante da ONG |
-| **Versão** | 1.0 |
+| **Versão** | 1.1 |
 | **Status** | Ativo |
 
 ## Descrição
@@ -61,9 +61,11 @@ Definir outra senha a partir de um link de recuperação, conforme RF-021, RN-01
 - A nova senha está definida sem modificar perfil ou situação da conta.
 - Os links pendentes da conta foram invalidados e as sessões registradas na instância foram marcadas para expiração.
 - O ator precisa autenticar-se novamente.
+- A confirmação de segurança definida em RF-021 fica agendada para o titular da conta.
 
 ## Histórico de Alterações
 
 | Versão | Data | Autor | Descrição |
 |--------|------|-------|-----------|
 | 1.0 | 2026-10-10 | Hiel Saraiva | Redefinição, links inválidos e expiração das sessões registradas |
+| 1.1 | 2026-10-10 | Hiel Saraiva | Agendamento da confirmação de segurança |

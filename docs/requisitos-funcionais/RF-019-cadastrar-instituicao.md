@@ -7,7 +7,7 @@
 | **ID** | RF-019 |
 | **Nome** | Cadastrar instituição |
 | **Prioridade** | Alta |
-| **Versão** | 1.1 |
+| **Versão** | 1.2 |
 | **Status** | Implementado |
 
 ## Descrição
@@ -34,6 +34,7 @@ O cadastro deve persistir a instituição pendente de aprovação e dois documen
 
 - Conta institucional `pending_approval` e dois documentos `pending`.
 - Confirmação na página de login institucional, sem autenticação automática.
+- E-mail de confirmação do cadastro e do recebimento dos dois documentos, esclarecendo que a análise administrativa está pendente e informando o contato do ReSource.
 - Mensagens para dados inválidos, duplicados, consulta indisponível e anexos inválidos ou excessivos.
 - Rejeição de requisições sem CSRF válido.
 
@@ -47,3 +48,4 @@ A análise administrativa dos documentos e a decisão de aprovação são um flu
 |--------|------|-------|-----------|
 | 1.0 | 2026-10-09 | Hiel Saraiva | Cadastro institucional, consulta de CNPJ e documentos privados |
 | 1.1 | 2026-10-10 | Hiel Saraiva | Política de senha independente e delimitação da aprovação administrativa |
+| 1.2 | 2026-10-10 | Hiel Saraiva | Confirmação por e-mail do cadastro e dos documentos recebidos |

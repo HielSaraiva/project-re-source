@@ -5,13 +5,17 @@ import edu.br.resource.resourcesystem.model.enums.AccountRole;
 import edu.br.resource.resourcesystem.model.enums.AccountStatus;
 import edu.br.resource.resourcesystem.repository.InstitutionRepository;
 import edu.br.resource.resourcesystem.repository.UserRepository;
-import java.util.Locale;
+import edu.br.resource.resourcesystem.service.mail.TransactionalMailService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +23,7 @@ public class GoogleAccountService {
     private final UserRepository users;
     private final InstitutionRepository institutions;
     private final AccountEmailRegistry emails;
+    private final TransactionalMailService transactionalMail;
 
     @Transactional
     public User resolve(OidcUser identity) {
@@ -57,15 +62,18 @@ public class GoogleAccountService {
         }
         String name = identity.getFullName();
         if (name == null || name.isBlank()) name = email;
-        return users.saveAndFlush(
-                User.builder()
-                        .email(email)
-                        .fullName(name.substring(0, Math.min(name.length(), 200)))
-                        .role(AccountRole.DONOR)
-                        .status(AccountStatus.ACTIVE)
-                        .oauthProvider("google")
-                        .oauthSubject(subject)
-                        .build());
+        User user =
+                users.saveAndFlush(
+                        User.builder()
+                                .email(email)
+                                .fullName(name.substring(0, Math.min(name.length(), 200)))
+                                .role(AccountRole.DONOR)
+                                .status(AccountStatus.ACTIVE)
+                                .oauthProvider("google")
+                                .oauthSubject(subject)
+                                .build());
+        transactionalMail.welcome(user);
+        return user;
     }
 
     private OAuth2AuthenticationException rejected() {

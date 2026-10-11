@@ -6,7 +6,7 @@
 |-------|-------|
 | **ID** | RN-020 |
 | **Nome** | Destinatários e leitura das notificações |
-| **Versão** | 1.0 |
+| **Versão** | 1.1 |
 | **Status** | Ativa |
 
 ## Descrição
@@ -24,7 +24,7 @@ Atualizações do fluxo de doação, consulta no header e envio de e-mail.
 
 | Evento | Doador | ONG destinatária |
 | --- | --- | --- |
-| Proposta enviada | — | Nova proposta para análise |
+| Proposta enviada | Comprovante por e-mail, sem aviso adicional no sino | Nova proposta para análise |
 | Proposta aceita | Aceite e orientação para escolher a entrega | — |
 | Proposta recusada | Recusa e acesso ao motivo nos detalhes | — |
 | Modalidade escolhida | — | Modalidade e próximos passos |
@@ -53,3 +53,4 @@ A unicidade dos registros não garante entrega SMTP exatamente uma vez: uma inte
 | Versão | Data | Autor | Descrição |
 |--------|------|-------|-----------|
 | 1.0 | 2026-10-10 | Hiel Saraiva | Centralização dos eventos, destinatários e estados de leitura |
+| 1.1 | 2026-10-10 | Hiel Saraiva | Comprovante exclusivo por e-mail ao doador que envia a proposta |

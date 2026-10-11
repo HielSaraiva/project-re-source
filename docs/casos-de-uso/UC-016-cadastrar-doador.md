@@ -7,7 +7,7 @@
 | **ID** | UC-016 |
 | **Nome** | Cadastrar doador |
 | **Ator(es)** | Visitante |
-| **Versão** | 1.1 |
+| **Versão** | 1.2 |
 | **Status** | Ativo |
 
 ## Descrição
@@ -56,6 +56,7 @@ Permitir que um visitante crie uma conta de doador para utilizar a plataforma.
 ## Pós-condições
 
 - Conta local de doador ativa e apta ao login; o cadastro local não estabelece sessão autenticada.
+- O e-mail de boas-vindas definido em RF-018 fica agendado após a criação da conta, inclusive pelo Google.
 
 ## Histórico de Alterações
 
@@ -63,3 +64,4 @@ Permitir que um visitante crie uma conta de doador para utilizar a plataforma.
 |--------|------|-------|-----------|
 | 1.0 | 2026-10-09 | Hiel Saraiva | Cadastro de doador |
 | 1.1 | 2026-10-10 | Hiel Saraiva | Terminologia da navegação e referências às políticas de cadastro |
+| 1.2 | 2026-10-10 | Hiel Saraiva | Agendamento de boas-vindas após cadastro |

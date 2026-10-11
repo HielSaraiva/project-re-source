@@ -7,12 +7,16 @@ import edu.br.resource.resourcesystem.model.enums.DocumentType;
 import edu.br.resource.resourcesystem.model.enums.InstitutionStatus;
 import edu.br.resource.resourcesystem.repository.InstitutionDocumentRepository;
 import edu.br.resource.resourcesystem.repository.InstitutionRepository;
-import lombok.RequiredArgsConstructor;
+import edu.br.resource.resourcesystem.service.mail.TransactionalMailService;
+
 import jakarta.validation.Valid;
-import org.springframework.validation.annotation.Validated;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
@@ -22,6 +26,7 @@ public class InstitutionRegistrationService {
     private final InstitutionDocumentRepository documents;
     private final InstitutionDocumentStorage storage;
     private final AccountEmailRegistry emails;
+    private final TransactionalMailService transactionalMail;
     private final PasswordEncoder passwords;
 
     @Transactional
@@ -50,6 +55,7 @@ public class InstitutionRegistrationService {
         saveDocument(institution, DocumentType.IDENTITY_DOCUMENT, identity);
         saveDocument(institution, DocumentType.ORGANIZATION_DOCUMENT, organization);
         documents.flush();
+        transactionalMail.registrationReceived(institution);
     }
 
     private void saveDocument(

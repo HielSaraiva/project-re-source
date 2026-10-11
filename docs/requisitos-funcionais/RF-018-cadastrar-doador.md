@@ -7,7 +7,7 @@
 | **ID** | RF-018 |
 | **Nome** | Cadastrar doador |
 | **Prioridade** | Alta |
-| **Versão** | 1.1 |
+| **Versão** | 1.2 |
 | **Status** | Implementado |
 
 ## Descrição
@@ -36,6 +36,7 @@ Quando configurada, a opção “Cadastrar com Google” deve reutilizar o fluxo
 
 - Conta criada com perfil de doador e situação ativa.
 - Confirmação de sucesso na página de login.
+- E-mail de boas-vindas após a criação da conta local ou pelo Google, com acesso à consulta de necessidades. Acessos posteriores pelo Google não repetem o envio.
 - Rejeição para campos inválidos ou e-mail já utilizado por usuário ou instituição.
 - Rejeição de submissão sem token CSRF válido.
 
@@ -45,3 +46,4 @@ Quando configurada, a opção “Cadastrar com Google” deve reutilizar o fluxo
 |--------|------|-------|-----------|
 | 1.0 | 2026-10-09 | Hiel Saraiva | Cadastro local do doador e integração com o login |
 | 1.1 | 2026-10-10 | Hiel Saraiva | Política de senha centralizada e comportamento compartilhado das telas |
+| 1.2 | 2026-10-10 | Hiel Saraiva | E-mail de boas-vindas no cadastro local e Google |

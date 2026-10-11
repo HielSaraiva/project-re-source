@@ -7,7 +7,7 @@
 | **ID** | UC-017 |
 | **Nome** | Cadastrar instituição |
 | **Ator(es)** | Representante legal, visitante |
-| **Versão** | 1.1 |
+| **Versão** | 1.2 |
 | **Status** | Ativo |
 
 ## Descrição
@@ -47,9 +47,12 @@ Solicitar verificação da instituição e enviar a documentação exigida, conf
 
 A instituição e os dois documentos aguardam análise. O visitante não está autenticado e só poderá entrar após aprovação, conforme UC-001. A análise administrativa não é realizada por este caso de uso.
 
+A confirmação de cadastro e recebimento dos documentos definida em RF-019 fica agendada para o e-mail institucional.
+
 ## Histórico de Alterações
 
 | Versão | Data | Autor | Descrição |
 |--------|------|-------|-----------|
 | 1.0 | 2026-10-09 | Hiel Saraiva | Solicitação de cadastro institucional |
 | 1.1 | 2026-10-10 | Hiel Saraiva | Objetivo do cadastro, política de senha e limite da consulta cadastral |
+| 1.2 | 2026-10-10 | Hiel Saraiva | Agendamento da confirmação de recebimento do cadastro |
