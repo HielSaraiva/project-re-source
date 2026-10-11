@@ -13,5 +13,4 @@ public record RegisterDonationRequest(
         @BindParam("item") @JsonAlias("item") @NotBlank @Size(max = 120) String title,
         @NotNull @Positive Integer quantity,
         @NotNull ItemCondition condition,
-        @Size(max = 1000) String description) {
-}
+        @Size(max = 1000) String description) {}

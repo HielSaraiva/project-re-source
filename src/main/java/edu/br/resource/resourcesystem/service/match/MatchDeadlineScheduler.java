@@ -18,13 +18,15 @@ public class MatchDeadlineScheduler {
     @Scheduled(fixedDelayString = "${resource.match.expiry-delay-ms:30000}", initialDelay = 5000)
     public void cancelExpired() {
         List<String> protocols = deadlines.findExpiredProtocols();
-        if (!protocols.isEmpty())
-            log.debug("event=expiry_batch candidates={}", protocols.size());
+        if (!protocols.isEmpty()) log.debug("event=expiry_batch candidates={}", protocols.size());
         for (String protocol : protocols)
             try {
                 workflow.expire(protocol);
             } catch (RuntimeException failure) {
-                log.error("event=expiry_failed protocol={} failure={}", protocol, FailureDetails.describe(failure));
+                log.error(
+                        "event=expiry_failed protocol={} failure={}",
+                        protocol,
+                        FailureDetails.describe(failure));
             }
     }
 }

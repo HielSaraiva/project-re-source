@@ -1,10 +1,11 @@
 <head xmlns:th="http://www.thymeleaf.org" th:fragment="head(title, pageStyles, persona)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="_csrf" th:content="${_csrf.token}">
-    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}">
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}">
     <meta name="context-path" th:content="@{/}">
     <script th:src="@{/js/loading-feedback.js}" defer></script>
+    <script th:src="@{/js/resource-http.js}" defer></script>
     <script th:src="@{/js/backend-flow.js}" defer></script>
     <link rel="icon" type="image/svg+xml" th:href="@{/images/shared/leaf.svg}">
     <title th:text="${'ReSource | ' + title}">ReSource</title>
@@ -23,5 +24,7 @@
     <link rel="stylesheet" th:href="@{/css/shared/donation-protocol.css}">
     <link rel="stylesheet" th:href="@{/css/shared/mobile-navigation.css}">
     <link rel="stylesheet" th:href="@{/css/shared/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/shared/notifications.css}">
+    <script th:src="@{/js/notifications.js}" defer></script>
     <script th:src="@{/js/navigation.js}"></script>
 </head>

@@ -1,0 +1,6 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="emptyState(icon, title, description, actionLabel, actionPath)" class="empty-state">
+    <span class="empty-state__icon" aria-hidden="true"><img th:src="@{${icon}}" alt="" width="28" height="28"></span>
+    <h3 th:text="${title}"></h3>
+    <p th:text="${description}"></p>
+    <a th:if="${actionPath != null}" class="button" th:href="@{${actionPath}}" th:text="${actionLabel}"></a>
+</div>

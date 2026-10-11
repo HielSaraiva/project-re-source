@@ -47,7 +47,11 @@ public class Institution extends AuditedEntity {
 
     @JsonIgnore
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(name = "representative_cpf", nullable = false, length = 11, columnDefinition = "char(11)")
+    @Column(
+            name = "representative_cpf",
+            nullable = false,
+            length = 11,
+            columnDefinition = "char(11)")
     private String representativeCpf;
 
     @Column(name = "description", nullable = true, columnDefinition = "text")

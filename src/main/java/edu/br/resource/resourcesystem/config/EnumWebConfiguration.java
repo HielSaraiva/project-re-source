@@ -14,7 +14,8 @@ public class EnumWebConfiguration implements WebMvcConfigurer {
         registry.addConverterFactory(new DatabaseEnumConverterFactory());
     }
 
-    private static final class DatabaseEnumConverterFactory implements ConverterFactory<String, DatabaseEnum> {
+    private static final class DatabaseEnumConverterFactory
+            implements ConverterFactory<String, DatabaseEnum> {
         @Override
         public <T extends DatabaseEnum> Converter<String, T> getConverter(Class<T> targetType) {
             return source -> {
@@ -26,7 +27,8 @@ public class EnumWebConfiguration implements WebMvcConfigurer {
                         return value;
                     }
                 }
-                throw new IllegalArgumentException("Valor inválido para " + targetType.getSimpleName() + ": " + source);
+                throw new IllegalArgumentException(
+                        "Valor inválido para " + targetType.getSimpleName() + ": " + source);
             };
         }
     }

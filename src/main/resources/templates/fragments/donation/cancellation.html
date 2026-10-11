@@ -3,7 +3,7 @@
         <div class="ui-dialog-content">
             <div class="title-block">
                 <p class="donation-protocol" th:text="${protocol}"></p>
-                <div th:replace="~{fragments/ui/dialog :: heading('cancellation-title', 'Cancelar doação?', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/donation-status/info.svg')}"></div>
+                <div th:replace="~{fragments/ui/dialog :: heading('cancellation-title', 'Cancelar doação?', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/shared/icons/info.svg')}"></div>
                 <p id="cancellation-description">Você está cancelando a doação de <strong th:text="${donation.item}"></strong> para <strong th:text="${donation.organization}"></strong>.</p>
             </div>
             <p class="ui-dialog-description">Os itens reservados para esta proposta ficarão disponíveis para doar novamente e a reserva da necessidade será liberada. Esta ação não pode ser desfeita.</p>

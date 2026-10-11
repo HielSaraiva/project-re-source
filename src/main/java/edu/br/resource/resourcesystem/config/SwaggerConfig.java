@@ -12,9 +12,11 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(new Info()
-                        .title("ReSource API")
-                        .description("API do sistema ReSource — conectando doadores a organizações")
-                        .version("1.0.0"));
+                .info(
+                        new Info()
+                                .title("ReSource API")
+                                .description(
+                                        "API do sistema ReSource — conectando doadores a organizações")
+                                .version("1.0.0"));
     }
 }

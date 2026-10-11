@@ -18,21 +18,29 @@ public class CurrentActor {
     private final InstitutionRepository institutions;
 
     public User donor(Authentication auth) {
-        if (auth == null || auth.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_DONOR")))
-            throw denied();
+        if (auth == null
+                || auth.getAuthorities().stream()
+                        .noneMatch(a -> a.getAuthority().equals("ROLE_DONOR"))) throw denied();
         return users.findByEmailIgnoreCase(auth.getName())
-                .filter(u -> u.getRole() == AccountRole.DONOR && u.getStatus() == AccountStatus.ACTIVE)
+                .filter(
+                        u ->
+                                u.getRole() == AccountRole.DONOR
+                                        && u.getStatus() == AccountStatus.ACTIVE)
                 .orElseThrow(this::denied);
     }
 
     public Institution institution(Authentication auth) {
-        if (auth == null || auth.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ONG")))
-            throw denied();
-        return institutions.findByEmailIgnoreCase(auth.getName())
-                .filter(i -> i.getStatus() == InstitutionStatus.APPROVED).orElseThrow(this::denied);
+        if (auth == null
+                || auth.getAuthorities().stream()
+                        .noneMatch(a -> a.getAuthority().equals("ROLE_ONG"))) throw denied();
+        return institutions
+                .findByEmailIgnoreCase(auth.getName())
+                .filter(i -> i.getStatus() == InstitutionStatus.APPROVED)
+                .orElseThrow(this::denied);
     }
 
     private ResponseStatusException denied() {
-        return new ResponseStatusException(HttpStatus.FORBIDDEN, "Conta sem permissão para esta operação.");
+        return new ResponseStatusException(
+                HttpStatus.FORBIDDEN, "Conta sem permissão para esta operação.");
     }
 }

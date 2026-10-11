@@ -7,6 +7,7 @@
     --font-page-mobile: 28px;
     --font-metric: 36px;
     --font-logo: 28px;
+    --font-brand: 800 var(--font-logo) Outfit, sans-serif;
     --color-brand: #10b981;
     --color-success: #047857;
     --color-success-dark: #065f46;

@@ -9,5 +9,4 @@ public record DonationHistoryEventResponse(
         String title,
         Instant at,
         String actor,
-        String description) {
-}
+        String description) {}

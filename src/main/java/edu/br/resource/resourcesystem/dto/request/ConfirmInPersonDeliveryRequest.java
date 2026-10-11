@@ -11,5 +11,4 @@ public record ConfirmInPersonDeliveryRequest(
         @NotNull @PastOrPresent LocalDate date,
         @NotBlank @Size(max = 120) String recipient,
         @Size(max = 1000) String notes,
-        @NotNull @AssertTrue Boolean delivered) {
-}
+        @NotNull @AssertTrue Boolean delivered) {}

@@ -16,8 +16,7 @@ public enum DeliveryStatus implements DatabaseEnum {
     CANCELLED("cancelled", "Cancelada"),
     AWAITING_CONFIRMATION("awaiting_confirmation", "Aguardando confirmação da ONG");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

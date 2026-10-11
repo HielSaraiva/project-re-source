@@ -18,5 +18,4 @@ public record DeliveryResponse(
         String receivedByName,
         String notes,
         Instant receiptConfirmedAt,
-        Integer receiptConfirmedByInstitutionId) {
-}
+        Integer receiptConfirmedByInstitutionId) {}

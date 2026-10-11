@@ -8,7 +8,7 @@
 }
 
 .personal-delivery :focus-visible, .carrier-delivery :focus-visible {
-    outline: 2px solid #047857;
+    outline: 2px solid var(--color-success);
     outline-offset: 3px;
 }
 

@@ -1,0 +1,9 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="field(field, label, icon, type, placeholder, autocomplete, maxLength)" class="proposal-field auth-field">
+    <label th:for="${field}" th:text="${label}"></label>
+    <div class="auth-input">
+        <svg th:replace="~{fragments/auth/icon :: icon(${icon})}"></svg>
+        <input th:field="*{__${field}__}" th:type="${type}" th:placeholder="${placeholder}" th:autocomplete="${autocomplete}" th:maxlength="${maxLength}" required
+            th:attr="autocapitalize=${type == 'email' ? 'none' : null},spellcheck=${type == 'email' ? 'false' : null},aria-invalid=${#fields.hasErrors(field) ? 'true' : null},aria-describedby=${field + '-error'}">
+    </div>
+    <small th:id="${field + '-error'}" class="auth-field-error"><th:block th:if="${#fields.hasErrors(field)}" th:errors="*{__${field}__}"></th:block></small>
+</div>

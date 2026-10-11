@@ -1,0 +1,11 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="documentUpload(id, label, caption)" class="proposal-field auth-field">
+    <label th:for="${id}" th:text="${label}">Documento</label>
+    <label class="auth-upload" th:for="${id}">
+        <span class="auth-upload-icon"><svg th:replace="~{fragments/auth/icon :: icon('upload')}"></svg></span>
+        <span th:text="${caption}">Anexar documento (PDF/JPG)</span>
+        <input type="file" th:id="${id}" th:name="${id}" accept="application/pdf,image/jpeg,.pdf,.jpg,.jpeg" required
+            th:attr="data-max-file-bytes=${documentMaxBytes},aria-describedby=${id + '-error ' + id + '-name'},aria-invalid=${#fields.hasErrors(id) ? 'true' : null}">
+    </label>
+    <small class="auth-help" th:id="${id + '-name'}" data-upload-name role="status">Nenhum arquivo selecionado.</small>
+    <small class="auth-field-error" th:id="${id + '-error'}"><th:block th:if="${#fields.hasErrors(id)}" th:each="error : ${#fields.errors(id)}" th:text="${error}"></th:block></small>
+</div>

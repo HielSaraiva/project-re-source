@@ -21,12 +21,12 @@
 
 .pagination a,
 .pagination button {
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--border);
 }
 
 .pagination .current {
-    color: #fff;
+    color: var(--color-surface);
     background: var(--green);
     border-color: var(--green);
 }

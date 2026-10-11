@@ -7,7 +7,7 @@
 | **ID**         | UC-007                       |
 | **Nome**       | Consultar propostas da ONG |
 | **Ator(es)**   | ONG |
-| **Versão**     | 1.1                          |
+| **Versão**     | 1.2                          |
 | **Status**     | Ativo |
 
 ## Descrição
@@ -32,6 +32,16 @@ Pesquisar as propostas destinadas às necessidades da instituição.
 1. A ONG seleciona a ordenação por prazo em lugar da ordem de criação mais recente.
 2. O sistema apresenta as propostas por prazo crescente, com as que não possuem prazo ao final e desempate por criação e identificador decrescentes.
 
+### FA-02: Filtros sem resultados
+
+1. Os filtros não encontram propostas.
+2. O sistema apresenta mensagem e ação para limpar filtros.
+
+### FA-03: Instituição sem propostas
+
+1. Não existem propostas na consulta sem filtros.
+2. O sistema explica que futuras propostas aparecerão nesse espaço e oferece retorno ao painel, sem exibir apenas os cabeçalhos de uma tabela.
+
 ## Fluxos de Exceção
 
 ### FE-01: Filtros inválidos
@@ -50,3 +60,4 @@ Pesquisar as propostas destinadas às necessidades da instituição.
 |--------|------------|--------|----------------------|
 | 1.0    | 2026-10-09 | Hiel Saraiva | Criação do documento |
 | 1.1    | 2026-10-09 | Hiel Saraiva | Precisão da ordenação por prazo |
+| 1.2 | 2026-10-10 | Hiel Saraiva | Mensagens para instituição sem propostas e filtros sem resultados |

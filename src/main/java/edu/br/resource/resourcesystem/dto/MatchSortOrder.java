@@ -10,10 +10,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum MatchSortOrder implements DatabaseEnum {
-    RECENT("recent"), DEADLINE("deadline");
+    RECENT("recent"),
+    DEADLINE("deadline");
 
-    @JsonValue
-    private final String value;
+    @JsonValue private final String value;
 
     @JsonCreator
     public static MatchSortOrder fromValue(String value) {

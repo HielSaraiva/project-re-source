@@ -16,7 +16,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface NecessityRepository extends JpaRepository<Necessity, Integer>, JpaSpecificationExecutor<Necessity> {
+public interface NecessityRepository
+        extends JpaRepository<Necessity, Integer>, JpaSpecificationExecutor<Necessity> {
     @Override
     @EntityGraph(attributePaths = {"institution", "itemType"})
     Page<Necessity> findAll(Specification<Necessity> specification, Pageable pageable);

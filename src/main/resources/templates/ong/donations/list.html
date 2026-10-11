@@ -5,6 +5,7 @@
             <link rel="stylesheet" th:href="@{/css/shared/pagination.css}">
             <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
             <link rel="stylesheet" th:href="@{/css/ong/donations.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/empty-state.css}">
         </th:block>
     </head>
     <body>
@@ -34,7 +35,7 @@
             </form>
             <p th:text="${pagination.totalElements + ' doações encontradas'}" class="results-count" data-results-count tabindex="-1" role="status">Doações recebidas</p>
             <section class="ong-donation-table" aria-label="Doações recebidas">
-                <div class="ong-donation-table-heading" aria-hidden="true"><span>Proposta e doador</span><span>Recebida em</span><span>Status</span><span>Ação</span>
+                <div class="ong-donation-table-heading" th:if="${!intentions.isEmpty()}" aria-hidden="true"><span>Proposta e doador</span><span>Recebida em</span><span>Status</span><span>Ação</span>
                 </div>
                 <div data-intention-rows>
                     <article class="ong-donation-list-row" th:each="intention : ${intentions}"
@@ -52,9 +53,8 @@
                         <a class="ong-donation-link" th:href="@{/ong/donations/{id}(id=${intention.id})}" th:aria-label="${'Ver detalhes de ' + intention.id}">Ver detalhes</a>
                     </article>
                 </div>
-                <div class="ong-donation-empty" data-empty-results th:hidden="${!intentions.isEmpty()}">
-                    <h2>Nenhuma doação encontrada</h2>
-                    <p>Experimente outro termo ou ajuste os filtros.</p>
+                <div data-empty-results th:hidden="${!intentions.isEmpty()}" th:with="filtered=${!#strings.isEmpty(filter.query) or filter.status != null}">
+                    <div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/package.svg', ${filtered ? 'Nenhuma doação encontrada' : 'Sua instituição ainda não recebeu propostas'}, ${filtered ? 'Não encontramos doações com esses filtros. Tente outro termo ou limpe os filtros para consultar todas as propostas.' : 'Quando os doadores enviarem propostas, você poderá analisá-las e acompanhar cada etapa até o recebimento por aqui.'}, ${filtered ? 'Limpar filtros' : 'Voltar ao painel'}, ${filtered ? '/ong/donations' : '/ong/dashboard'})}"></div>
                 </div>
             </section>
             <nav th:replace="~{fragments/ui/pagination :: pages('/ong/donations', ${pagination}, ${filter}, false)}"></nav>

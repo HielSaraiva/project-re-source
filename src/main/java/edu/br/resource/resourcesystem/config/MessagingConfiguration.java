@@ -16,10 +16,17 @@ public class MessagingConfiguration {
     Declarables matchMessaging() {
         var exchange = new DirectExchange(EXCHANGE, true, false);
         var deadExchange = new DirectExchange(EXCHANGE + ".dead", true, false);
-        var queue = QueueBuilder.durable(QUEUE).deadLetterExchange(deadExchange.getName())
-                .deadLetterRoutingKey("failed").build();
+        var queue =
+                QueueBuilder.durable(QUEUE)
+                        .deadLetterExchange(deadExchange.getName())
+                        .deadLetterRoutingKey("failed")
+                        .build();
         var deadQueue = QueueBuilder.durable(QUEUE + ".dead").build();
-        return new Declarables(exchange, deadExchange, queue, deadQueue,
+        return new Declarables(
+                exchange,
+                deadExchange,
+                queue,
+                deadQueue,
                 BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY),
                 BindingBuilder.bind(deadQueue).to(deadExchange).with("failed"));
     }

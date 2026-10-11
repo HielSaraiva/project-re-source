@@ -7,4 +7,18 @@ public record AddressResponse(
         String complement,
         String district,
         LocationResponse location) {
+    public String formatted() {
+        return street
+                + ", "
+                + number
+                + (complement == null ? "" : " — " + complement)
+                + ", "
+                + district
+                + ", "
+                + location.city()
+                + "/"
+                + location.state()
+                + ", CEP "
+                + postalCode;
+    }
 }

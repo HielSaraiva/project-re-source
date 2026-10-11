@@ -7,7 +7,7 @@
 | **ID**         | UC-001                       |
 | **Nome**       | Autenticar conta |
 | **Ator(es)**   | Doador, ONG |
-| **Versão**     | 1.0                          |
+| **Versão**     | 1.3                          |
 | **Status**     | Ativo |
 
 ## Descrição
@@ -16,30 +16,52 @@ Permitir o acesso às funcionalidades do perfil da conta.
 
 ## Pré-condições
 
-- A conta já existe e possui credenciais locais.
+- Para login local, a conta já existe e possui credenciais locais.
 - O doador está ativo ou a ONG está aprovada.
+- Para login Google, a integração está configurada e o e-mail é verificado pelo provedor. Uma identidade nova pode criar uma conta de doador ativo.
 
 ## Fluxo Principal
 
 1. O ator acessa uma funcionalidade protegida.
 2. O sistema solicita autenticação.
-3. O ator informa e-mail e senha.
+3. O doador informa e-mail e senha; a instituição seleciona seu perfil e informa CNPJ e senha, com ou sem máscara. O backend também mantém o acesso institucional por e-mail.
 4. O sistema autentica a conta e redireciona o doador ao seu painel ou a ONG ao painel institucional.
 
 ## Fluxos Alternativos
 
-### FA-01: Autenticação HTTP Basic
+### FA-01: Autenticação Google
 
-1. O ator acessa um recurso com credenciais HTTP Basic.
-2. O sistema autentica a conta e atende o recurso autorizado.
+1. O doador seleciona “Entrar com Google” na página de login.
+2. O sistema redireciona ao Google e valida o retorno OAuth 2.0 / OpenID Connect.
+3. O sistema verifica o e-mail, a identidade, a situação da conta e os conflitos com contas existentes.
+4. Uma identidade nova cria um doador ativo; uma identidade existente reutiliza sua conta.
+5. O sistema estabelece a sessão e redireciona ao painel do doador.
+
+### FA-02: Senha esquecida
+
+1. O ator seleciona “Esqueceu a senha?”.
+2. O sistema inicia [UC-018](UC-018-solicitar-recuperacao-de-senha.md).
+
+### FA-03: Conta com sessão existente
+
+1. O ator abre o login com uma sessão autenticada.
+2. O sistema redireciona ao painel do seu perfil.
+
+O encerramento da sessão é um objetivo independente, descrito em [UC-021](UC-021-encerrar-sessao.md).
 
 ## Fluxos de Exceção
 
 ### FE-01: Credenciais ou conta inválidas
 
-1. O e-mail ou a senha é inválido, a conta está desabilitada ou o mesmo e-mail existe como usuário e instituição.
+1. O e-mail, o CNPJ ou a senha é inválido, a conta está desabilitada, a instituição não está aprovada ou o mesmo e-mail existe como usuário e instituição no login por e-mail.
 2. O sistema rejeita a autenticação.
 3. O acesso solicitado não é concedido.
+
+### FE-02: Autenticação Google indisponível ou inválida
+
+1. Sem configuração do provedor, o botão Google fica desabilitado.
+2. Se a autorização for cancelada, o e-mail não for verificado, a conta estiver bloqueada ou houver conflito com outra conta, o login Google é rejeitado e uma mensagem é apresentada.
+3. Contas locais não são vinculadas automaticamente por coincidência de e-mail e devem utilizar senha.
 
 ## Pós-condições
 
@@ -51,3 +73,6 @@ Permitir o acesso às funcionalidades do perfil da conta.
 | Versão | Data       | Autor  | Descrição            |
 |--------|------------|--------|----------------------|
 | 1.0    | 2026-10-09 | Hiel Saraiva | Criação do documento |
+| 1.1    | 2026-10-09 | Hiel Saraiva | Login Google, tela personalizada e encerramento de sessão |
+| 1.2    | 2026-10-09 | Hiel Saraiva | Tela institucional e autenticação por CNPJ |
+| 1.3 | 2026-10-10 | Hiel Saraiva | Separação da saída e do mecanismo HTTP Basic; ligação com a recuperação de senha |

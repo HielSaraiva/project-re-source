@@ -13,5 +13,4 @@ public record InventoryDonationResponse(
         String description,
         Integer totalQuantity,
         long availableQuantity,
-        DonationStatus status) {
-}
+        DonationStatus status) {}

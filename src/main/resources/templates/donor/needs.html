@@ -5,6 +5,7 @@
             <link rel="stylesheet" th:href="@{/css/shared/pagination.css}">
             <link rel="stylesheet" th:href="@{/css/shared/priority-badges.css}">
             <link rel="stylesheet" th:href="@{/css/donor/needs.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/empty-state.css}">
         </th:block>
     </head>
     <body>
@@ -43,7 +44,10 @@
                         ONGs 100% Verificadas com auditoria ativa
                     </span>
                 </div>
-                <div class="needs-grid">
+                <th:block th:if="${needs.isEmpty()}" th:with="filtered=${!#strings.isEmpty(filter.query) or filter.category != null or filter.priority != null or filter.stateId != null}">
+                    <div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/heart.svg', ${filtered ? 'Nenhuma necessidade encontrada' : 'Novas oportunidades de ajudar virão'}, ${filtered ? 'Não encontramos necessidades com esses filtros. Tente outro termo ou limpe os filtros para ver as opções disponíveis.' : 'Não há necessidades disponíveis no momento. Volte mais tarde para conhecer as novas demandas das instituições.'}, ${filtered ? 'Limpar filtros' : 'Voltar ao painel'}, ${filtered ? '/donor/needs' : '/donor/dashboard'})}"></div>
+                </th:block>
+                <div class="needs-grid" th:if="${!needs.isEmpty()}">
                     <article class="need-card" th:each="need : ${needs}">
                         <div class="card-top">
                             <div class="organization-row">
@@ -72,7 +76,9 @@
                         </div>
                     </article>
                 </div>
-                <nav th:replace="~{fragments/ui/pagination :: pages('/donor/needs', ${pagination}, ${filter}, true)}"></nav>
+                <th:block th:if="${pagination.totalElements > 0}">
+                    <nav th:replace="~{fragments/ui/pagination :: pages('/donor/needs', ${pagination}, ${filter}, true)}"></nav>
+                </th:block>
             </section>
         </main>
     </body>

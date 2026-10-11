@@ -18,14 +18,14 @@
 }
 
 .delivery-field label > span[aria-hidden], .proposal-field label > span[aria-hidden] {
-    color: #047857;
+    color: var(--color-success);
 }
 
 .delivery-field :is(input, textarea), .proposal-field :is(input, select, textarea) {
     width: 100%;
     min-width: 0;
     padding: 12px 14px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--color-control-border);
     border-radius: 8px;
     color: var(--ink);
     background: var(--surface);

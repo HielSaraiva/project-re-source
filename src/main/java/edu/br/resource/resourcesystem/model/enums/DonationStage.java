@@ -14,8 +14,7 @@ public enum DonationStage implements DatabaseEnum {
     IN_PERSON("in_person", "Entrega presencial"),
     CARRIER("carrier", "Postagem pelos Correios");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

@@ -23,7 +23,8 @@ public class MatchEventConsumer {
             events.recordNotification(UUID.fromString(eventId));
         } catch (IllegalArgumentException failure) {
             log.warn("event=notification_rejected reason=invalid_or_unknown_event");
-            throw new AmqpRejectAndDontRequeueException("Evento inválido ou desconhecido.", failure);
+            throw new AmqpRejectAndDontRequeueException(
+                    "Evento inválido ou desconhecido.", failure);
         }
     }
 }

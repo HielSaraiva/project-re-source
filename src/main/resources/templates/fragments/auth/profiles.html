@@ -1,0 +1,4 @@
+<nav xmlns:th="http://www.thymeleaf.org" th:fragment="profiles(registration, institution)" class="auth-profiles" th:attr="aria-label=${registration ? 'Perfil de cadastro' : 'Perfil de acesso'}">
+    <a class="button auth-profile" th:href="${registration} ? @{/register/donor} : @{/login(profile='donor')}" th:classappend="${!institution} ? 'is-selected'" th:attr="aria-current=${!institution ? 'page' : null}">Doador</a>
+    <a class="button auth-profile" th:href="${registration} ? @{/register/institution} : @{/login(profile='ong')}" th:classappend="${institution} ? 'is-selected'" th:attr="aria-current=${institution ? 'page' : null}">Instituição (CNPJ)</a>
+</nav>

@@ -7,7 +7,7 @@
 | **ID**         | UC-005                       |
 | **Nome**       | Enviar proposta de doação |
 | **Ator(es)**   | Doador |
-| **Versão**     | 1.1                          |
+| **Versão**     | 1.2                          |
 | **Status**     | Ativo |
 
 ## Descrição
@@ -37,6 +37,17 @@ Oferecer uma quantidade de itens de uma doação para atender uma necessidade.
 2. O doador executa o cadastro de itens e seleciona a doação criada.
 3. O fluxo retorna ao passo 3.
 
+### FA-02: Inventário compatível vazio
+
+1. O sistema não encontra doação própria da categoria com saldo.
+2. Apresenta orientação e ação para cadastrar itens, sem disponibilizar envio de proposta vazia.
+3. Após UC-004, o doador pode selecionar a nova doação.
+
+### FA-03: Necessidade sem saldo ao abrir a proposta
+
+1. A necessidade continua ativa, mas não possui saldo disponível.
+2. A interface apresenta mensagem e acesso a outras necessidades; cadastro e envio ficam indisponíveis pela tela.
+
 ## Fluxos de Exceção
 
 ### FE-01: Proposta incompatível ou saldo insuficiente
@@ -57,3 +68,4 @@ Oferecer uma quantidade de itens de uma doação para atender uma necessidade.
 |--------|------------|--------|----------------------|
 | 1.0    | 2026-10-09 | Hiel Saraiva | Criação do documento |
 | 1.1    | 2026-10-09 | Hiel Saraiva | Inclusão da revisão e confirmação existentes na interface |
+| 1.2 | 2026-10-10 | Hiel Saraiva | Orientação para inventário vazio ou necessidade sem saldo |

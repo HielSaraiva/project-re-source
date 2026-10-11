@@ -34,6 +34,11 @@ build/
 
 ### Environment Variables ###
 .env
+.env.*
+!.env.example
 
 ### Development Scripts
 scripts
+
+# Private uploaded documents
+/var/

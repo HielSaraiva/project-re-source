@@ -7,7 +7,7 @@
 | **ID**         | UC-003                       |
 | **Nome**       | Consultar necessidades disponíveis |
 | **Ator(es)**   | Doador |
-| **Versão**     | 1.1                          |
+| **Versão**     | 1.2                          |
 | **Status**     | Ativo |
 
 ## Descrição
@@ -30,10 +30,15 @@ Localizar necessidades que ainda podem receber propostas de doação.
 ### FA-01: Nenhuma necessidade encontrada
 
 1. Os filtros não correspondem a necessidades disponíveis.
-2. O sistema apresenta a lista vazia.
-3. O doador pode alterar os filtros e repetir a consulta.
+2. O sistema informa que nenhum resultado corresponde aos filtros e oferece limpá-los.
+3. O doador limpa ou altera os filtros e repete a consulta.
 
-### FA-02: Filtro por estado via parâmetro
+### FA-02: Nenhuma necessidade disponível
+
+1. A consulta sem filtros não encontra necessidades.
+2. O sistema apresenta orientação de indisponibilidade momentânea e ação para voltar ao painel, conforme RF-003.
+
+### FA-03: Filtro por estado via parâmetro
 
 1. O doador acessa a lista informando o identificador do estado no parâmetro stateId da URL.
 2. O sistema restringe os resultados a instituições com endereço nesse estado e preserva o parâmetro nos links de paginação.
@@ -57,3 +62,4 @@ Localizar necessidades que ainda podem receber propostas de doação.
 |--------|------------|--------|----------------------|
 | 1.0    | 2026-10-09 | Hiel Saraiva | Criação do documento |
 | 1.1    | 2026-10-09 | Hiel Saraiva | Correção dos filtros disponíveis na tela e da ordenação |
+| 1.2 | 2026-10-10 | Hiel Saraiva | Distinção entre filtros sem resultado e ausência de necessidades |

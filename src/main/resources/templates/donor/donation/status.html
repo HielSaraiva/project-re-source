@@ -45,17 +45,17 @@
                         <h2>Detalhes da Doação</h2>
                         <p>Informações declaradas no ato da abertura do fluxo de doação.</p>
                     </div>
-                    <img class="section-divider" th:src="@{/images/donor/donation-status/line.svg}" alt="">
+                    <img class="section-divider" th:src="@{/images/shared/icons/line.svg}" alt="">
                     <div th:replace="~{fragments/donation/details :: details(${donationDetails}, '/images/donor/donation-status', '', '')}"></div>
                 </article>
 
                 <article class="details-card">
-                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/donor/donation-status/home.svg', 'Dados da instituição', 'card-badge--blue')}"></div>
+                    <div th:replace="~{fragments/donation/details :: cardHeading('/images/shared/icons/home.svg', 'Dados da instituição', 'card-badge--blue')}"></div>
                     <div class="title-block">
                         <h2>Informações da ONG</h2>
                         <p>Detalhes de contato e prazo estipulado para a resposta da entidade parceira.</p>
                     </div>
-                    <img class="section-divider" th:src="@{/images/donor/donation-status/line.svg}" alt="">
+                    <img class="section-divider" th:src="@{/images/shared/icons/line.svg}" alt="">
                     <div th:replace="~{fragments/donation/details :: details(${organizationDetails}, '/images/donor/donation-status', 'Prazo para Aceite', 'detail-content--urgent')}"></div>
                 </article>
             </section>
@@ -123,7 +123,7 @@
             <div class="ui-dialog-content">
                 <div class="title-block">
                     <p class="donation-protocol" th:text="${donation.protocol}"></p>
-                    <div th:replace="~{fragments/ui/dialog :: heading('cancellation-title', 'Cancelar doação?', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/donor/donation-status/info.svg')}"></div>
+                    <div th:replace="~{fragments/ui/dialog :: heading('cancellation-title', 'Cancelar doação?', ${statusLabel}, ${'donation-status--' + statusClass}, '/images/shared/icons/info.svg')}"></div>
                     <p id="cancellation-description">Você está cancelando a proposta de <strong th:text="${donation.item}">1x Monitor Dell 24"</strong> para <strong th:text="${donation.organization}">Associação Vida</strong>.</p>
                 </div>
                 <p>Após confirmar, <strong>a ONG não poderá mais aceitar esta proposta</strong>. Os itens reservados para esta proposta ficarão disponíveis para doar novamente e a reserva da necessidade será liberada.</p>

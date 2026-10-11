@@ -7,5 +7,4 @@ public record MatchActionsResponse(
         boolean canSelectDeliveryMethod,
         boolean canConfirmInPersonDelivery,
         boolean canConfirmShipment,
-        boolean canConfirmReceipt) {
-}
+        boolean canConfirmReceipt) {}

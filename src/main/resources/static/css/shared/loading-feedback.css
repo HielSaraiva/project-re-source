@@ -22,7 +22,7 @@
     padding: 12px 20px;
     border: 1px solid var(--border);
     border-radius: 12px;
-    color: #047857;
+    color: var(--color-success);
     background: var(--surface);
     box-shadow: 0 4px 16px rgb(15 23 42 / 12%);
     font-size: var(--font-body);

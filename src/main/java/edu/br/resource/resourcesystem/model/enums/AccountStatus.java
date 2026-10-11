@@ -13,8 +13,7 @@ public enum AccountStatus implements DatabaseEnum {
     PENDING("pending", "Pendente"),
     BLOCKED("blocked", "Bloqueado");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

@@ -33,15 +33,15 @@
 .card-badge {
     padding: 4px 10px;
     color: var(--green);
-    background: #ecfdf5;
+    background: var(--color-success-surface);
     border-radius: 999px;
     font-size: var(--font-caption);
     font-weight: 600;
 }
 
 .card-badge--blue {
-    color: #1e40af;
-    background: #dbeafe;
+    color: var(--color-info);
+    background: var(--color-info-surface);
 }
 
 .action-wrapper {
@@ -78,8 +78,8 @@
 }
 
 .delivery-status.delivery-status--shipped {
-    color: #1e40af;
-    background: #dbeafe;
+    color: var(--color-info);
+    background: var(--color-info-surface);
 }
 
 .delivery-deadline {

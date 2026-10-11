@@ -14,8 +14,7 @@ public enum InstitutionStatus implements DatabaseEnum {
     REJECTED("rejected", "Recusada"),
     BLOCKED("blocked", "Bloqueada");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

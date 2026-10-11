@@ -14,8 +14,7 @@ public enum ItemCondition implements DatabaseEnum {
     USED("used", "Com marcas de uso"),
     OTHER("other", "Outro");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

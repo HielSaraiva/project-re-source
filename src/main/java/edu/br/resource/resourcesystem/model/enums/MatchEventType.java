@@ -19,8 +19,7 @@ public enum MatchEventType implements DatabaseEnum {
     RECEIPT_CONFIRMED("receipt_confirmed", "Recebimento confirmado"),
     DONATION_CANCELLED("donation_cancelled", "Doação cancelada");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

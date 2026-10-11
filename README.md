@@ -1,6 +1,6 @@
 # Project ReSource
 
-O **ReSource** é uma plataforma web desenvolvida para facilitar o cadastro, a gestão e a validação de Organizações Não Governamentais (ONGs). O sistema fornece um ambiente seguro onde as ONGs podem se registrar, validar seus dados jurídicos automaticamente (via integração com a BrasilAPI) e submeter documentos institucionais sensíveis. A plataforma centraliza essas informações para otimizar processos burocráticos e estabelecer uma base confiável para futuras interações de apoio, logística e doações.
+O **ReSource** conecta recursos em bom estado às necessidades de Organizações Não Governamentais (ONGs). Doadores podem cadastrar itens, propor doações e acompanhar cada etapa até a confirmação de recebimento. Instituições podem solicitar cadastro, consultar propostas e acompanhar as entregas. O cadastro institucional consulta dados cadastrais pela BrasilAPI e recebe documentos privados para análise; o acesso da instituição depende de aprovação.
 
 ---
 
@@ -41,7 +41,7 @@ Copie o arquivo de exemplo e ajuste os valores conforme necessário:
 cp .env.example .env
 ```
 
-O arquivo `.env` não é versionado. O `.env.example` serve como referência dos campos obrigatórios.
+O arquivo `.env` não é versionado. O `.env.example` serve como referência dos campos obrigatórios. O Spring carrega o `.env` do diretório de execução automaticamente; execute o projeto a partir da raiz do repositório ou configure esse diretório na IDE. Use entradas `CHAVE=valor`, sem `export` e sem aspas envolvendo os valores. Variáveis de ambiente da IDE ou do servidor têm prioridade sobre o arquivo. Reinicie a aplicação após alterar a configuração.
 
 ### 2. Subir a aplicação
 

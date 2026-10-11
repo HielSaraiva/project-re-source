@@ -1,6 +1,6 @@
 .status-badge {
-    color: #047857;
-    background: #d1fae5;
+    color: var(--color-success);
+    background: var(--color-success-soft);
 }
 
 .completed-delivery .detail-list {

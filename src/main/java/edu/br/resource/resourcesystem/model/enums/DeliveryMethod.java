@@ -13,8 +13,7 @@ public enum DeliveryMethod implements DatabaseEnum {
     RESOURCE_LOGISTICS("resource_logistics", "Logística ReSource"),
     CARRIER("carrier", "Envio pelos Correios");
 
-    @EnumeratedValue
-    private final String value;
+    @EnumeratedValue private final String value;
     private final String label;
 
     @JsonValue

@@ -17,5 +17,4 @@ public record MatchSummaryResponse(
         Instant createdAt,
         DeliveryMethod deliveryMethod,
         DonationStage deadlineStage,
-        Instant deadline) {
-}
+        Instant deadline) {}

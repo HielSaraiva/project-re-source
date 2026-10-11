@@ -30,7 +30,7 @@
     display: grid;
     gap: 8px;
     padding: 0 0 24px 24px;
-    border-left: 2px solid #d1fae5;
+    border-left: 2px solid var(--color-success-soft);
 }
 
 .donation-timeline li::before {
