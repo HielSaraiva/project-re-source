@@ -100,7 +100,13 @@ public class PasswordRecoveryService {
                 Timestamp.from(now),
                 Timestamp.from(now.plus(settings.tokenTtl())));
 
-        mail.send(account.email(), account.name(), token);
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        mail.send(account.email(), account.name(), token);
+                    }
+                });
     }
 
     private boolean allowRequest(String address) {
@@ -127,7 +133,7 @@ public class PasswordRecoveryService {
         db.update("DELETE FROM password_reset_tokens WHERE expires_at < now() - interval '1 day'");
         db.update(
                 "DELETE FROM password_reset_rate_limits WHERE window_started_at < now() - interval"
-                    + " '1 day'");
+                        + " '1 day'");
     }
 
     @Transactional(readOnly = true)

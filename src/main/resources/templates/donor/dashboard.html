@@ -16,7 +16,7 @@
                     <h1>Olá, <span th:text="${#strings.arraySplit(donorName, ' ')[0]}">João</span>! Pronto para fazer a diferença hoje?</h1>
                     <p>Suas doações ajudam a sustentar iniciativas sociais e promovem a economia circular.</p>
                 </div>
-                <a class="button button--primary" href="#new-donation">
+                <a class="button button--primary" th:href="@{/donor/needs}">
                     <img th:src="@{/images/donor/dashboard/plus.svg}" alt="">
                     Nova doação
                 </a>
@@ -55,7 +55,7 @@
                 <section id="shipments" class="dashboard-section">
                     <div class="section-header">
                         <h2>Acompanhe seus envios</h2>
-                        <a class="text-link" th:if="${!shipments.isEmpty()}" href="#shipments">Ver histórico completo <span aria-hidden="true">→</span></a>
+                        <span th:if="${!shipments.isEmpty()}">Últimas atualizações</span>
                     </div>
                     <th:block th:if="${shipments.isEmpty()}">
                         <div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/package.svg', 'Sua primeira doação começa aqui', 'Você ainda não tem envios para acompanhar. Ao propor uma doação, poderá consultar aqui o aceite da ONG, o envio e a confirmação de recebimento.', 'Encontrar uma necessidade', '/donor/needs')}"></div>

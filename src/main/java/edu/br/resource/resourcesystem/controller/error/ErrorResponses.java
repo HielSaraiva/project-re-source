@@ -37,7 +37,7 @@ public class ErrorResponses {
                 id instanceof String value
                         ? value
                         : response.getHeader(RequestLoggingFilter.REQUEST_ID_HEADER);
-        if (jsonRequest(request)) {
+        if (isJsonRequest(request)) {
             ProblemDetail problem =
                     ProblemDetail.forStatusAndDetail(
                             HttpStatusCode.valueOf(status), content.description());
@@ -53,6 +53,7 @@ public class ErrorResponses {
                         && auth.isAuthenticated()
                         && !new AuthenticationTrustResolverImpl().isAnonymous(auth);
         String home = signedIn ? ProfileAuthenticationSuccessHandler.destination(auth) : "/";
+        boolean hasDashboard = signedIn && !"/sobre".equals(home);
         var page = new ModelAndView("error/page");
         page.setStatus(HttpStatusCode.valueOf(status));
         page.addObject("errorStatus", status);
@@ -60,7 +61,8 @@ public class ErrorResponses {
         page.addObject("errorDescription", content.description());
         page.addObject("errorIcon", content.icon());
         page.addObject("errorHomePath", home);
-        page.addObject("errorHomeLabel", signedIn ? "Voltar ao meu painel" : "Voltar ao início");
+        page.addObject(
+                "errorHomeLabel", hasDashboard ? "Voltar ao meu painel" : "Voltar ao início");
         page.addObject("errorRequestId", requestId);
         page.addObject("errorContactEmail", privacy.contactEmail());
         page.addObject(
@@ -69,7 +71,7 @@ public class ErrorResponses {
         return page;
     }
 
-    private boolean jsonRequest(HttpServletRequest request) {
+    public static boolean isJsonRequest(HttpServletRequest request) {
         Object original = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
         String path = original instanceof String value ? value : request.getRequestURI();
         path = path.substring(Math.min(request.getContextPath().length(), path.length()));

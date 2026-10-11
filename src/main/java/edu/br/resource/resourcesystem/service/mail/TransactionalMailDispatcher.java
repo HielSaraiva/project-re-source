@@ -93,17 +93,19 @@ public class TransactionalMailDispatcher {
                         "email/notification",
                         context);
                 db.update(
-                        "UPDATE transactional_mail_outbox SET"
-                            + " email_sent_at=now(),email_claim=NULL,email_claim_until=NULL WHERE"
-                            + " id=? AND email_claim=?",
+                        """
+                        WITH sent AS (
+                            UPDATE transactional_mail_outbox SET
+                                email_sent_at=now(),email_claim=NULL,email_claim_until=NULL
+                            WHERE id=? AND email_claim=? AND email_sent_at IS NULL
+                            RETURNING notification_id,email_sent_at
+                        )
+                        UPDATE user_notifications n SET
+                            email_sent_at=sent.email_sent_at,email_claim=NULL,email_claim_until=NULL
+                        FROM sent WHERE n.id=sent.notification_id
+                        """,
                         notice.id(),
                         claim);
-                db.update(
-                        "UPDATE user_notifications SET"
-                            + " email_sent_at=now(),email_claim=NULL,email_claim_until=NULL WHERE"
-                            + " id=(SELECT notification_id FROM transactional_mail_outbox WHERE"
-                            + " id=? AND email_sent_at IS NOT NULL)",
-                        notice.id());
                 log.info("event=transactional_email_sent mailId={}", notice.id());
             } catch (RuntimeException failure) {
                 db.update(

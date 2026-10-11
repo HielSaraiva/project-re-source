@@ -72,7 +72,7 @@
         trigger.setAttribute('aria-expanded', String(menu.open));
         panel.inert = !menu.open;
         if (menu.open) {
-            document.querySelectorAll('.profile-menu[open]').forEach(other => { other.querySelector('summary').click(); });
+            document.querySelectorAll('.profile-menu summary[aria-expanded="true"]').forEach(summary => summary.click());
             load();
         }
     });

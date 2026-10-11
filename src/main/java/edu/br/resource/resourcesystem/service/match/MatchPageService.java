@@ -7,13 +7,16 @@ import edu.br.resource.resourcesystem.model.enums.*;
 import edu.br.resource.resourcesystem.presentation.MatchViewAssembler;
 import edu.br.resource.resourcesystem.repository.*;
 import edu.br.resource.resourcesystem.repository.specification.*;
-import java.util.*;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +76,8 @@ public class MatchPageService {
                                         f.size(),
                                         Sort.by("priority")
                                                 .ascending()
-                                                .and(Sort.by("createdAt").descending())))
+                                                .and(Sort.by("createdAt").descending())
+                                                .and(Sort.by("id").descending())))
                         .map(mapper::need);
         return MatchViewAssembler.fields(
                 "donorName",
@@ -153,7 +157,12 @@ public class MatchPageService {
                         .findAll(
                                 NecessitySpecifications.forInstitution(id)
                                         .and(NecessitySpecifications.withRemainingQuantity()),
-                                PageRequest.of(0, 6))
+                                PageRequest.of(
+                                        0,
+                                        6,
+                                        Sort.by("createdAt")
+                                                .descending()
+                                                .and(Sort.by("id").descending())))
                         .map(mapper::need);
         return MatchViewAssembler.fields(
                 "ongName",

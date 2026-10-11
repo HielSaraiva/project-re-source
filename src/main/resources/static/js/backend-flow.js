@@ -135,6 +135,7 @@
                 if (current) return;
                 event.preventDefault(); method = card.dataset.deliveryMethod; target = event.currentTarget.href;
                 text(methodReview, '#method-title', method === 'carrier' ? 'Confirmar envio pelos Correios' : 'Confirmar entrega presencial');
+                text(methodReview, '[data-method-summary]', method === 'carrier' ? 'Você escolheu enviar a doação pelos Correios à ' : 'Você escolheu levar a doação diretamente à ');
                 text(methodReview, '[data-method-status]', method === 'carrier' ? 'Aguardando envio' : 'Aguardando entrega');
                 methodReview.showModal();
             });

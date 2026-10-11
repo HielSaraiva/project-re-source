@@ -118,18 +118,25 @@ public class SecurityConfiguration {
                                         .defaultAuthenticationEntryPointFor(
                                                 (request, response, exception) ->
                                                         response.sendError(401),
-                                                request ->
-                                                        request.getServletPath().startsWith("/api/")
-                                                                || request.getServletPath()
-                                                                        .startsWith("/donor/api/")
-                                                                || request.getServletPath()
-                                                                        .startsWith("/ong/api/")))
+                                                ErrorResponses::isJsonRequest))
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(
                         s ->
                                 s.maximumSessions(-1)
                                         .sessionRegistry(sessions)
-                                        .expiredUrl("/login?sessionExpired"));
+                                        .expiredSessionStrategy(
+                                                event -> {
+                                                    if (ErrorResponses.isJsonRequest(
+                                                            event.getRequest())) {
+                                                        event.getResponse().sendError(401);
+                                                    } else {
+                                                        event.getResponse()
+                                                                .sendRedirect(
+                                                                        event.getRequest()
+                                                                                        .getContextPath()
+                                                                                + "/login?sessionExpired");
+                                                    }
+                                                }));
         if (clients.getIfAvailable() != null) {
             http.oauth2Login(
                     o ->

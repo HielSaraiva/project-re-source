@@ -54,13 +54,12 @@
                 </div>
             </section>
 
-            <section class="section-block needs-section">
+            <section id="needs" class="section-block needs-section">
                 <div class="section-heading section-heading--needs">
                     <div>
                         <h2>Necessidades cadastradas</h2>
                         <p>Itens atualmente ativos na sua lista de desejos institucional.</p>
                     </div>
-                    <button class="button button--new" type="button"><img th:src="@{/images/ong/dashboard/plus.svg}" alt="">Nova necessidade</button>
                 </div>
                 <th:block th:if="${needs.isEmpty()}">
                     <div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/heart.svg', 'Nenhuma necessidade disponível', 'Este espaço reúne os itens que sua instituição precisa receber. Quando houver necessidades com unidades disponíveis para doação, elas aparecerão aqui.', null, null)}"></div>
@@ -73,7 +72,7 @@
                             <span class="priority" th:classappend="${' priority--' + need.priorityClass}" th:text="${need.priority}">Alta prioridade</span>
                         </div>
                         <strong th:text="${need.item}">50 Cadeiras escolares</strong>
-                        <a class="text-link" href="#edit">Editar necessidade</a>
+                        <span th:text="${need.quantity}">Unidades disponíveis</span>
                     </article>
                 </div>
             </section>
