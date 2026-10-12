@@ -2,8 +2,10 @@ package edu.br.resource.resourcesystem.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import edu.br.resource.resourcesystem.model.enums.DatabaseEnum;
 import edu.br.resource.resourcesystem.model.enums.EnumValues;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

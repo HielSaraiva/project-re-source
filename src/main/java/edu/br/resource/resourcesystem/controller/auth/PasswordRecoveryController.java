@@ -5,11 +5,14 @@ import edu.br.resource.resourcesystem.dto.request.PasswordRecoveryRequest;
 import edu.br.resource.resourcesystem.dto.request.PasswordResetRequest;
 import edu.br.resource.resourcesystem.service.auth.PasswordRecoveryDelivery;
 import edu.br.resource.resourcesystem.service.auth.PasswordRecoveryService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.task.TaskRejectedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +34,7 @@ public class PasswordRecoveryController {
         response.setHeader("Cache-Control", "no-store");
         response.setHeader("Referrer-Policy", "no-referrer");
         model.addAttribute("recoveryEnabled", settings.enabled());
+        model.addAttribute("recoveryTokenMinutes", settings.tokenTtl().toMinutes());
     }
 
     @InitBinder("recovery")

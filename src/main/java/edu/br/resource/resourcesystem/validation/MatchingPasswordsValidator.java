@@ -2,6 +2,7 @@ package edu.br.resource.resourcesystem.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
 import java.util.Objects;
 
 public class MatchingPasswordsValidator

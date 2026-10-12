@@ -1,7 +1,9 @@
 package edu.br.resource.resourcesystem.service.mail;
 
 import edu.br.resource.resourcesystem.config.PasswordRecoveryProperties;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.MailSendException;

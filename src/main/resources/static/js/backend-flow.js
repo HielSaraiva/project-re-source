@@ -425,6 +425,7 @@
             }),
         );
         close(decision, '[data-close-decision]');
+        close(document.querySelector('#intention-result'), '[data-close-result]');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             if (!form.reportValidity()) return;
@@ -453,7 +454,6 @@
                 'A operação foi registrada com data e responsável no histórico.',
                 saved,
             );
-            close(success, '[data-close-result]');
         });
     }
     const filters = document.querySelector('#intention-filters');

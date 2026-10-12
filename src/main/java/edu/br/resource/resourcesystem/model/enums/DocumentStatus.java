@@ -1,6 +1,7 @@
 package edu.br.resource.resourcesystem.model.enums;
 
 import jakarta.persistence.EnumeratedValue;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

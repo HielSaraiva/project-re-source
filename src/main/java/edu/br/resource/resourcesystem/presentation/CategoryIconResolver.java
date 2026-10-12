@@ -1,6 +1,7 @@
 package edu.br.resource.resourcesystem.presentation;
 
 import edu.br.resource.resourcesystem.model.enums.ItemCategory;
+
 import org.springframework.stereotype.Component;
 
 @Component("categoryIconResolver")

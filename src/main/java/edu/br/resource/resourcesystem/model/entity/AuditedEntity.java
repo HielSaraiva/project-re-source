@@ -1,15 +1,18 @@
 package edu.br.resource.resourcesystem.model.entity;
 
-import java.time.Instant;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
 
 @Getter
 @SuperBuilder

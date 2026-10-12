@@ -2,9 +2,9 @@ package edu.br.resource.resourcesystem.service.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import edu.br.resource.resourcesystem.validation.BrazilianDocuments;
-import java.net.http.HttpClient;
-import java.time.Duration;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
+
+import java.net.http.HttpClient;
+import java.time.Duration;
 
 @Service
 public class CnpjLookupService {

@@ -2,7 +2,9 @@ package edu.br.resource.resourcesystem.service.auth;
 
 import edu.br.resource.resourcesystem.config.PasswordRecoveryProperties;
 import edu.br.resource.resourcesystem.service.mail.BrandedMailService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
@@ -28,8 +30,10 @@ public class PasswordRecoveryMailService {
                         + link
                         + "\n\nO link é de uso único e expira em "
                         + minutes
-                        + " minutos."
-                        + "\nSe não solicitou a recuperação, ignore este e-mail. Sua senha permanece a mesma.\n\nReSource",
+                        + (minutes == 1 ? " minuto.\n" : " minutos.\n")
+                        + "Se não solicitou a recuperação, ignore este e-mail. Sua senha permanece"
+                        + " a mesma.\n\n"
+                        + "ReSource",
                 "email/password-recovery",
                 context);
     }

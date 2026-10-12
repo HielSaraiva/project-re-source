@@ -12,6 +12,14 @@ import java.util.Optional;
 public final class LoginDestinationPolicy {
     private LoginDestinationPolicy() {}
 
+    public static String loginPath(HttpServletRequest request) {
+        String path = request.getRequestURI().substring(request.getContextPath().length());
+        boolean institution = path.startsWith("/institution/") || path.startsWith("/ong/");
+        return request.getContextPath()
+                + "/login?profile="
+                + (institution ? "institution" : "donor");
+    }
+
     public static boolean cacheable(HttpServletRequest request) {
         String path = request.getRequestURI().substring(request.getContextPath().length());
         return "GET".equals(request.getMethod())

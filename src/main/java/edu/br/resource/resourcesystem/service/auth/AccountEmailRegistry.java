@@ -21,7 +21,6 @@ public class AccountEmailRegistry {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public void lock(String email) {
-
         jdbc.queryForList("select pg_advisory_xact_lock(hashtextextended(lower(?), 0))", email);
     }
 

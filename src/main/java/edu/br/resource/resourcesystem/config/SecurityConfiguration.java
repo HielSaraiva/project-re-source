@@ -135,15 +135,8 @@ public class SecurityConfiguration {
                                         .defaultAuthenticationEntryPointFor(
                                                 (request, response, exception) ->
                                                         response.sendRedirect(
-                                                                request.getContextPath()
-                                                                        + "/login?profile="
-                                                                        + (request.getRequestURI()
-                                                                                        .startsWith(
-                                                                                                request
-                                                                                                                .getContextPath()
-                                                                                                        + "/institution/")
-                                                                                ? "institution"
-                                                                                : "donor")),
+                                                                LoginDestinationPolicy.loginPath(
+                                                                        request)),
                                                 request -> !ErrorResponses.isJsonRequest(request))
                                         .defaultAuthenticationEntryPointFor(
                                                 (request, response, exception) ->
@@ -165,9 +158,11 @@ public class SecurityConfiguration {
                                                                 event.getResponse());
                                                         event.getResponse()
                                                                 .sendRedirect(
-                                                                        event.getRequest()
-                                                                                        .getContextPath()
-                                                                                + "/login?sessionExpired");
+                                                                        LoginDestinationPolicy
+                                                                                        .loginPath(
+                                                                                                event
+                                                                                                        .getRequest())
+                                                                                + "&sessionExpired");
                                                     }
                                                 }));
         if (clients.getIfAvailable() != null) {

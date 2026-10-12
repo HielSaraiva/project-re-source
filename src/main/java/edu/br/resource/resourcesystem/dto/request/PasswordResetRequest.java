@@ -3,7 +3,9 @@ package edu.br.resource.resourcesystem.dto.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.br.resource.resourcesystem.validation.*;
+
 import jakarta.validation.constraints.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
