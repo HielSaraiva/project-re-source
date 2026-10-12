@@ -2,6 +2,7 @@ package edu.br.resource.resourcesystem.repository.specification;
 
 import edu.br.resource.resourcesystem.model.entity.DonationMatch;
 import edu.br.resource.resourcesystem.model.enums.MatchStatus;
+
 import org.springframework.data.jpa.domain.Specification;
 
 public final class MatchSpecifications {

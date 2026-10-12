@@ -295,7 +295,7 @@ public class MatchWorkflowService {
                 && m.getStatus() != MatchStatus.AWAITING_NGO_CONFIRMATION)
             throw conflict(
                     "O doador ainda não informou a entrega ou postagem, ou o recebimento já foi"
-                        + " confirmado.");
+                            + " confirmado.");
         var d = deliveries.findForUpdateByMatchId(m.getId()).orElseThrow(this::missing);
         boolean postal =
                 m.getStatus() == MatchStatus.IN_TRANSIT
@@ -361,7 +361,7 @@ public class MatchWorkflowService {
         if (expireIfDue(m))
             throw conflict(
                     "O prazo terminou. A doação foi cancelada automaticamente e a reserva foi"
-                        + " liberada.");
+                            + " liberada.");
     }
 
     private boolean expireIfDue(DonationMatch m) {
@@ -422,7 +422,7 @@ public class MatchWorkflowService {
         TransactionLog.afterCommit(
                 log,
                 "event=match_transition protocol={} matchId={} action={} previousStatus={}"
-                    + " status={} actorType={} actorId={} expiredStage={}",
+                        + " status={} actorType={} actorId={} expiredStage={}",
                 m.getProtocol(),
                 m.getId(),
                 type.getValue(),
@@ -472,7 +472,7 @@ public class MatchWorkflowService {
         if (delivery.getStatus() != DeliveryStatus.PENDING || delivery.getReportedAt() != null)
             throw conflict(
                     "Esta entrega já foi informada ou não está mais disponível. Atualize a"
-                        + " página.");
+                            + " página.");
     }
 
     private void validateDate(LocalDate date, Delivery d) {

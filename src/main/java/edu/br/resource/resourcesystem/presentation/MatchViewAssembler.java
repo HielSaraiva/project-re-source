@@ -218,8 +218,8 @@ public class MatchViewAssembler {
             case PROPOSED -> "A proposta foi criada e ainda aguarda o envio para análise da ONG.";
             case AWAITING_ACCEPTANCE ->
                     "Analise a proposta antes do prazo de aceite. A ONG tem 7 dias desde o envio"
-                        + " para aceitar ou recusar. Sem aceite, a doação será cancelada"
-                        + " automaticamente e a reserva será liberada.";
+                            + " para aceitar ou recusar. Sem aceite, a doação será cancelada"
+                            + " automaticamente e a reserva será liberada.";
             case ACCEPTED, AWAITING_SHIPMENT ->
                     match.delivery() == null
                             ? "A proposta foi aceita. O doador tem 7 dias desde o aceite para"
@@ -232,11 +232,11 @@ public class MatchViewAssembler {
                                   + " será liberada.";
             case AWAITING_DELIVERY ->
                     "O doador escolheu a entrega presencial e tem 7 dias desde a escolha para"
-                        + " informar a entrega à ONG. Sem confirmação no prazo, a doação será"
-                        + " cancelada automaticamente e a reserva será liberada.";
+                            + " informar a entrega à ONG. Sem confirmação no prazo, a doação será"
+                            + " cancelada automaticamente e a reserva será liberada.";
             case AWAITING_NGO_CONFIRMATION ->
                     "O doador informou a entrega presencial. Confira os itens e a quantidade e"
-                        + " confirme o recebimento para concluir a doação.";
+                            + " confirme o recebimento para concluir a doação.";
             case IN_TRANSIT ->
                     "O doador informou a postagem pelos Correios. Acompanhe o rastreamento e"
                         + " confirme o recebimento somente após receber e conferir todos os itens.";
@@ -247,8 +247,8 @@ public class MatchViewAssembler {
                             + " permanecem disponíveis no histórico.";
             case REJECTED ->
                     "A ONG recusou a proposta. A data e o motivo estão registrados no histórico. Os"
-                        + " itens e a quantidade reservada da necessidade foram liberados; esta"
-                        + " proposta não pode ser reaberta.";
+                            + " itens e a quantidade reservada da necessidade foram liberados; esta"
+                            + " proposta não pode ser reaberta.";
             case CANCELLED ->
                     match.expiredStage() != null
                             ? cancellationReason(match)
@@ -403,7 +403,7 @@ public class MatchViewAssembler {
                         "Envio via Correios",
                         "description",
                         "Confira o destinatário, poste a doação e informe o rastreamento. O frete é"
-                            + " de responsabilidade do doador.",
+                                + " de responsabilidade do doador.",
                         "badge",
                         "Envio pelos Correios",
                         "action",

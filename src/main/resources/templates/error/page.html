@@ -2,29 +2,62 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
     <head th:replace="~{fragments/layout/head :: head(${errorTitle}, ~{::styles}, 'public')}">
         <th:block th:fragment="styles">
-            <meta name="robots" content="noindex, nofollow">
-            <meta name="theme-color" content="#047857">
-            <link rel="stylesheet" th:href="@{/css/shared/public-header.css}">
-            <link rel="stylesheet" th:href="@{/css/public/common.css}">
-            <link rel="stylesheet" th:href="@{/css/public/error.css}">
+            <meta name="robots" content="noindex, nofollow" />
+            <meta name="theme-color" content="#047857" />
+            <link rel="stylesheet" th:href="@{/css/shared/public-header.css}" />
+            <link rel="stylesheet" th:href="@{/css/public/common.css}" />
+            <link rel="stylesheet" th:href="@{/css/public/error.css}" />
         </th:block>
     </head>
     <body class="public-page error-page">
-        <a class="public-skip" href="#conteudo">Pular para o conteúdo</a>
+        <a class="public-skip" href="#main-content">Pular para o conteúdo</a>
         <header th:replace="~{fragments/layout/public-header :: publicHeader}"></header>
-        <main id="conteudo" class="error-main public-container" tabindex="-1">
+        <main id="main-content" class="error-main public-container" tabindex="-1">
             <section class="error-state" aria-labelledby="error-title">
-                <div class="error-visual" aria-hidden="true"><span class="error-code" th:text="${errorStatus}">404</span><span class="error-symbol"><svg th:replace="~{fragments/ui/icon :: icon(${errorIcon})}"></svg></span><span class="error-visual__caption">UM NOVO CAMINHO COMEÇA AQUI</span></div>
+                <div class="error-visual" aria-hidden="true"
+                    ><span class="error-code" th:text="${errorStatus}">404</span
+                    ><span class="error-symbol"
+                        ><svg th:replace="~{fragments/ui/icon :: icon(${errorIcon})}"></svg></span
+                    ><span class="error-visual__caption">UM NOVO CAMINHO COMEÇA AQUI</span></div
+                >
                 <div class="error-content">
-                    <p class="public-eyebrow"><span class="public-eyebrow__dot" aria-hidden="true"></span> VAMOS ENCONTRAR UM CAMINHO</p>
-                    <h1 id="error-title" th:text="${errorTitle}">Esse caminho não foi encontrado.</h1>
+                    <p class="public-eyebrow"
+                        ><span class="public-eyebrow__dot" aria-hidden="true"></span> VAMOS
+                        ENCONTRAR UM CAMINHO</p
+                    >
+                    <h1 id="error-title" th:text="${errorTitle}"
+                        >Esse caminho não foi encontrado.</h1
+                    >
                     <p class="error-description" th:text="${errorDescription}"></p>
                     <div class="error-actions">
-                        <a class="ui-button public-primary" th:href="@{${errorHomePath}}"><span th:text="${errorHomeLabel}">Voltar ao início</span><svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
-                        <a class="ui-button ui-button--secondary" th:if="${errorSessionExpired}" th:href="@{/login}">Acessar minha conta</a>
-                        <a class="text-link" th:unless="${errorSessionExpired}" th:href="@{/sobre#como-funciona}">Conhecer o ReSource <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
+                        <a class="ui-button public-primary" th:href="@{${errorHomePath}}"
+                            ><span th:text="${errorHomeLabel}">Voltar ao início</span
+                            ><svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+                        ></a>
+                        <a
+                            class="ui-button ui-button--secondary"
+                            th:if="${errorSessionExpired}"
+                            th:href="@{/login}"
+                            >Acessar minha conta</a
+                        >
+                        <a
+                            class="text-link"
+                            th:unless="${errorSessionExpired}"
+                            th:href="@{/about#how-it-works}"
+                            >Conhecer o ReSource
+                            <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+                        ></a>
                     </div>
-                    <div class="error-support"><p>Precisa de ajuda? <a th:href="${'mailto:' + errorContactEmail}" th:text="${errorContactEmail}"></a></p><p class="error-reference" th:if="${errorRequestId != null}">Código de atendimento <span th:text="${errorRequestId}"></span></p></div>
+                    <div class="error-support"
+                        ><p
+                            >Precisa de ajuda?
+                            <a
+                                th:href="${'mailto:' + errorContactEmail}"
+                                th:text="${errorContactEmail}"
+                            ></a></p
+                        ><p class="error-reference" th:if="${errorRequestId != null}"
+                            >Código de atendimento <span th:text="${errorRequestId}"></span></p
+                    ></div>
                 </div>
             </section>
         </main>

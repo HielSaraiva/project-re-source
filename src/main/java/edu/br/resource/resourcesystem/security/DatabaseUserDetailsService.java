@@ -6,13 +6,16 @@ import edu.br.resource.resourcesystem.model.enums.InstitutionStatus;
 import edu.br.resource.resourcesystem.repository.InstitutionRepository;
 import edu.br.resource.resourcesystem.repository.UserRepository;
 import edu.br.resource.resourcesystem.validation.BrazilianDocuments;
-import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +60,6 @@ public class DatabaseUserDetailsService implements UserDetailsService {
     }
 
     private String encoded(String hash) {
-
         return hash.startsWith("$") ? "{bcrypt}" + hash : hash;
     }
 }

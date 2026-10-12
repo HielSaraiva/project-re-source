@@ -2,6 +2,7 @@ package edu.br.resource.resourcesystem.dto.request;
 
 import edu.br.resource.resourcesystem.model.enums.ItemCategory;
 import edu.br.resource.resourcesystem.model.enums.NecessityPriority;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;

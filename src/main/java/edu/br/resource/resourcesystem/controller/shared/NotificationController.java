@@ -1,12 +1,15 @@
 package edu.br.resource.resourcesystem.controller.shared;
 
 import edu.br.resource.resourcesystem.service.notification.NotificationService;
-import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor

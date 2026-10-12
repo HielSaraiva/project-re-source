@@ -1,8 +1,10 @@
 package edu.br.resource.resourcesystem.controller.auth;
 
-import lombok.RequiredArgsConstructor;
-import edu.br.resource.resourcesystem.validation.PasswordPolicy;
 import edu.br.resource.resourcesystem.service.auth.InstitutionDocumentStorage;
+import edu.br.resource.resourcesystem.validation.PasswordPolicy;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,6 +24,11 @@ public class AuthenticationPageAdvice {
     @ModelAttribute("passwordPattern")
     public String passwordPattern() {
         return PasswordPolicy.PATTERN;
+    }
+
+    @ModelAttribute("passwordRequirements")
+    public java.util.List<PasswordPolicy.Requirement> passwordRequirements() {
+        return PasswordPolicy.REQUIREMENTS;
     }
 
     @ModelAttribute("passwordPolicyMessage")

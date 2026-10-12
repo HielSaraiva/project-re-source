@@ -1,10 +1,11 @@
 package edu.br.resource.resourcesystem.observability;
 
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import java.util.Map;
 
 public final class TransactionLog {
     private TransactionLog() {}

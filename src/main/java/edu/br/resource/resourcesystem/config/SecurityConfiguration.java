@@ -2,6 +2,7 @@ package edu.br.resource.resourcesystem.config;
 
 import edu.br.resource.resourcesystem.controller.error.ErrorResponses;
 import edu.br.resource.resourcesystem.security.GoogleOidcUserService;
+import edu.br.resource.resourcesystem.security.LoginDestinationPolicy;
 import edu.br.resource.resourcesystem.security.ProfileAuthenticationSuccessHandler;
 
 import jakarta.servlet.DispatcherType;
@@ -31,6 +32,14 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    org.springframework.security.web.savedrequest.RequestCache requestCache() {
+        var cache = new org.springframework.security.web.savedrequest.HttpSessionRequestCache();
+        cache.setRequestMatcher(LoginDestinationPolicy::cacheable);
+        cache.setMatchingRequestParameterName(null);
+        return cache;
+    }
+
+    @Bean
     PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
@@ -41,31 +50,34 @@ public class SecurityConfiguration {
             ProfileAuthenticationSuccessHandler success,
             GoogleOidcUserService googleUsers,
             ObjectProvider<ClientRegistrationRepository> clients,
-            org.springframework.security.core.session.SessionRegistry sessions)
+            org.springframework.security.core.session.SessionRegistry sessions,
+            org.springframework.security.web.savedrequest.RequestCache requestCache)
             throws Exception {
-        http.authorizeHttpRequests(
+        http.requestCache(c -> c.requestCache(requestCache))
+                .authorizeHttpRequests(
                         a ->
                                 a.dispatcherTypeMatchers(DispatcherType.ERROR)
                                         .permitAll()
                                         .requestMatchers(
                                                 "/",
-                                                "/sobre",
-                                                "/sustentabilidade",
-                                                "/politica-de-privacidade",
+                                                "/about",
+                                                "/sustainability",
+                                                "/privacy-policy",
                                                 "/login",
                                                 "/password/forgot",
                                                 "/password/reset",
                                                 "/register/donor",
                                                 "/register/institution",
-                                                "/register/institution/cnpj",
+                                                "/register/institution/company",
                                                 "/css/**",
                                                 "/js/**",
                                                 "/images/**",
                                                 "/error")
                                         .permitAll()
-                                        .requestMatchers("/donor/**")
+                                        .requestMatchers("/donor/**", "/api/donor/**")
                                         .hasRole("DONOR")
-                                        .requestMatchers("/ong/**")
+                                        .requestMatchers(
+                                                "/institution/**", "/api/institution/**", "/ong/**")
                                         .hasRole("ONG")
                                         .requestMatchers("/api/notifications/**")
                                         .hasAnyRole("DONOR", "ONG")
@@ -96,12 +108,17 @@ public class SecurityConfiguration {
                                                     response.sendRedirect(
                                                             request.getContextPath()
                                                                     + "/login?error&profile="
-                                                                    + ("ong"
-                                                                                    .equals(
-                                                                                            request
-                                                                                                    .getParameter(
-                                                                                                            "profile"))
-                                                                            ? "ong"
+                                                                    + (("institution"
+                                                                                            .equals(
+                                                                                                    request
+                                                                                                            .getParameter(
+                                                                                                                    "profile"))
+                                                                                    || "ong"
+                                                                                            .equals(
+                                                                                                    request
+                                                                                                            .getParameter(
+                                                                                                                    "profile")))
+                                                                            ? "institution"
                                                                             : "donor"));
                                                 })
                                         .permitAll())
@@ -117,6 +134,12 @@ public class SecurityConfiguration {
                                                 })
                                         .defaultAuthenticationEntryPointFor(
                                                 (request, response, exception) ->
+                                                        response.sendRedirect(
+                                                                LoginDestinationPolicy.loginPath(
+                                                                        request)),
+                                                request -> !ErrorResponses.isJsonRequest(request))
+                                        .defaultAuthenticationEntryPointFor(
+                                                (request, response, exception) ->
                                                         response.sendError(401),
                                                 ErrorResponses::isJsonRequest))
                 .httpBasic(Customizer.withDefaults())
@@ -130,11 +153,16 @@ public class SecurityConfiguration {
                                                             event.getRequest())) {
                                                         event.getResponse().sendError(401);
                                                     } else {
+                                                        requestCache.saveRequest(
+                                                                event.getRequest(),
+                                                                event.getResponse());
                                                         event.getResponse()
                                                                 .sendRedirect(
-                                                                        event.getRequest()
-                                                                                        .getContextPath()
-                                                                                + "/login?sessionExpired");
+                                                                        LoginDestinationPolicy
+                                                                                        .loginPath(
+                                                                                                event
+                                                                                                        .getRequest())
+                                                                                + "&sessionExpired");
                                                     }
                                                 }));
         if (clients.getIfAvailable() != null) {

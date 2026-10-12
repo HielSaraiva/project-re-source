@@ -1,4 +1,12 @@
 <th:block xmlns:th="http://www.thymeleaf.org" th:fragment="links">
-    <a th:href="@{/sustentabilidade}" th:attr="aria-current=${publicSection == 'sustainability' ? 'page' : null}">Sustentabilidade</a>
-    <a th:href="@{/politica-de-privacidade}" th:attr="aria-current=${publicSection == 'privacy' ? 'page' : null}">Política de Privacidade</a>
+    <a
+        th:href="@{/sustainability}"
+        th:attr="aria-current=${publicSection == 'sustainability' ? 'page' : null}"
+        >Sustentabilidade</a
+    >
+    <a
+        th:href="@{/privacy-policy}"
+        th:attr="aria-current=${publicSection == 'privacy' ? 'page' : null}"
+        >Política de Privacidade</a
+    >
 </th:block>

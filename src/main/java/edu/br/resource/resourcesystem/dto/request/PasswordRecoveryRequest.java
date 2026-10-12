@@ -1,9 +1,11 @@
 package edu.br.resource.resourcesystem.dto.request;
 
 import jakarta.validation.constraints.*;
-import java.util.Locale;
+
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Locale;
 
 @Getter
 @Setter

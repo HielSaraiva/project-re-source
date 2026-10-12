@@ -6,6 +6,7 @@ import edu.br.resource.resourcesystem.model.enums.ItemCategory;
 import edu.br.resource.resourcesystem.model.enums.MatchStatus;
 import edu.br.resource.resourcesystem.model.enums.NecessityPriority;
 import edu.br.resource.resourcesystem.model.enums.NecessityStatus;
+
 import org.springframework.data.jpa.domain.Specification;
 
 public final class NecessitySpecifications {

@@ -53,7 +53,7 @@ public class ErrorResponses {
                         && auth.isAuthenticated()
                         && !new AuthenticationTrustResolverImpl().isAnonymous(auth);
         String home = signedIn ? ProfileAuthenticationSuccessHandler.destination(auth) : "/";
-        boolean hasDashboard = signedIn && !"/sobre".equals(home);
+        boolean hasDashboard = signedIn && !"/about".equals(home);
         var page = new ModelAndView("error/page");
         page.setStatus(HttpStatusCode.valueOf(status));
         page.addObject("errorStatus", status);
@@ -75,9 +75,7 @@ public class ErrorResponses {
         Object original = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
         String path = original instanceof String value ? value : request.getRequestURI();
         path = path.substring(Math.min(request.getContextPath().length(), path.length()));
-        if (path.startsWith("/api/")
-                || path.startsWith("/donor/api/")
-                || path.startsWith("/ong/api/")) return true;
+        if (path.startsWith("/api/")) return true;
         String accept = request.getHeader(HttpHeaders.ACCEPT);
         return accept != null
                 && !accept.contains("text/html")

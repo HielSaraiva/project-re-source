@@ -3,6 +3,7 @@ package edu.br.resource.resourcesystem.dto.response;
 import edu.br.resource.resourcesystem.model.enums.ItemCategory;
 import edu.br.resource.resourcesystem.model.enums.NecessityPriority;
 import edu.br.resource.resourcesystem.model.enums.NecessityStatus;
+
 import java.math.BigDecimal;
 
 public record NeedSummaryResponse(

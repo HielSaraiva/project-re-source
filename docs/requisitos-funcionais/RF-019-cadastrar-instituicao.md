@@ -14,7 +14,7 @@
 
 O sistema deve oferecer a página pública `/register/institution` para solicitar a verificação de uma instituição. O formulário deve apresentar CNPJ, razão social consultada automaticamente, e-mail oficial, nome completo e CPF do representante legal, senha, confirmação de senha e os anexos de identidade e documentação da organização.
 
-A consulta pública `GET /register/institution/cnpj?cnpj=...` deve validar o CNPJ e retornar sua razão social oficial quando ativo. O servidor deve repetir a consulta no envio, sem confiar na razão social ou situação enviadas pelo navegador. Deve aceitar CNPJ numérico e alfanumérico conforme RN-017.
+A consulta pública `GET /register/institution/company?cnpj=...` deve validar o CNPJ e retornar sua razão social oficial quando ativo. O servidor deve repetir a consulta no envio, sem confiar na razão social ou situação enviadas pelo navegador. Deve aceitar CNPJ numérico e alfanumérico conforme RN-017.
 
 O cadastro deve persistir a instituição pendente de aprovação e dois documentos pendentes, armazenar a senha como hash e redirecionar ao login institucional com confirmação e orientação de aguardar aprovação. A apresentação deve manter os controles de senha, a seleção de perfil e a adaptação a dispositivos móveis descritos em RF-001 e RF-018.
 

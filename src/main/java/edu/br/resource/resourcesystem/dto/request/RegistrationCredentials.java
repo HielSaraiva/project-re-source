@@ -2,15 +2,18 @@ package edu.br.resource.resourcesystem.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.br.resource.resourcesystem.validation.MatchingPasswords;
+import edu.br.resource.resourcesystem.validation.PasswordPolicy;
+import edu.br.resource.resourcesystem.validation.StrongPassword;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import edu.br.resource.resourcesystem.validation.MatchingPasswords;
-import edu.br.resource.resourcesystem.validation.StrongPassword;
-import edu.br.resource.resourcesystem.validation.PasswordPolicy;
 import jakarta.validation.constraints.Size;
-import java.util.Locale;
+
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Locale;
 
 @Getter
 @Setter

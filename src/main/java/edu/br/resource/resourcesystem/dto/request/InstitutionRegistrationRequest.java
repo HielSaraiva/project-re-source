@@ -1,11 +1,14 @@
 package edu.br.resource.resourcesystem.dto.request;
 
-import edu.br.resource.resourcesystem.validation.BrazilianDocuments;
-import jakarta.validation.constraints.NotBlank;
 import edu.br.resource.resourcesystem.validation.BrazilianDocument;
+import edu.br.resource.resourcesystem.validation.BrazilianDocuments;
+
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -17,6 +20,7 @@ public class InstitutionRegistrationRequest extends RegistrationCredentials {
             message = "Informe um CNPJ válido, com ou sem máscara.")
     private String cnpj;
 
+    @Size(max = 200, message = "A razão social deve ter no máximo 200 caracteres.")
     private String legalName;
 
     @NotBlank(message = "Informe o nome completo do representante legal.")

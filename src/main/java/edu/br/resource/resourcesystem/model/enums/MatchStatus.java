@@ -2,12 +2,15 @@ package edu.br.resource.resourcesystem.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import jakarta.persistence.EnumeratedValue;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor

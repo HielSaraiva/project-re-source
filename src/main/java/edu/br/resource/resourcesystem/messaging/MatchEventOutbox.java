@@ -2,8 +2,10 @@ package edu.br.resource.resourcesystem.messaging;
 
 import edu.br.resource.resourcesystem.model.entity.DonationMatch;
 import edu.br.resource.resourcesystem.model.enums.MatchEventType;
-import lombok.RequiredArgsConstructor;
 import edu.br.resource.resourcesystem.repository.MatchEventRepository;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

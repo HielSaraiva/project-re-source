@@ -1,7 +1,8 @@
 package edu.br.resource.resourcesystem.dto.response;
 
-import java.util.List;
 import edu.br.resource.resourcesystem.model.enums.DeliveryMethod;
+
+import java.util.List;
 
 public record DeliveryOptionResponse(
         DeliveryMethod method,

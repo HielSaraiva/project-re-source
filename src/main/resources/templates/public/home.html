@@ -1,159 +1,415 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="~{fragments/layout/head :: head('Doações que conectam pessoas', ~{::pageStyles}, 'public')}">
+    <head
+        th:replace="~{fragments/layout/head :: head('Doações que conectam pessoas', ~{::pageStyles}, 'public')}"
+    >
         <th:block th:fragment="pageStyles">
-            <meta name="description" content="Conecte recursos em bom estado às necessidades de instituições. Doe, acompanhe cada etapa e faça parte de uma rede de impacto com o ReSource.">
-            <meta name="theme-color" content="#047857">
-            <meta property="og:type" content="website">
-            <meta property="og:locale" content="pt_BR">
-            <meta property="og:site_name" content="ReSource">
-            <meta property="og:title" content="ReSource — O que você não usa, alguém precisa.">
-            <meta property="og:description" content="Um novo destino para seus recursos. Uma nova oportunidade para quem precisa. Conheça o ReSource.">
-            <link rel="stylesheet" th:href="@{/css/shared/public-header.css}">
-            <link rel="stylesheet" th:href="@{/css/public/common.css}">
-            <link rel="stylesheet" th:href="@{/css/public/home.css}">
+            <meta
+                name="description"
+                content="Conecte recursos em bom estado às necessidades de instituições. Doe, acompanhe cada etapa e faça parte de uma rede de impacto com o ReSource."
+            />
+            <meta name="theme-color" content="#10b981" />
+            <meta property="og:type" content="website" />
+            <meta property="og:locale" content="pt_BR" />
+            <meta property="og:site_name" content="ReSource" />
+            <meta property="og:title" content="ReSource — O que você não usa, alguém precisa." />
+            <meta
+                property="og:description"
+                content="Um novo destino para seus recursos. Uma nova oportunidade para quem precisa. Conheça o ReSource."
+            />
+            <link rel="stylesheet" th:href="@{/css/shared/public-header.css}" />
+            <link rel="stylesheet" th:href="@{/css/public/common.css}" />
+            <link rel="stylesheet" th:href="@{/css/public/home.css}" />
             <script th:src="@{/js/public-page.js}" defer></script>
         </th:block>
     </head>
     <body class="public-page landing-page">
-        <a class="public-skip" href="#conteudo">Pular para o conteúdo</a>
+        <a class="public-skip" href="#main-content">Pular para o conteúdo</a>
         <header th:replace="~{fragments/layout/public-header :: publicHeader}"></header>
-        <main id="conteudo" tabindex="-1">
+        <main id="main-content" tabindex="-1">
             <section class="landing-hero public-container" aria-labelledby="hero-title">
                 <div class="landing-hero__copy">
-                    <p class="public-eyebrow"><span class="public-eyebrow__dot" aria-hidden="true"></span>Recursos que conectam pessoas</p>
-                    <h1 id="hero-title" class="landing-title">O que você<br>não usa,<br><span>alguém precisa.</span></h1>
-                    <p class="landing-hero__description">Um novo destino para seus recursos. Uma nova oportunidade para quem precisa.</p>
-                    <p class="landing-hero__detail">Conecte itens em bom estado às necessidades de instituições e acompanhe sua doação até o recebimento.</p>
+                    <p class="public-eyebrow"
+                        ><span class="public-eyebrow__dot" aria-hidden="true"></span>Recursos que
+                        conectam pessoas</p
+                    >
+                    <h1 id="hero-title" class="landing-title"
+                        >O que você<br />não usa,<br /><span>alguém precisa.</span></h1
+                    >
+                    <p class="landing-hero__description"
+                        >Um novo destino para seus recursos. Uma nova oportunidade para quem
+                        precisa.</p
+                    >
+                    <p class="landing-hero__detail"
+                        >Conecte itens em bom estado às necessidades de instituições e acompanhe sua
+                        doação até o recebimento.</p
+                    >
                     <div class="landing-actions">
-                        <a class="button public-primary" th:href="@{/register/donor}">Quero doar <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
-                        <a class="ui-button ui-button--secondary public-secondary" th:href="@{/register/institution}">Sou uma instituição</a>
+                        <a class="button public-primary" th:href="@{/register/donor}"
+                            >Quero doar
+                            <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+                        ></a>
+                        <a
+                            class="ui-button ui-button--secondary public-secondary"
+                            th:href="@{/register/institution}"
+                            >Sou uma instituição</a
+                        >
                     </div>
-                    <a class="landing-explore" href="#como-funciona"><span class="landing-explore__icon"><svg th:replace="~{fragments/ui/icon :: icon('arrow-down')}"></svg></span> Conheça o caminho de uma doação</a>
+                    <a class="landing-explore" href="#how-it-works"
+                        ><span class="landing-explore__icon"
+                            ><svg th:replace="~{fragments/ui/icon :: icon('arrow-down')}"></svg
+                        ></span>
+                        Conheça o caminho de uma doação</a
+                    >
                 </div>
                 <div class="landing-hero__visual">
                     <div class="landing-art">
-                        <div class="landing-art__heading"><span>DE MÃOS EM MÃOS</span><img th:src="@{/images/shared/leaf.svg}" alt="" width="25" height="25"></div>
-                        <img class="landing-art__illustration" th:src="@{/images/auth/community-donation.svg}" alt="Duas mãos compartilham uma caixa de doação, conectada a uma instituição representada por um prédio com coração na fachada." width="560" height="420" fetchpriority="high" decoding="async">
-                        <div class="landing-art__caption"><span>Menos desperdício.</span><strong>Mais possibilidades.</strong></div>
+                        <div class="landing-art__heading"
+                            ><span>DE MÃOS EM MÃOS</span
+                            ><img th:src="@{/images/shared/leaf.svg}" alt="" width="25" height="25"
+                        /></div>
+                        <img
+                            class="landing-art__illustration"
+                            th:src="@{/images/auth/community-donation.svg}"
+                            alt="Duas mãos compartilham uma caixa de doação, conectada a uma instituição representada por um prédio com coração na fachada."
+                            width="560"
+                            height="420"
+                            fetchpriority="high"
+                            decoding="async"
+                        />
+                        <div class="landing-art__caption"
+                            ><span>Menos desperdício.</span
+                            ><strong>Mais possibilidades.</strong></div
+                        >
                     </div>
-                    <div class="landing-route" aria-label="Caminho da doação: você, seus recursos e uma instituição">
-                        <span><svg th:replace="~{fragments/ui/icon :: icon('user')}"></svg>Você</span>
+                    <div
+                        class="landing-route"
+                        aria-label="Caminho da doação: você, seus recursos e uma instituição"
+                    >
+                        <span
+                            ><svg th:replace="~{fragments/ui/icon :: icon('user')}"></svg>Você</span
+                        >
                         <span class="landing-route__line" aria-hidden="true"></span>
-                        <span><svg th:replace="~{fragments/ui/icon :: icon('package')}"></svg>Recursos</span>
+                        <span
+                            ><svg th:replace="~{fragments/ui/icon :: icon('package')}"></svg
+                            >Recursos</span
+                        >
                         <span class="landing-route__line" aria-hidden="true"></span>
-                        <span><svg th:replace="~{fragments/ui/icon :: icon('building')}"></svg>Instituição</span>
+                        <span
+                            ><svg th:replace="~{fragments/ui/icon :: icon('building')}"></svg
+                            >Instituição</span
+                        >
                     </div>
                 </div>
             </section>
 
             <div class="landing-resources" aria-label="Exemplos de recursos para doação">
                 <div class="public-container landing-resources__content">
-                    <p>Pequenos gestos.<br> <strong>Muitas possibilidades.</strong></p>
+                    <p
+                        >Pequenos gestos.<br />
+                        <strong>Muitas possibilidades.</strong></p
+                    >
                     <ul>
-                        <li><svg th:replace="~{fragments/ui/icon :: icon('clothing')}"></svg>Roupas</li>
-                        <li><svg th:replace="~{fragments/ui/icon :: icon('education')}"></svg>Materiais escolares</li>
-                        <li><svg th:replace="~{fragments/ui/icon :: icon('toy')}"></svg>Brinquedos</li>
-                        <li><svg th:replace="~{fragments/ui/icon :: icon('household')}"></svg>Utilidades domésticas</li>
+                        <li
+                            ><svg th:replace="~{fragments/ui/icon :: icon('clothing')}"></svg
+                            >Roupas</li
+                        >
+                        <li
+                            ><svg th:replace="~{fragments/ui/icon :: icon('education')}"></svg
+                            >Materiais escolares</li
+                        >
+                        <li
+                            ><svg th:replace="~{fragments/ui/icon :: icon('toy')}"></svg
+                            >Brinquedos</li
+                        >
+                        <li
+                            ><svg th:replace="~{fragments/ui/icon :: icon('household')}"></svg
+                            >Utilidades domésticas</li
+                        >
                     </ul>
                 </div>
             </div>
 
-            <section id="como-funciona" class="landing-section public-container" aria-labelledby="how-title">
+            <section
+                id="how-it-works"
+                class="landing-section public-container"
+                aria-labelledby="how-title"
+            >
                 <div class="landing-section-heading" data-reveal>
                     <p class="public-eyebrow">DA INTENÇÃO AO IMPACTO</p>
-                    <h2 id="how-title">Uma boa ação.<br>Um caminho claro.</h2>
+                    <h2 id="how-title">Uma boa ação.<br />Um caminho claro.</h2>
                     <p>Você sabe o que doar, para quem doar e o que acontece depois.</p>
                 </div>
                 <ol class="landing-steps">
                     <li class="landing-step" data-reveal>
-                        <div class="landing-step__top"><span class="landing-step__number">01</span><svg th:replace="~{fragments/ui/icon :: icon('search')}"></svg></div>
+                        <div class="landing-step__top"
+                            ><span class="landing-step__number">01</span
+                            ><svg th:replace="~{fragments/ui/icon :: icon('search')}"></svg
+                        ></div>
                         <h3>Encontre uma necessidade</h3>
-                        <p>Crie sua conta e conheça os recursos que as instituições precisam receber. Escolha onde você pode contribuir.</p>
+                        <p
+                            >Crie sua conta e conheça os recursos que as instituições precisam
+                            receber. Escolha onde você pode contribuir.</p
+                        >
                         <span class="landing-step__note">Um propósito para o que você tem.</span>
                     </li>
                     <li class="landing-step" data-reveal>
-                        <div class="landing-step__top"><span class="landing-step__number">02</span><svg th:replace="~{fragments/ui/icon :: icon('package')}"></svg></div>
+                        <div class="landing-step__top"
+                            ><span class="landing-step__number">02</span
+                            ><svg th:replace="~{fragments/ui/icon :: icon('package')}"></svg
+                        ></div>
                         <h3>Proponha sua doação</h3>
-                        <p>Cadastre os itens e a quantidade que deseja oferecer. A instituição analisa a proposta antes de você preparar a entrega.</p>
+                        <p
+                            >Cadastre os itens e a quantidade que deseja oferecer. A instituição
+                            analisa a proposta antes de você preparar a entrega.</p
+                        >
                         <span class="landing-step__note">Cada contribuição faz parte.</span>
                     </li>
                     <li class="landing-step" data-reveal>
-                        <div class="landing-step__top"><span class="landing-step__number">03</span><svg th:replace="~{fragments/ui/icon :: icon('check-circle')}"></svg></div>
+                        <div class="landing-step__top"
+                            ><span class="landing-step__number">03</span
+                            ><svg th:replace="~{fragments/ui/icon :: icon('check-circle')}"></svg
+                        ></div>
                         <h3>Acompanhe até chegar</h3>
-                        <p>Após o aceite, escolha entrega presencial ou Correios. Acompanhe as atualizações até a confirmação de recebimento.</p>
+                        <p
+                            >Após o aceite, escolha entrega presencial ou Correios. Acompanhe as
+                            atualizações até a confirmação de recebimento.</p
+                        >
                         <span class="landing-step__note">Uma doação com destino.</span>
                     </li>
                 </ol>
             </section>
 
-            <section id="participar" class="landing-section public-container landing-participate" aria-labelledby="participate-title">
+            <section
+                id="get-involved"
+                class="landing-section public-container landing-participate"
+                aria-labelledby="participate-title"
+            >
                 <div class="landing-section-heading" data-reveal>
                     <p class="public-eyebrow">UMA REDE, DOIS LADOS</p>
-                    <h2 id="participate-title">Diferentes caminhos.<br>O mesmo propósito.</h2>
+                    <h2 id="participate-title">Diferentes caminhos.<br />O mesmo propósito.</h2>
                     <p>Escolha como você quer fazer parte dessa conexão.</p>
                 </div>
                 <div class="landing-audiences">
-                    <article class="landing-audience landing-audience--donor" data-reveal aria-labelledby="donor-title">
-                        <div class="landing-audience__intro"><span class="landing-audience__icon"><svg th:replace="~{fragments/ui/icon :: icon('user')}"></svg></span><span class="public-eyebrow">PARA QUEM QUER DOAR</span></div>
-                        <h3 id="donor-title">Seus recursos podem<br>ganhar uma nova história.</h3>
-                        <p>O que já foi útil para você pode abrir possibilidades para outras pessoas. Encontre uma necessidade e dê o primeiro passo.</p>
+                    <article
+                        class="landing-audience landing-audience--donor"
+                        data-reveal
+                        aria-labelledby="donor-title"
+                    >
+                        <div class="landing-audience__intro"
+                            ><span class="landing-audience__icon"
+                                ><svg th:replace="~{fragments/ui/icon :: icon('user')}"></svg></span
+                            ><span class="public-eyebrow">PARA QUEM QUER DOAR</span></div
+                        >
+                        <h3 id="donor-title">Seus recursos podem<br />ganhar uma nova história.</h3>
+                        <p
+                            >O que já foi útil para você pode abrir possibilidades para outras
+                            pessoas. Encontre uma necessidade e dê o primeiro passo.</p
+                        >
                         <ul class="landing-benefits">
-                            <li><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg><span>Descubra necessidades por categoria e prioridade.</span></li>
-                            <li><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg><span>Ofereça a quantidade com que puder contribuir.</span></li>
-                            <li><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg><span>Acompanhe o aceite, a entrega e o recebimento.</span></li>
+                            <li
+                                ><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg
+                                ><span>Descubra necessidades por categoria e prioridade.</span></li
+                            >
+                            <li
+                                ><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg
+                                ><span>Ofereça a quantidade com que puder contribuir.</span></li
+                            >
+                            <li
+                                ><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg
+                                ><span>Acompanhe o aceite, a entrega e o recebimento.</span></li
+                            >
                         </ul>
-                        <a class="button public-primary" th:href="@{/register/donor}">Criar conta de doador <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
+                        <a class="button public-primary" th:href="@{/register/donor}"
+                            >Criar conta de doador
+                            <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+                        ></a>
                     </article>
-                    <article class="landing-audience" data-reveal aria-labelledby="institution-title">
-                        <div class="landing-audience__intro"><span class="landing-audience__icon"><svg th:replace="~{fragments/ui/icon :: icon('building')}"></svg></span><span class="public-eyebrow">PARA INSTITUIÇÕES</span></div>
-                        <h3 id="institution-title">Mais conexões para<br>continuar sua missão.</h3>
-                        <p>Faça parte da rede que aproxima doações das necessidades da sua organização, com acompanhamento de cada proposta.</p>
+                    <article
+                        class="landing-audience"
+                        data-reveal
+                        aria-labelledby="institution-title"
+                    >
+                        <div class="landing-audience__intro"
+                            ><span class="landing-audience__icon"
+                                ><svg
+                                    th:replace="~{fragments/ui/icon :: icon('building')}"
+                                ></svg></span
+                            ><span class="public-eyebrow">PARA INSTITUIÇÕES</span></div
+                        >
+                        <h3 id="institution-title"
+                            >Mais conexões para<br />continuar sua missão.</h3
+                        >
+                        <p
+                            >Faça parte da rede que aproxima doações das necessidades da sua
+                            organização, com acompanhamento de cada proposta.</p
+                        >
                         <ul class="landing-benefits">
-                            <li><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg><span>Envie seus dados e documentos para análise.</span></li>
-                            <li><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg><span>Após a aprovação, consulte as propostas recebidas.</span></li>
-                            <li><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg><span>Confira as entregas e confirme o recebimento.</span></li>
+                            <li
+                                ><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg
+                                ><span>Envie seus dados e documentos para análise.</span></li
+                            >
+                            <li
+                                ><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg
+                                ><span>Após a aprovação, consulte as propostas recebidas.</span></li
+                            >
+                            <li
+                                ><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg
+                                ><span>Confira as entregas e confirme o recebimento.</span></li
+                            >
                         </ul>
-                        <a class="ui-button ui-button--secondary public-secondary" th:href="@{/register/institution}">Cadastrar minha instituição <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
+                        <a
+                            class="ui-button ui-button--secondary public-secondary"
+                            th:href="@{/register/institution}"
+                            >Cadastrar minha instituição
+                            <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+                        ></a>
                     </article>
                 </div>
             </section>
 
-            <section class="public-container landing-trust" aria-labelledby="trust-title" data-reveal>
+            <section
+                class="public-container landing-trust"
+                aria-labelledby="trust-title"
+                data-reveal
+            >
                 <div class="landing-trust__intro">
                     <p class="public-eyebrow">CLAREZA EM CADA CONEXÃO</p>
-                    <h2 id="trust-title">Confiança se constrói<br>em cada etapa.</h2>
-                    <p>Do cadastro ao recebimento, informações que ajudam você a acompanhar sua contribuição.</p>
+                    <h2 id="trust-title">Confiança se constrói<br />em cada etapa.</h2>
+                    <p
+                        >Do cadastro ao recebimento, informações que ajudam você a acompanhar sua
+                        contribuição.</p
+                    >
                 </div>
                 <div class="landing-trust__features">
-                    <article><span class="landing-trust__icon"><svg th:replace="~{fragments/ui/icon :: icon('shield')}"></svg></span><div><h3>Cadastro institucional em análise</h3><p>Instituições enviam dados e documentos. O acesso depende da aprovação do cadastro.</p></div></article>
-                    <article><span class="landing-trust__icon"><svg th:replace="~{fragments/ui/icon :: icon('file-text')}"></svg></span><div><h3>Uma história que você acompanha</h3><p>Cada proposta tem protocolo, histórico e etapas para consultar no seu painel.</p></div></article>
-                    <article><span class="landing-trust__icon"><svg th:replace="~{fragments/ui/icon :: icon('bell')}"></svg></span><div><h3>Atualizações que aproximam</h3><p>Receba avisos no site e por e-mail sobre as mudanças relevantes da sua doação.</p></div></article>
+                    <article
+                        ><span class="landing-trust__icon"
+                            ><svg th:replace="~{fragments/ui/icon :: icon('shield')}"></svg></span
+                        ><div
+                            ><h3>Cadastro institucional em análise</h3
+                            ><p
+                                >Instituições enviam dados e documentos. O acesso depende da
+                                aprovação do cadastro.</p
+                            ></div
+                        ></article
+                    >
+                    <article
+                        ><span class="landing-trust__icon"
+                            ><svg
+                                th:replace="~{fragments/ui/icon :: icon('file-text')}"
+                            ></svg></span
+                        ><div
+                            ><h3>Uma história que você acompanha</h3
+                            ><p
+                                >Cada proposta tem protocolo, histórico e etapas para consultar no
+                                seu painel.</p
+                            ></div
+                        ></article
+                    >
+                    <article
+                        ><span class="landing-trust__icon"
+                            ><svg th:replace="~{fragments/ui/icon :: icon('bell')}"></svg></span
+                        ><div
+                            ><h3>Atualizações que aproximam</h3
+                            ><p
+                                >Receba avisos no site e por e-mail sobre as mudanças relevantes da
+                                sua doação.</p
+                            ></div
+                        ></article
+                    >
                 </div>
             </section>
 
-            <section id="duvidas" class="landing-section public-container landing-faq" aria-labelledby="faq-title">
+            <section
+                id="faq"
+                class="landing-section public-container landing-faq"
+                aria-labelledby="faq-title"
+            >
                 <div class="landing-section-heading" data-reveal>
                     <p class="public-eyebrow">ANTES DO PRIMEIRO PASSO</p>
-                    <h2 id="faq-title">É natural<br>ter perguntas.</h2>
+                    <h2 id="faq-title">É natural<br />ter perguntas.</h2>
                     <p>Algumas respostas para você conhecer melhor o ReSource.</p>
-                    <a class="text-link" href="#participar">Encontre seu lugar na rede <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
+                    <a class="text-link" href="#get-involved"
+                        >Encontre seu lugar na rede
+                        <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+                    ></a>
                 </div>
                 <div class="landing-faq__list" data-reveal>
-                    <details><summary>O que posso doar?<span class="landing-faq__icon"><svg th:replace="~{fragments/ui/icon :: icon('plus')}"></svg></span></summary><div><p>Itens que correspondam às necessidades disponíveis, como roupas, materiais escolares, brinquedos e utilidades domésticas. Ao entrar, você pode consultar as categorias e verificar onde seus recursos podem ajudar.</p></div></details>
-                    <details><summary>Posso doar itens usados?<span class="landing-faq__icon"><svg th:replace="~{fragments/ui/icon :: icon('plus')}"></svg></span></summary><div><p>Sim. Informe o estado de conservação e descreva os itens com clareza. Priorize recursos em bom estado e adequados ao uso. A instituição analisa sua proposta antes de aceitar a doação.</p></div></details>
-                    <details><summary>Como os itens chegam à instituição?<span class="landing-faq__icon"><svg th:replace="~{fragments/ui/icon :: icon('plus')}"></svg></span></summary><div><p>Depois do aceite, o doador escolhe entre entrega presencial e envio pelos Correios. O painel apresenta as informações de recebimento e permite registrar a entrega ou postagem. A instituição confirma o recebimento ao final.</p></div></details>
-                    <details><summary>Como minha instituição pode participar?<span class="landing-faq__icon"><svg th:replace="~{fragments/ui/icon :: icon('plus')}"></svg></span></summary><div><p>Selecione “Cadastrar minha instituição” e envie o CNPJ, os dados do representante e os documentos solicitados. Sua conta ficará pendente de análise. Após a aprovação, você poderá acessar o painel institucional.</p></div></details>
+                    <details
+                        ><summary
+                            >O que posso doar?<span class="landing-faq__icon"
+                                ><svg
+                                    th:replace="~{fragments/ui/icon :: icon('plus')}"
+                                ></svg></span></summary
+                        ><div
+                            ><p
+                                >Itens que correspondam às necessidades disponíveis, como roupas,
+                                materiais escolares, brinquedos e utilidades domésticas. Ao entrar,
+                                você pode consultar as categorias e verificar onde seus recursos
+                                podem ajudar.</p
+                            ></div
+                        ></details
+                    >
+                    <details
+                        ><summary
+                            >Posso doar itens usados?<span class="landing-faq__icon"
+                                ><svg
+                                    th:replace="~{fragments/ui/icon :: icon('plus')}"
+                                ></svg></span></summary
+                        ><div
+                            ><p
+                                >Sim. Informe o estado de conservação e descreva os itens com
+                                clareza. Priorize recursos em bom estado e adequados ao uso. A
+                                instituição analisa sua proposta antes de aceitar a doação.</p
+                            ></div
+                        ></details
+                    >
+                    <details
+                        ><summary
+                            >Como os itens chegam à instituição?<span class="landing-faq__icon"
+                                ><svg
+                                    th:replace="~{fragments/ui/icon :: icon('plus')}"
+                                ></svg></span></summary
+                        ><div
+                            ><p
+                                >Depois do aceite, o doador escolhe entre entrega presencial e envio
+                                pelos Correios. O painel apresenta as informações de recebimento e
+                                permite registrar a entrega ou postagem. A instituição confirma o
+                                recebimento ao final.</p
+                            ></div
+                        ></details
+                    >
+                    <details
+                        ><summary
+                            >Como minha instituição pode participar?<span class="landing-faq__icon"
+                                ><svg
+                                    th:replace="~{fragments/ui/icon :: icon('plus')}"
+                                ></svg></span></summary
+                        ><div
+                            ><p
+                                >Selecione “Cadastrar minha instituição” e envie o CNPJ, os dados do
+                                representante e os documentos solicitados. Sua conta ficará pendente
+                                de análise. Após a aprovação, você poderá acessar o painel
+                                institucional.</p
+                            ></div
+                        ></details
+                    >
                 </div>
             </section>
 
             <section class="landing-closing" aria-labelledby="closing-title">
                 <div class="public-container" data-reveal>
-                    <img th:src="@{/images/shared/leaf.svg}" alt="" width="38" height="38">
-                    <h2 id="closing-title">Um novo destino começa<br>com uma conexão.</h2>
+                    <img th:src="@{/images/shared/leaf.svg}" alt="" width="38" height="38" />
+                    <h2 id="closing-title">Um novo destino começa<br />com uma conexão.</h2>
                     <p>Faça parte de uma rede que transforma recursos em possibilidades.</p>
-                    <a class="button public-primary" href="#participar">Quero fazer parte <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
-                    <p class="landing-closing__login">Já tem uma conta? <a class="text-link" th:href="@{/login}">Entre no ReSource</a></p>
+                    <a class="button public-primary" href="#get-involved"
+                        >Quero fazer parte
+                        <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+                    ></a>
+                    <p class="landing-closing__login"
+                        >Já tem uma conta?
+                        <a class="text-link" th:href="@{/login}">Entre no ReSource</a></p
+                    >
                 </div>
             </section>
         </main>
