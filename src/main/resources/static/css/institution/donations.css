@@ -24,10 +24,13 @@
 
 .ong-donation-heading h1 {
     margin: 0;
-    font: 700 var(--font-page)/1.2 Outfit, sans-serif;
+    font:
+        700 var(--font-page) / 1.2 Outfit,
+        sans-serif;
 }
 
-.ong-donation-heading p, .ong-donation-description {
+.ong-donation-heading p,
+.ong-donation-description {
     margin: 8px 0 0;
     color: var(--slate);
     font-size: var(--font-body);
@@ -54,7 +57,8 @@
     background: var(--surface);
 }
 
-.ong-donation-filters label, .ong-donation-reason {
+.ong-donation-filters label,
+.ong-donation-reason {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -63,7 +67,9 @@
     min-width: 0;
 }
 
-.ong-donation-filters input, .ong-donation-filters select, .ong-donation-reason textarea {
+.ong-donation-filters input,
+.ong-donation-filters select,
+.ong-donation-reason textarea {
     min-width: 0;
     width: 100%;
     padding: 12px;
@@ -71,10 +77,13 @@
     border-radius: 8px;
     background: var(--surface);
     color: var(--ink);
-    font: 400 var(--font-body)/1.5 Inter, sans-serif;
+    font:
+        400 var(--font-body) / 1.5 Inter,
+        sans-serif;
 }
 
-.ong-donation-filters input, .ong-donation-filters select {
+.ong-donation-filters input,
+.ong-donation-filters select {
     height: 46px;
 }
 
@@ -101,7 +110,8 @@
     background: var(--surface);
 }
 
-.ong-donation-table-heading, .ong-donation-list-row {
+.ong-donation-table-heading,
+.ong-donation-list-row {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.4fr) 110px;
     align-items: center;
@@ -128,7 +138,8 @@
     border-top: 1px solid var(--border);
 }
 
-.ong-donation-list-row time, .ong-donation-status-cell small {
+.ong-donation-list-row time,
+.ong-donation-status-cell small {
     font-size: var(--font-caption);
     color: var(--slate);
     line-height: 1.6;
@@ -156,7 +167,8 @@
     font-size: var(--font-body);
 }
 
-.ong-donation-item span:not(.ong-donation-item-icon), .ong-donation-item small {
+.ong-donation-item span:not(.ong-donation-item-icon),
+.ong-donation-item small {
     color: var(--slate);
     font-size: var(--font-caption);
 }
@@ -200,7 +212,8 @@
     min-width: 0;
 }
 
-.ong-donation-card h2, .ui-dialog-content h2 {
+.ong-donation-card h2,
+.ui-dialog-content h2 {
     margin: 0;
     font-size: var(--font-section);
     line-height: 1.4;
@@ -259,7 +272,7 @@
     outline-offset: 4px;
 }
 
-.ong-donation-page [tabindex="-1"]:focus {
+.ong-donation-page [tabindex='-1']:focus {
     outline: none;
 }
 
@@ -308,7 +321,6 @@
     .ong-donation-card {
         padding: 24px;
     }
-
 }
 
 @media (max-width: 380px) {

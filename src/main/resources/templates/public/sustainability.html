@@ -1,67 +1,196 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/public/layout :: page('Sustentabilidade', 'Conheça o compromisso do ReSource com o reaproveitamento de recursos, a doação responsável e o cuidado com quem recebe.', ~{::content})}">
+<html
+    lang="pt-BR"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/public/layout :: page('Sustentabilidade', 'Conheça o compromisso do ReSource com o reaproveitamento de recursos, a doação responsável e o cuidado com quem recebe.', ~{::content})}"
+>
     <body>
         <th:block th:fragment="content">
             <header class="information-intro public-container">
                 <p class="public-eyebrow">NOSSO COMPROMISSO</p>
                 <h1>Sustentabilidade</h1>
-                <p class="information-lead">Valorizar o que já existe.<br><span>Cuidar de quem vem depois.</span></p>
-                <div class="information-description">Para o ReSource, compartilhar recursos é uma forma de unir responsabilidade ambiental e cuidado social. Nosso papel é aproximar o que pode continuar em uso de quem precisa recebê-lo.</div>
+                <p class="information-lead"
+                    >Valorizar o que já existe.<br /><span>Cuidar de quem vem depois.</span></p
+                >
+                <div class="information-description"
+                    >Para o ReSource, compartilhar recursos é uma forma de unir responsabilidade
+                    ambiental e cuidado social. Nosso papel é aproximar o que pode continuar em uso
+                    de quem precisa recebê-lo.</div
+                >
             </header>
             <div class="information-reading public-container">
                 <aside class="information-index">
-                    <p>Nosso compromisso<br> em quatro escolhas.</p>
+                    <p
+                        >Nosso compromisso<br />
+                        em quatro escolhas.</p
+                    >
                     <nav aria-label="Tópicos de sustentabilidade">
-                        <a href="#reaproveitar"><span>01</span> Reaproveitar</a>
-                        <a href="#direcionar"><span>02</span> Direcionar</a>
-                        <a href="#cuidar"><span>03</span> Cuidar</a>
-                        <a href="#acompanhar"><span>04</span> Acompanhar</a>
+                        <a href="#reuse"><span>01</span> Reaproveitar</a>
+                        <a href="#purpose"><span>02</span> Direcionar</a>
+                        <a href="#care"><span>03</span> Cuidar</a>
+                        <a href="#follow-up"><span>04</span> Acompanhar</a>
                     </nav>
-                    <a class="information-related" th:href="@{/politica-de-privacidade}"><svg th:replace="~{fragments/ui/icon :: icon('shield')}"></svg>Conheça nossa política de privacidade <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
+                    <a class="information-related" th:href="@{/privacy-policy}"
+                        ><svg th:replace="~{fragments/ui/icon :: icon('shield')}"></svg>Conheça
+                        nossa política de privacidade
+                        <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+                    ></a>
                 </aside>
-                <article class="information-content" aria-label="Compromissos de sustentabilidade do ReSource">
-                    <section id="reaproveitar" class="information-chapter" aria-labelledby="reuse-title">
+                <article
+                    class="information-content"
+                    aria-label="Compromissos de sustentabilidade do ReSource"
+                >
+                    <section id="reuse" class="information-chapter" aria-labelledby="reuse-title">
                         <div class="information-chapter__content" data-reveal>
-                            <div class="information-chapter__label"><span>01</span><p class="public-eyebrow">REAPROVEITAR</p></div>
-                            <h2 id="reuse-title">A vida útil de um recurso<br>não termina com o primeiro uso.</h2>
-                            <p>Um item pode deixar de fazer parte da sua rotina e continuar útil para outra pessoa. Ao favorecer essa conexão, damos espaço para o reaproveitamento antes do descarte.</p>
-                            <p>Roupas, materiais escolares, brinquedos e utilidades domésticas em bom estado podem encontrar um novo destino. O ponto de partida é reconhecer o valor do que já temos.</p>
-                            <blockquote>O que muda de mãos<br>pode continuar fazendo a diferença.</blockquote>
+                            <div class="information-chapter__label"
+                                ><span>01</span><p class="public-eyebrow">REAPROVEITAR</p></div
+                            >
+                            <h2 id="reuse-title"
+                                >A vida útil de um recurso<br />não termina com o primeiro uso.</h2
+                            >
+                            <p
+                                >Um item pode deixar de fazer parte da sua rotina e continuar útil
+                                para outra pessoa. Ao favorecer essa conexão, damos espaço para o
+                                reaproveitamento antes do descarte.</p
+                            >
+                            <p
+                                >Roupas, materiais escolares, brinquedos e utilidades domésticas em
+                                bom estado podem encontrar um novo destino. O ponto de partida é
+                                reconhecer o valor do que já temos.</p
+                            >
+                            <blockquote
+                                >O que muda de mãos<br />pode continuar fazendo a
+                                diferença.</blockquote
+                            >
                         </div>
                     </section>
-                    <section id="direcionar" class="information-chapter" aria-labelledby="purpose-title">
+                    <section
+                        id="purpose"
+                        class="information-chapter"
+                        aria-labelledby="purpose-title"
+                    >
                         <div class="information-chapter__content" data-reveal>
-                            <div class="information-chapter__label"><span>02</span><p class="public-eyebrow">DIRECIONAR</p></div>
-                            <h2 id="purpose-title">Uma doação precisa<br>encontrar uma necessidade.</h2>
-                            <p>Compartilhar com propósito significa considerar o que a instituição realmente precisa. Consultar a categoria, a quantidade e as orientações de recebimento ajuda a preparar uma contribuição adequada.</p>
-                            <p>No ReSource, o doador apresenta uma proposta e a instituição avalia o que pode receber. Esse diálogo orienta o destino dos recursos e a organização da entrega.</p>
-                            <div class="sustainability-practice"><svg th:replace="~{fragments/ui/icon :: icon('search')}"></svg><p><strong>Antes de separar os itens, consulte as necessidades.</strong> A intenção de ajudar ganha direção quando começa pela escuta.</p></div>
+                            <div class="information-chapter__label"
+                                ><span>02</span><p class="public-eyebrow">DIRECIONAR</p></div
+                            >
+                            <h2 id="purpose-title"
+                                >Uma doação precisa<br />encontrar uma necessidade.</h2
+                            >
+                            <p
+                                >Compartilhar com propósito significa considerar o que a instituição
+                                realmente precisa. Consultar a categoria, a quantidade e as
+                                orientações de recebimento ajuda a preparar uma contribuição
+                                adequada.</p
+                            >
+                            <p
+                                >No ReSource, o doador apresenta uma proposta e a instituição avalia
+                                o que pode receber. Esse diálogo orienta o destino dos recursos e a
+                                organização da entrega.</p
+                            >
+                            <div class="sustainability-practice"
+                                ><svg th:replace="~{fragments/ui/icon :: icon('search')}"></svg
+                                ><p
+                                    ><strong
+                                        >Antes de separar os itens, consulte as
+                                        necessidades.</strong
+                                    >
+                                    A intenção de ajudar ganha direção quando começa pela escuta.</p
+                                ></div
+                            >
                         </div>
                     </section>
-                    <section id="cuidar" class="information-chapter" aria-labelledby="care-title">
+                    <section id="care" class="information-chapter" aria-labelledby="care-title">
                         <div class="information-chapter__content" data-reveal>
-                            <div class="information-chapter__label"><span>03</span><p class="public-eyebrow">CUIDAR</p></div>
-                            <h2 id="care-title">O cuidado com quem recebe<br>faz parte de cada escolha.</h2>
-                            <p>Doar é compartilhar algo que outra pessoa possa usar com segurança e dignidade. O estado do item e a forma de entrega merecem a mesma atenção que a intenção de contribuir.</p>
+                            <div class="information-chapter__label"
+                                ><span>03</span><p class="public-eyebrow">CUIDAR</p></div
+                            >
+                            <h2 id="care-title"
+                                >O cuidado com quem recebe<br />faz parte de cada escolha.</h2
+                            >
+                            <p
+                                >Doar é compartilhar algo que outra pessoa possa usar com segurança
+                                e dignidade. O estado do item e a forma de entrega merecem a mesma
+                                atenção que a intenção de contribuir.</p
+                            >
                             <ul class="sustainability-care">
-                                <li><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg><div><strong>Condições de uso</strong><p>Separe itens limpos e completos. Descreva o estado real na proposta.</p></div></li>
-                                <li><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg><div><strong>Embalagem adequada</strong><p>Proteja os recursos e reaproveite embalagens em boas condições quando possível.</p></div></li>
-                                <li><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg><div><strong>Entrega planejada</strong><p>Aguarde o aceite da instituição e organize a entrega presencial ou a postagem conforme as orientações.</p></div></li>
+                                <li
+                                    ><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg
+                                    ><div
+                                        ><strong>Condições de uso</strong
+                                        ><p
+                                            >Separe itens limpos e completos. Descreva o estado real
+                                            na proposta.</p
+                                        ></div
+                                    ></li
+                                >
+                                <li
+                                    ><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg
+                                    ><div
+                                        ><strong>Embalagem adequada</strong
+                                        ><p
+                                            >Proteja os recursos e reaproveite embalagens em boas
+                                            condições quando possível.</p
+                                        ></div
+                                    ></li
+                                >
+                                <li
+                                    ><svg th:replace="~{fragments/ui/icon :: icon('check')}"></svg
+                                    ><div
+                                        ><strong>Entrega planejada</strong
+                                        ><p
+                                            >Aguarde o aceite da instituição e organize a entrega
+                                            presencial ou a postagem conforme as orientações.</p
+                                        ></div
+                                    ></li
+                                >
                             </ul>
                         </div>
                     </section>
-                    <section id="acompanhar" class="information-chapter" aria-labelledby="follow-title">
+                    <section
+                        id="follow-up"
+                        class="information-chapter"
+                        aria-labelledby="follow-title"
+                    >
                         <div class="information-chapter__content" data-reveal>
-                            <div class="information-chapter__label"><span>04</span><p class="public-eyebrow">ACOMPANHAR</p></div>
-                            <h2 id="follow-title">Responsabilidade também é<br>saber o caminho da doação.</h2>
-                            <p>O compromisso continua depois da proposta. Registrar a entrega ou postagem e acompanhar a confirmação de recebimento aproxima quem doa de quem recebe.</p>
-                            <p>Protocolo, quantidades e histórico das etapas tornam essa trajetória consultável no painel. Cada atualização ajuda a construir uma relação de confiança em torno dos recursos compartilhados.</p>
-                            <a class="text-link" th:href="@{/politica-de-privacidade}">Conheça nosso cuidado com seus dados <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a>
+                            <div class="information-chapter__label"
+                                ><span>04</span><p class="public-eyebrow">ACOMPANHAR</p></div
+                            >
+                            <h2 id="follow-title"
+                                >Responsabilidade também é<br />saber o caminho da doação.</h2
+                            >
+                            <p
+                                >O compromisso continua depois da proposta. Registrar a entrega ou
+                                postagem e acompanhar a confirmação de recebimento aproxima quem doa
+                                de quem recebe.</p
+                            >
+                            <p
+                                >Protocolo, quantidades e histórico das etapas tornam essa
+                                trajetória consultável no painel. Cada atualização ajuda a construir
+                                uma relação de confiança em torno dos recursos compartilhados.</p
+                            >
+                            <a class="text-link" th:href="@{/privacy-policy}"
+                                >Conheça nosso cuidado com seus dados
+                                <svg
+                                    th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"
+                                ></svg
+                            ></a>
                         </div>
                     </section>
-                    <aside class="sustainability-invitation" aria-labelledby="invitation-title" data-reveal>
-                        <img th:src="@{/images/shared/leaf.svg}" alt="" width="28" height="28">
-                        <div><h2 id="invitation-title">Uma escolha pode abrir um novo caminho.</h2><p>Conheça a rede e encontre sua forma de contribuir.</p><a class="text-link" th:href="@{/sobre#participar}">Faça parte do ReSource <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg></a></div>
+                    <aside
+                        class="sustainability-invitation"
+                        aria-labelledby="invitation-title"
+                        data-reveal
+                    >
+                        <img th:src="@{/images/shared/leaf.svg}" alt="" width="28" height="28" />
+                        <div
+                            ><h2 id="invitation-title">Uma escolha pode abrir um novo caminho.</h2
+                            ><p>Conheça a rede e encontre sua forma de contribuir.</p
+                            ><a class="text-link" th:href="@{/about#get-involved}"
+                                >Faça parte do ReSource
+                                <svg
+                                    th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"
+                                ></svg></a
+                        ></div>
                     </aside>
                 </article>
             </div>

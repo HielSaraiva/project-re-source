@@ -1,6 +1,6 @@
 (() => {
     const initialized = new WeakSet();
-    const initialize = root => {
+    const initialize = (root) => {
         const form = root.querySelector('[data-cnpj-lookup]');
         if (!form || initialized.has(form)) return;
         initialized.add(form);
@@ -28,10 +28,17 @@
             try {
                 const target = new URL(form.dataset.cnpjLookup, location.origin);
                 target.searchParams.set('cnpj', value);
-                const response = await fetch(target, { headers: { Accept: 'application/json' }, signal: controller.signal, credentials: 'same-origin' });
+                const response = await fetch(target, {
+                    headers: { Accept: 'application/json' },
+                    signal: controller.signal,
+                    credentials: 'same-origin',
+                });
                 const body = await response.json();
                 if (current !== sequence || canonical() !== value) return;
-                if (!response.ok) throw new Error(body.detail || 'Não foi possível consultar o CNPJ. Tente novamente.');
+                if (!response.ok)
+                    throw new Error(
+                        body.detail || 'Não foi possível consultar o CNPJ. Tente novamente.',
+                    );
                 legalName.value = body.legalName;
                 verified = value;
                 status.textContent = 'CNPJ ativo. Razão social preenchida.';
@@ -40,8 +47,10 @@
                 verified = null;
                 legalName.value = '';
                 status.className = 'auth-field-error';
-                status.textContent = error.name === 'AbortError' || error instanceof TypeError
-                    ? 'Consulta indisponível no momento. Tente novamente.' : error.message;
+                status.textContent =
+                    error.name === 'AbortError' || error instanceof TypeError
+                        ? 'Consulta indisponível no momento. Tente novamente.'
+                        : error.message;
             } finally {
                 clearTimeout(timer);
                 if (current === sequence) search.removeAttribute('aria-busy');
@@ -56,27 +65,48 @@
             legalName.value = '';
             status.textContent = '';
         });
-        cnpj.addEventListener('blur', () => { if (cnpj.value && cnpj.checkValidity()) lookup(); });
+        cnpj.addEventListener('blur', () => {
+            if (cnpj.value && cnpj.checkValidity()) lookup();
+        });
         const cpf = form.querySelector('#representativeCpf');
         cpf.addEventListener('blur', () => {
             const value = cpf.value.trim();
-            if (/^[0-9]{11}$/.test(value)) cpf.value = value.replace(/^([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})$/, '$1.$2.$3-$4');
+            if (/^[0-9]{11}$/.test(value))
+                cpf.value = value.replace(
+                    /^([0-9]{3})([0-9]{3})([0-9]{3})([0-9]{2})$/,
+                    '$1.$2.$3-$4',
+                );
         });
-        form.querySelectorAll('input[type=file]').forEach(input => {
+        form.querySelectorAll('input[type=file]').forEach((input) => {
             const feedback = form.querySelector('#' + input.id + '-name');
             input.addEventListener('change', () => {
                 const file = input.files[0];
                 input.setCustomValidity('');
                 input.removeAttribute('aria-invalid');
-                if (!file) { feedback.textContent = 'Nenhum arquivo selecionado.'; return; }
-                feedback.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
-                if (file.size === 0 || file.size > Number(input.dataset.maxFileBytes)) input.setCustomValidity('Envie um documento não vazio de até 5 MB.');
-                else if (!/\.(pdf|jpe?g)$/i.test(file.name)) input.setCustomValidity('Envie um documento PDF ou JPG.');
-                if (!input.checkValidity()) { input.setAttribute('aria-invalid', 'true'); input.reportValidity(); }
+                if (!file) {
+                    feedback.textContent = 'Nenhum arquivo selecionado.';
+                    return;
+                }
+                feedback.textContent =
+                    file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                if (file.size === 0 || file.size > Number(input.dataset.maxFileBytes))
+                    input.setCustomValidity('Envie um documento não vazio de até 5 MB.');
+                else if (!/\.(pdf|jpe?g)$/i.test(file.name))
+                    input.setCustomValidity('Envie um documento PDF ou JPG.');
+                if (!input.checkValidity()) {
+                    input.setAttribute('aria-invalid', 'true');
+                    input.reportValidity();
+                }
             });
         });
-        if (cnpj.value && !legalName.value && cnpj.checkValidity()) lookup();
+        if (
+            cnpj.value &&
+            !legalName.value &&
+            cnpj.checkValidity() &&
+            !form.hasAttribute('data-existing-account')
+        )
+            lookup();
     };
     initialize(document);
-    document.addEventListener('auth:profilechange', event => initialize(event.detail.root));
+    document.addEventListener('auth:profilechange', (event) => initialize(event.detail.root));
 })();

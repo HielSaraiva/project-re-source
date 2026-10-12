@@ -28,7 +28,7 @@ public class TransactionalMailService {
                 null,
                 "Bem-vindo ao ReSource!",
                 "Sua conta foi criada. Encontre necessidades de ONGs, escolha como contribuir e"
-                    + " acompanhe cada etapa da sua doação.",
+                        + " acompanhe cada etapa da sua doação.",
                 "/donor/needs",
                 "Encontrar necessidades",
                 false);
@@ -46,7 +46,7 @@ public class TransactionalMailService {
                     + " contato pelo e-mail "
                         + privacy.contactEmail()
                         + ".",
-                "/login?profile=ong",
+                "/login?profile=institution",
                 "Acessar o ReSource",
                 false);
     }
@@ -58,11 +58,11 @@ public class TransactionalMailService {
                 institution ? accountId : null,
                 "Sua senha foi alterada",
                 "A senha da sua conta foi redefinida com sucesso e as sessões anteriores foram"
-                    + " encerradas. Se você não reconhece essa alteração, solicite uma nova"
-                    + " recuperação de senha e entre em contato imediatamente pelo e-mail "
+                        + " encerradas. Se você não reconhece essa alteração, solicite uma nova"
+                        + " recuperação de senha e entre em contato imediatamente pelo e-mail "
                         + privacy.contactEmail()
                         + ".",
-                "/login?profile=" + (institution ? "ong" : "donor"),
+                "/login?profile=" + (institution ? "institution" : "donor"),
                 "Acessar minha conta",
                 true);
     }

@@ -200,7 +200,7 @@ public class PasswordRecoveryService {
                         expireSessions(account.email());
                     }
                 });
-        return Optional.of(account.institution() ? "ong" : "donor");
+        return Optional.of(account.institution() ? "institution" : "donor");
     }
 
     private void expireSessions(String email) {

@@ -1,14 +1,30 @@
 <!DOCTYPE html>
-<html class="auth-page" lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, registrationStyles, layoutClass, content)">
-    <head th:replace="~{fragments/layout/head :: head(${title}, ~{fragments/auth/page-styles :: styles(${registrationStyles})}, 'auth')}"></head>
+<html
+    class="auth-page"
+    lang="pt-BR"
+    xmlns:th="http://www.thymeleaf.org"
+    th:fragment="page(title, registrationStyles, layoutClass, content)"
+>
+    <head
+        th:replace="~{fragments/layout/head :: head(${title}, ~{fragments/auth/page-styles :: styles(${registrationStyles})}, 'auth')}"
+    ></head>
     <body>
+        <a class="auth-skip-link" href="#auth-form-content">Ir para o formulário</a>
         <header class="navbar auth-mobile-header">
-            <a th:replace="~{fragments/layout/header-components :: brand('/', 'ReSource — página inicial')}"></a>
+            <a
+                th:replace="~{fragments/layout/header-components :: brand('/', 'ReSource — página inicial')}"
+            ></a>
         </header>
         <main class="auth-layout" th:classappend="${layoutClass}">
             <aside th:replace="~{fragments/auth/brand-panel :: brandPanel}"></aside>
-            <th:block th:replace="${content}"></th:block>
+            <div id="auth-form-content" class="auth-form-content" tabindex="-1"
+                ><th:block th:replace="${content}"></th:block
+            ></div>
         </main>
-        <nav class="auth-information-links" aria-label="Informações sobre o ReSource"><th:block th:replace="~{fragments/public/information-links :: links}"></th:block></nav>
+        <nav class="auth-information-links" aria-label="Informações sobre o ReSource"
+            ><th:block
+                th:replace="~{fragments/public/information-links :: links}"
+            ></th:block
+        ></nav>
     </body>
 </html>

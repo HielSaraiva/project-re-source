@@ -1,21 +1,32 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, description, content)">
+<html
+    lang="pt-BR"
+    xmlns:th="http://www.thymeleaf.org"
+    th:fragment="page(title, description, content)"
+>
     <head th:replace="~{fragments/layout/head :: head(${title}, ~{::styles}, 'public')}">
         <th:block th:fragment="styles">
-            <meta name="description" th:content="${description}">
-            <meta name="theme-color" content="#047857">
-            <link rel="stylesheet" th:href="@{/css/shared/public-header.css}">
-            <link rel="stylesheet" th:href="@{/css/public/common.css}">
-            <link rel="stylesheet" th:href="@{/css/public/information.css}">
-            <link rel="stylesheet" th:if="${publicSection == 'sustainability'}" th:href="@{/css/public/sustainability.css}">
+            <meta name="description" th:content="${description}" />
+            <meta name="theme-color" content="#10b981" />
+            <link rel="stylesheet" th:href="@{/css/shared/public-header.css}" />
+            <link rel="stylesheet" th:href="@{/css/public/common.css}" />
+            <link rel="stylesheet" th:href="@{/css/public/information.css}" />
+            <link
+                rel="stylesheet"
+                th:if="${publicSection == 'sustainability'}"
+                th:href="@{/css/public/sustainability.css}"
+            />
             <script th:src="@{/js/public-page.js}" defer></script>
         </th:block>
     </head>
     <body class="public-page information-page">
-        <a class="public-skip" href="#conteudo">Pular para o conteúdo</a>
+        <a class="public-skip" href="#main-content">Pular para o conteúdo</a>
         <header th:replace="~{fragments/layout/public-header :: publicHeader}"></header>
-        <main id="conteudo" tabindex="-1">
-            <nav class="information-breadcrumb public-container" aria-label="Caminho da página"><a th:href="@{/}">Início</a><span aria-hidden="true">/</span><span aria-current="page" th:text="${title}"></span></nav>
+        <main id="main-content" tabindex="-1">
+            <nav class="information-breadcrumb public-container" aria-label="Caminho da página"
+                ><a th:href="@{/}">Início</a><span aria-hidden="true">/</span
+                ><span aria-current="page" th:text="${title}"></span
+            ></nav>
             <th:block th:replace="${content}"></th:block>
         </main>
         <footer th:replace="~{fragments/public/footer :: footer}"></footer>

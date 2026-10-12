@@ -1,6 +1,7 @@
 package edu.br.resource.resourcesystem.controller.auth;
 
 import edu.br.resource.resourcesystem.security.ProfileAuthenticationSuccessHandler;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +26,8 @@ public class LoginController {
         if (AuthenticationPageSupport.signedIn(authentication)) {
             return "redirect:" + ProfileAuthenticationSuccessHandler.destination(authentication);
         }
-        model.addAttribute("institutionLogin", "ong".equals(profile));
+        model.addAttribute(
+                "institutionLogin", "institution".equals(profile) || "ong".equals(profile));
         return "auth/login";
     }
 }

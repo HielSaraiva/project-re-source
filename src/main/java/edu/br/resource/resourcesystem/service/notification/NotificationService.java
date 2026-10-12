@@ -2,15 +2,18 @@ package edu.br.resource.resourcesystem.service.notification;
 
 import edu.br.resource.resourcesystem.model.enums.MatchEventType;
 import edu.br.resource.resourcesystem.security.CurrentActor;
-import java.time.Instant;
-import java.util.*;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.Instant;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +56,8 @@ public class NotificationService {
                         Boolean.class,
                         eventId))) return;
         db.query(
-                "SELECT protocol,event_type,donor_id,institution_id,created_at FROM match_event_outbox WHERE id=?",
+                "SELECT protocol,event_type,donor_id,institution_id,created_at FROM"
+                        + " match_event_outbox WHERE id=?",
                 rs -> {
                     String protocol = rs.getString("protocol");
                     MatchEventType type = MatchEventType.fromValue(rs.getString("event_type"));
@@ -63,21 +67,29 @@ public class NotificationService {
                                 case PROPOSAL_SUBMITTED ->
                                         "Uma nova proposta de doação está aguardando sua análise.";
                                 case PROPOSAL_ACCEPTED ->
-                                        "A ONG aceitou sua proposta. Escolha a modalidade de entrega em até 7 dias.";
+                                        "A ONG aceitou sua proposta. Escolha a modalidade de"
+                                                + " entrega em até 7 dias.";
                                 case PROPOSAL_REJECTED ->
-                                        "A ONG recusou sua proposta. Consulte os detalhes para conhecer o motivo.";
+                                        "A ONG recusou sua proposta. Consulte os detalhes para"
+                                                + " conhecer o motivo.";
                                 case DELIVERY_METHOD_SELECTED ->
-                                        "O doador escolheu a modalidade de entrega. Consulte os próximos passos.";
+                                        "O doador escolheu a modalidade de entrega. Consulte os"
+                                                + " próximos passos.";
                                 case DELIVERY_REPORTED ->
-                                        "O doador informou a entrega presencial. Confira os itens e confirme o recebimento.";
+                                        "O doador informou a entrega presencial. Confira os itens e"
+                                                + " confirme o recebimento.";
                                 case SHIPMENT_REPORTED ->
-                                        "O doador informou a postagem pelos Correios. Acompanhe o rastreamento.";
+                                        "O doador informou a postagem pelos Correios. Acompanhe o"
+                                                + " rastreamento.";
                                 case RECEIPT_CONFIRMED ->
-                                        "A ONG confirmou o recebimento dos itens. Sua doação foi concluída. Obrigado por contribuir!";
+                                        "A ONG confirmou o recebimento dos itens. Sua doação foi"
+                                                + " concluída. Obrigado por contribuir!";
                                 case DONATION_CANCELLED ->
-                                        "A doação foi cancelada pelo doador ou pelo encerramento do prazo. Consulte o motivo nos detalhes.";
+                                        "A doação foi cancelada pelo doador ou pelo encerramento do"
+                                                + " prazo. Consulte o motivo nos detalhes.";
                                 case STATUS_CHANGED ->
-                                        "Há uma atualização no andamento da doação. Consulte os detalhes.";
+                                        "Há uma atualização no andamento da doação. Consulte os"
+                                                + " detalhes.";
                             };
                     boolean donor =
                             switch (type) {
@@ -104,12 +116,12 @@ public class NotificationService {
                             && Boolean.TRUE.equals(
                                     db.queryForObject(
                                             """
-                    SELECT coalesce(sum(done.allocated_quantity),0) >= n.quantity_requested
-                    FROM match_event_outbox e JOIN matches m ON m.id=e.match_id
-                    JOIN necessities n ON n.id=m.necessity_id
-                    LEFT JOIN matches done ON done.necessity_id=n.id AND done.status='completed'
-                    WHERE e.id=? GROUP BY n.id,n.quantity_requested
-                    """,
+                                            SELECT coalesce(sum(done.allocated_quantity),0) >= n.quantity_requested
+                                            FROM match_event_outbox e JOIN matches m ON m.id=e.match_id
+                                            JOIN necessities n ON n.id=m.necessity_id
+                                            LEFT JOIN matches done ON done.necessity_id=n.id AND done.status='completed'
+                                            WHERE e.id=? GROUP BY n.id,n.quantity_requested
+                                            """,
                                             Boolean.class,
                                             eventId))) {
                         insert(
@@ -117,7 +129,8 @@ public class NotificationService {
                                 rs.getInt("institution_id"),
                                 true,
                                 "Necessidade atendida",
-                                "As doações recebidas atenderam a quantidade solicitada. Obrigado por fazer parte dessa rede de impacto!",
+                                "As doações recebidas atenderam a quantidade solicitada. Obrigado"
+                                        + " por fazer parte dessa rede de impacto!",
                                 protocol,
                                 rs.getTimestamp("created_at").toInstant());
                     }
@@ -154,11 +167,14 @@ public class NotificationService {
             String protocol,
             Instant created) {
         String path =
-                ong ? "/ong/donations/" + protocol : "/donor/donation/status?protocol=" + protocol;
+                ong
+                        ? "/institution/donations/" + protocol
+                        : "/donor/donation/status?protocol=" + protocol;
         db.update(
                 "INSERT INTO user_notifications(id,event_id,"
                         + (ong ? "institution_id" : "user_id")
-                        + ",title,message,target_path,created_at) VALUES(?,?,?,?,?,?,?) ON CONFLICT DO NOTHING",
+                        + ",title,message,target_path,created_at) VALUES(?,?,?,?,?,?,?) ON CONFLICT"
+                        + " DO NOTHING",
                 UUID.randomUUID(),
                 event,
                 owner,
@@ -173,7 +189,8 @@ public class NotificationService {
         int safePage = Math.max(0, Math.min(page, 10000));
         var items =
                 db.query(
-                        "SELECT id,title,message,target_path,created_at,read_at FROM user_notifications WHERE "
+                        "SELECT id,title,message,target_path,created_at,read_at FROM"
+                                + " user_notifications WHERE "
                                 + owner.column()
                                 + "=? ORDER BY created_at DESC,id DESC LIMIT 21 OFFSET ?",
                         (rs, n) ->
@@ -200,7 +217,8 @@ public class NotificationService {
     public void read(Owner owner, UUID id) {
         int changed =
                 db.update(
-                        "UPDATE user_notifications SET read_at=coalesce(read_at,now()) WHERE id=? AND "
+                        "UPDATE user_notifications SET read_at=coalesce(read_at,now()) WHERE id=?"
+                                + " AND "
                                 + owner.column()
                                 + "=?",
                         id,
