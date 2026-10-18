@@ -19,7 +19,9 @@
 - A categoria de uma necessidade com propostas associadas não pode ser alterada, para manter a compatibilidade das propostas registradas.
 - Alterar categoria ou nome em uma necessidade não pode modificar itens ou outras necessidades que compartilhem o tipo de item anterior.
 - A prioridade deve ser uma das opções baixa, média ou alta.
-- A remoção de necessidades não está incluída no fluxo.
+- A exclusão exige confirmação explícita, exibindo o identificador e a descrição da necessidade.
+- A necessidade é removida permanentemente do banco de dados somente quando não há propostas associadas, em qualquer status.
+- A exclusão de necessidade com propostas associadas é bloqueada para preservar o histórico de doações.
 
 ## Histórico de Alterações
 

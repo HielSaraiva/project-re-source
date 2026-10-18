@@ -30,7 +30,8 @@ public interface NecessityRepository
     Optional<Necessity> findByIdAndStatus(Integer id, NecessityStatus status);
 
     @EntityGraph(attributePaths = "itemType")
-    List<Necessity> findAllByInstitutionIdOrderByCreatedAtDesc(Integer institutionId);
+    List<Necessity> findAllByInstitutionIdAndStatusNotOrderByCreatedAtDesc(
+            Integer institutionId, NecessityStatus status);
 
     long countByInstitutionIdAndStatus(Integer institutionId, NecessityStatus status);
 

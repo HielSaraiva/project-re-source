@@ -125,6 +125,60 @@ class NecessityManagementServiceTest {
     }
 
     @Test
+    void deletePermanentlyRemovesAnOwnedNeedWithoutProposals() {
+        var necessity =
+                Necessity.builder()
+                        .id(12)
+                        .institution(Institution.builder().id(7).build())
+                        .status(NecessityStatus.ACTIVE)
+                        .build();
+        when(necessities.findForUpdate(12)).thenReturn(Optional.of(necessity));
+        when(matches.existsByNecessityId(12)).thenReturn(false);
+
+        service.delete(7, 12);
+
+        verify(necessities).delete(necessity);
+    }
+
+    @Test
+    void deleteRejectsNeedsWithAnyAssociatedProposal() {
+        var necessity =
+                Necessity.builder()
+                        .id(12)
+                        .institution(Institution.builder().id(7).build())
+                        .status(NecessityStatus.ACTIVE)
+                        .build();
+        when(necessities.findForUpdate(12)).thenReturn(Optional.of(necessity));
+        when(matches.existsByNecessityId(12)).thenReturn(true);
+
+        var error =
+                assertThrows(
+                        ResponseStatusException.class, () -> service.delete(7, 12));
+
+        assertEquals(409, error.getStatusCode().value());
+        verify(necessities, never()).delete(any(Necessity.class));
+    }
+
+    @Test
+    void deleteRejectsNeedsOwnedByAnotherInstitution() {
+        var necessity =
+                Necessity.builder()
+                        .id(12)
+                        .institution(Institution.builder().id(8).build())
+                        .status(NecessityStatus.ACTIVE)
+                        .build();
+        when(necessities.findForUpdate(12)).thenReturn(Optional.of(necessity));
+
+        var error =
+                assertThrows(
+                        ResponseStatusException.class, () -> service.delete(7, 12));
+
+        assertEquals(404, error.getStatusCode().value());
+        verifyNoInteractions(matches);
+        verify(necessities, never()).delete(any(Necessity.class));
+    }
+
+    @Test
     void updateRejectsQuantityBelowExistingAllocations() {
         var necessity =
                 Necessity.builder()

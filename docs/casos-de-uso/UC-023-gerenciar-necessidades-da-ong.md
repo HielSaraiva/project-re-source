@@ -12,7 +12,7 @@
 
 ## Descrição
 
-Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas necessidades e edite os dados e prioridades das necessidades ativas.
+Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas necessidades, edite as necessidades ativas e exclua permanentemente necessidades sem propostas associadas.
 
 ## Pré-condições
 
@@ -22,10 +22,17 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 
 1. A ONG abre “Minhas necessidades”.
 2. O sistema apresenta as necessidades da instituição, suas quantidades, prioridades e status.
-3. A ONG escolhe cadastrar uma necessidade ou editar uma necessidade ativa.
+3. A ONG escolhe cadastrar, editar uma necessidade ativa ou solicitar a exclusão de uma necessidade.
 4. O sistema apresenta o formulário com categoria, nome do item, quantidade e prioridade.
 5. A ONG informa ou atualiza os dados e confirma a operação.
 6. O sistema valida a entrada, salva a alteração e atualiza a lista.
+
+### FA-03: Exclusão permanente
+
+1. A ONG solicita excluir uma necessidade.
+2. O sistema exibe confirmação com o número e a descrição da necessidade e informa que a operação é permanente.
+3. A ONG confirma a exclusão.
+4. Se não houver propostas associadas, o sistema apaga a necessidade do banco de dados e atualiza a lista.
 
 ## Fluxos Alternativos
 
@@ -51,9 +58,14 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 1. A ONG tenta editar uma necessidade atendida ou cancelada.
 2. O sistema rejeita a edição.
 
+### FE-03: Necessidade com propostas
+
+1. A ONG confirma a exclusão de uma necessidade que possui propostas associadas.
+2. O sistema bloqueia a exclusão e preserva o histórico e os registros de doação.
+
 ## Pós-condições
 
-- Uma necessidade nova foi cadastrada ou os dados de uma necessidade ativa foram atualizados.
+- Uma necessidade nova foi cadastrada, os dados de uma necessidade ativa foram atualizados ou uma necessidade sem propostas foi removida permanentemente.
 - Os dados de doações e propostas existentes não foram alterados pela edição do tipo do item.
 
 ## Histórico de Alterações

@@ -7,6 +7,10 @@
     const title = dialog.querySelector('[data-dialog-title]');
     const submit = dialog.querySelector('[data-submit-necessity]');
     const error = dialog.querySelector('[data-form-error]');
+    const deleteDialog = document.querySelector('[data-delete-dialog]');
+    const deleteForm = deleteDialog.querySelector('[data-delete-form]');
+    const deleteError = deleteForm.querySelector('[data-delete-error]');
+    const deleteSubmit = deleteForm.querySelector('[data-confirm-delete]');
 
     const clearError = () => {
         error.textContent = '';
@@ -45,6 +49,49 @@
 
     dialog.querySelectorAll('[data-close-dialog]').forEach((button) => {
         button.addEventListener('click', () => dialog.close());
+    });
+
+    document.querySelectorAll('[data-open-delete]').forEach((button) => {
+        button.addEventListener('click', () => {
+            deleteDialog.dataset.necessityId = button.dataset.id;
+            deleteDialog.querySelector('[data-delete-id]').textContent = button.dataset.id;
+            deleteDialog.querySelector('[data-delete-description]').textContent =
+                button.dataset.description;
+            deleteError.textContent = '';
+            deleteError.hidden = true;
+            deleteDialog.showModal();
+        });
+    });
+
+    deleteDialog.querySelectorAll('[data-close-delete]').forEach((button) => {
+        button.addEventListener('click', () => deleteDialog.close());
+    });
+
+    deleteForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        deleteError.textContent = '';
+        deleteError.hidden = true;
+        const finishLoading = window.ResourceLoading.request(deleteDialog, deleteSubmit);
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
+
+        try {
+            await window.ResourceHttp.json(
+                `/api/institution/necessities/${deleteDialog.dataset.necessityId}`,
+                { method: 'DELETE', signal: controller.signal },
+            );
+            window.location.reload();
+        } catch (requestError) {
+            deleteError.textContent =
+                requestError.name === 'AbortError' || requestError instanceof TypeError
+                    ? 'Não foi possível confirmar a exclusão. Atualize a página antes de tentar novamente.'
+                    : requestError.message;
+            deleteError.hidden = false;
+            deleteError.focus();
+        } finally {
+            clearTimeout(timeout);
+            finishLoading();
+        }
     });
 
     form.addEventListener('submit', async (event) => {

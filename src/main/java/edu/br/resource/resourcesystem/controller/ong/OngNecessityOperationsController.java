@@ -37,4 +37,10 @@ public class OngNecessityOperationsController {
             @Valid @RequestBody ManageNecessityRequest request) {
         necessities.update(actors.institution(authentication).getId(), id, request);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(Authentication authentication, @PathVariable Integer id) {
+        necessities.delete(actors.institution(authentication).getId(), id);
+    }
 }

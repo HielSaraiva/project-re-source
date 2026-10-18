@@ -37,7 +37,10 @@ public class NecessityManagementService {
     }
 
     public List<InstitutionNecessityResponse> list(Integer institutionId) {
-        return necessities.findAllByInstitutionIdOrderByCreatedAtDesc(institutionId).stream()
+        return necessities
+                .findAllByInstitutionIdAndStatusNotOrderByCreatedAtDesc(
+                        institutionId, NecessityStatus.FULFILLED)
+                .stream()
                 .map(
                         necessity ->
                                 new InstitutionNecessityResponse(
@@ -94,6 +97,18 @@ public class NecessityManagementService {
         necessity.setDescription(request.description().strip());
         necessity.setQuantityRequested(request.quantity());
         necessity.setPriority(request.priority());
+    }
+
+    @Transactional
+    public void delete(Integer institutionId, Integer necessityId) {
+        var necessity = necessities.findForUpdate(necessityId).orElseThrow(this::missing);
+        if (!necessity.getInstitution().getId().equals(institutionId)) throw missing();
+        if (matches.existsByNecessityId(necessityId))
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Esta necessidade não pode ser excluída porque possui propostas associadas.");
+
+        necessities.delete(necessity);
     }
 
     private ItemType itemType(ManageNecessityRequest request) {

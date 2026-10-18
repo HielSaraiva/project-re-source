@@ -62,11 +62,33 @@ class ResourceSystemApplicationTests {
                         .priority(NecessityPriority.HIGH)
                         .status(NecessityStatus.ACTIVE)
                         .build());
+        var fulfilledItemType =
+                itemTypes.save(
+                        ItemType.builder()
+                                .category(ItemCategory.BEDDING)
+                                .name("Cobertores atendidos")
+                                .build());
+        necessities.save(
+                Necessity.builder()
+                        .institution(institution)
+                        .itemType(fulfilledItemType)
+                        .quantityRequested(10)
+                        .priority(NecessityPriority.LOW)
+                        .status(NecessityStatus.FULFILLED)
+                        .build());
 
-        mvc.perform(get("/institution/necessities"))
+        var result =
+                mvc.perform(get("/institution/necessities"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("institution/necessities/list"))
                 .andExpect(content().string(containsString("Cadeiras escolares")))
-                .andExpect(content().string(containsString("Alta prioridade")));
+                .andExpect(content().string(containsString("Alta prioridade")))
+                .andExpect(content().string(containsString("Excluir necessidade")))
+                .andExpect(content().string(containsString("data-delete-id")))
+                .andExpect(content().string(containsString("Excluir permanentemente")))
+                .andReturn();
+
+        org.junit.jupiter.api.Assertions.assertFalse(
+                result.getResponse().getContentAsString().contains("Cobertores atendidos"));
     }
 }

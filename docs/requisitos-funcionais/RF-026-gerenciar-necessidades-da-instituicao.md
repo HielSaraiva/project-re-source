@@ -12,7 +12,7 @@
 
 ## Descrição
 
-O sistema deve permitir que uma ONG aprovada consulte suas necessidades e prioridades, cadastre novas necessidades e edite as necessidades ativas de sua própria instituição.
+O sistema deve permitir que uma ONG aprovada consulte suas necessidades e prioridades, cadastre novas necessidades, edite as necessidades ativas e exclua permanentemente necessidades de sua própria instituição que não tenham propostas associadas.
 
 ## Atores
 
@@ -32,16 +32,19 @@ O sistema deve permitir que uma ONG aprovada consulte suas necessidades e priori
 - Lista das necessidades pertencentes à instituição autenticada, com item, quantidade, prioridade e status.
 - Confirmação de cadastro ou atualização.
 - Mensagem de validação quando os dados forem inválidos ou a quantidade solicitada ficar abaixo do total já reservado.
+- Confirmação explícita antes da exclusão, identificando o número e a descrição da necessidade.
 
 ## Regras
 
 - A instituição é identificada pela sessão autenticada; não se aceita um identificador de instituição fornecido pelo cliente.
 - Uma instituição não pode consultar ou editar necessidades de outra instituição.
+- Necessidades atendidas não aparecem na lista “Minhas necessidades”; permanecem acessíveis na gestão de doações.
 - Somente necessidades ativas podem ser editadas.
 - A quantidade solicitada não pode ser reduzida abaixo das quantidades já alocadas em propostas existentes, incluindo doações concluídas.
 - A categoria não pode ser alterada enquanto houver propostas associadas à necessidade.
 - A edição da categoria ou do nome associa a necessidade a um tipo de item correspondente, sem alterar os dados de outras necessidades ou doações existentes.
-- A exclusão de necessidades não faz parte deste requisito.
+- A exclusão remove permanentemente o registro da necessidade do banco de dados.
+- A necessidade não pode ser excluída se houver qualquer proposta associada, para preservar o histórico e os registros de doação.
 
 ## Histórico de Alterações
 

@@ -111,11 +111,14 @@
     margin-top: auto;
     padding-top: 12px;
     display: flex;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     border-top: 1px solid var(--border);
 }
 
 .necessity-edit,
+.necessity-delete,
 .necessity-readonly,
 .necessity-cancel {
     padding: 0;
@@ -130,6 +133,51 @@
     color: var(--slate);
     font-weight: 400;
     cursor: default;
+}
+
+.necessity-delete {
+    color: var(--color-danger);
+}
+
+dialog.necessity-dialog .necessity-delete-confirm {
+    --action-hover-color: var(--color-surface);
+    --action-hover-background: #b91c1c;
+    --action-hover-border: #b91c1c;
+    color: var(--color-surface);
+    background: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+dialog.necessity-dialog
+    .necessity-delete-confirm:not(:disabled):not([aria-disabled="true"]):hover {
+    --action-hover-background: #991b1b;
+    --action-hover-border: #991b1b;
+}
+
+.necessity-delete-summary {
+    margin: 0;
+    display: grid;
+    gap: 14px;
+}
+
+.necessity-delete-summary div {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--background);
+}
+
+.necessity-delete-summary dt {
+    color: var(--slate);
+    font-size: var(--font-caption);
+    font-weight: 600;
+}
+
+.necessity-delete-summary dd {
+    margin: 4px 0 0;
+    overflow-wrap: anywhere;
+    font-size: var(--font-body);
+    font-weight: 700;
 }
 
 .necessity-edit span {
@@ -351,6 +399,7 @@
 }
 
 .necessity-edit:focus-visible,
+.necessity-delete:focus-visible,
 .necessity-dialog__close:focus-visible,
 .necessity-cancel:focus-visible {
     outline: 2px solid var(--color-success);
