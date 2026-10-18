@@ -35,4 +35,14 @@ public interface DonationRepository
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select d from Donation d where d.id = :id and d.donor.id = :donorId")
     Optional<Donation> findForUpdate(@Param("id") Integer id, @Param("donorId") Integer donorId);
+
+    @EntityGraph(attributePaths = {
+            "donationPackage",
+            "donationPackage.item",
+            "donationPackage.item.itemType"
+    })
+    Page<Donation> findByDonorId(
+            Integer donorId,
+            Pageable pageable);
+
 }
