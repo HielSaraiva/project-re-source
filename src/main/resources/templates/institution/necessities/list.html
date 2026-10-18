@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Minhas necessidades', ~{::pageStyles}, 'ong')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/institution/necessities.css}" />
+            <script th:src="@{/js/necessities.js}" defer></script>
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/institution-header :: header('needs')}"></header>
+        <main class="necessities-page" data-necessities-page>
+            <div class="necessities-heading">
+                <div>
+                    <h1>Minhas Necessidades</h1>
+                    <p>Gerencie a lista de itens que sua instituição precisa.</p>
+                </div>
+                <button class="button necessities-add" type="button" data-open-create>
+                    <span aria-hidden="true">+</span> Nova Necessidade
+                </button>
+            </div>
+
+            <section
+                class="necessities-grid"
+                aria-label="Necessidades da instituição"
+                th:if="${!necessities.isEmpty()}"
+            >
+                <article class="necessity-card" th:each="necessity : ${necessities}">
+                    <div class="necessity-card__top">
+                        <span class="necessity-icon" aria-hidden="true">
+                            <img
+                                th:src="@{${necessity.icon}}"
+                                alt=""
+                            />
+                        </span>
+                        <span
+                            class="necessity-priority"
+                            th:classappend="${' necessity-priority--' + necessity.priority.value}"
+                            th:text="${necessity.priority.label}"
+                        >Média Prioridade</span>
+                    </div>
+                    <h2
+                        th:text="${necessity.quantity + ' ' + necessity.itemName}"
+                    >50 Cadeiras escolares</h2>
+                    <p
+                        class="necessity-status"
+                        th:classappend="${' necessity-status--' + necessity.status.value}"
+                        th:text="${necessity.status.label}"
+                    >Ativa</p>
+                    <div class="necessity-card__actions">
+                        <button
+                            th:if="${necessity.status.value == 'active'}"
+                            type="button"
+                            class="necessity-edit"
+                            data-open-edit
+                            th:attr="data-id=${necessity.id},data-category=${necessity.category.value},data-description=${necessity.description == null ? necessity.itemName : necessity.description},data-quantity=${necessity.quantity},data-priority=${necessity.priority.value}"
+                        >Editar necessidade <span aria-hidden="true">→</span></button>
+                        <span
+                            class="necessity-readonly"
+                            th:if="${necessity.status.value != 'active'}"
+                            th:text="${'Edição indisponível para necessidades ' + #strings.toLowerCase(necessity.status.label)}"
+                        >Edição indisponível</span>
+                    </div>
+                </article>
+            </section>
+
+            <section class="necessities-empty" th:if="${necessities.isEmpty()}">
+                <span class="necessity-icon" aria-hidden="true">
+                    <img th:src="@{/images/shared/categories/heart.svg}" alt="" />
+                </span>
+                <h2>Nenhuma necessidade cadastrada</h2>
+                <p>Adicione os itens que sua instituição precisa receber.</p>
+                <button class="button" type="button" data-open-create>Nova Necessidade</button>
+            </section>
+        </main>
+
+        <dialog
+            class="necessity-dialog"
+            data-necessity-dialog
+            aria-labelledby="necessity-dialog-title"
+            aria-describedby="necessity-dialog-description"
+        >
+            <form class="necessity-form" data-necessity-form>
+                <header class="necessity-dialog__header">
+                    <h2 id="necessity-dialog-title" data-dialog-title>Nova Necessidade</h2>
+                    <button
+                        class="necessity-dialog__close"
+                        type="button"
+                        data-close-dialog
+                        aria-label="Fechar"
+                    >×</button>
+                </header>
+                <div class="necessity-dialog__body">
+                    <p id="necessity-dialog-description" class="necessity-sr-only">
+                        Informe os dados da necessidade e o nível de prioridade.
+                    </p>
+                    <label class="necessity-field">
+                        <span>Categoria</span>
+                        <select name="category" required>
+                            <option value="" disabled selected>Selecione uma categoria</option>
+                            <option
+                                th:each="category : ${categories}"
+                                th:value="${category.value}"
+                                th:text="${category.label}"
+                            >Móveis</option>
+                        </select>
+                    </label>
+                    <label class="necessity-field">
+                        <span>Descrição do Item</span>
+                        <input
+                            type="text"
+                            name="description"
+                            maxlength="150"
+                            placeholder="Ex: Cadeiras, Cobertores..."
+                            required
+                        />
+                    </label>
+                    <label class="necessity-field necessity-field--quantity">
+                        <span>Quantidade</span>
+                        <input
+                            type="number"
+                            name="quantity"
+                            min="1"
+                            max="2147483647"
+                            step="1"
+                            required
+                        />
+                    </label>
+                    <fieldset class="necessity-priority-field">
+                        <legend>Nível de Prioridade</legend>
+                        <div class="necessity-priority-options">
+                            <label>
+                                <input type="radio" name="priority" value="low" required />
+                                <span>Baixa</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="priority" value="medium" checked />
+                                <span>Média</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="priority" value="high" />
+                                <span>Alta</span>
+                            </label>
+                        </div>
+                    </fieldset>
+                    <p
+                        class="necessity-form-error"
+                        data-form-error
+                        role="alert"
+                        tabindex="-1"
+                        hidden
+                    ></p>
+                </div>
+                <footer class="necessity-dialog__footer">
+                    <button class="necessity-cancel" type="button" data-close-dialog>
+                        Cancelar
+                    </button>
+                    <button class="button" type="submit" data-submit-necessity>Adicionar</button>
+                </footer>
+            </form>
+        </dialog>
+    </body>
+</html>

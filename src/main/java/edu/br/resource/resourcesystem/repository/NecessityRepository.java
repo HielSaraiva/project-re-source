@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,6 +28,9 @@ public interface NecessityRepository
 
     @EntityGraph(attributePaths = {"institution", "itemType"})
     Optional<Necessity> findByIdAndStatus(Integer id, NecessityStatus status);
+
+    @EntityGraph(attributePaths = "itemType")
+    List<Necessity> findAllByInstitutionIdOrderByCreatedAtDesc(Integer institutionId);
 
     long countByInstitutionIdAndStatus(Integer institutionId, NecessityStatus status);
 

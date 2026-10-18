@@ -94,6 +94,9 @@
                         <h2>Necessidades cadastradas</h2>
                         <p>Itens atualmente ativos na sua lista de desejos institucional.</p>
                     </div>
+                    <a class="management-link" th:href="@{/institution/necessities}"
+                        >Gerenciar necessidades <span aria-hidden="true">→</span></a
+                    >
                 </div>
                 <th:block th:if="${needs.isEmpty()}">
                     <div

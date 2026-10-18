@@ -1,0 +1,393 @@
+.necessities-page {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 40px 80px 80px;
+}
+
+.necessities-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.necessities-heading h1 {
+    margin: 0;
+    font: 700 var(--font-page) / 1.2 Outfit, sans-serif;
+}
+
+.necessities-heading p {
+    margin: 6px 0 0;
+    color: var(--slate);
+    font-size: var(--font-body);
+}
+
+.necessities-add {
+    flex: 0 0 auto;
+}
+
+.necessities-add span {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.necessities-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.necessity-card {
+    min-width: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 0 4px 3px rgb(0 0 0 / 2%);
+}
+
+.necessity-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.necessity-icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--color-success-surface);
+}
+
+.necessity-icon img {
+    width: 22px;
+    height: 22px;
+}
+
+.necessity-priority {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: var(--font-caption);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.necessity-priority--high {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+.necessity-priority--medium {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+.necessity-priority--low {
+    color: #047857;
+    background: #d1fae5;
+}
+
+.necessity-card h2 {
+    margin: 16px 0 0;
+    overflow-wrap: anywhere;
+    font-size: var(--font-subtitle);
+}
+
+.necessity-status {
+    margin: 8px 0 18px;
+    color: var(--slate);
+    font-size: var(--font-caption);
+}
+
+.necessity-card__actions {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    justify-content: flex-start;
+    border-top: 1px solid var(--border);
+}
+
+.necessity-edit,
+.necessity-readonly,
+.necessity-cancel {
+    padding: 0;
+    border: 0;
+    color: var(--color-success);
+    background: transparent;
+    font: 600 var(--font-body) / 1.5 Inter, sans-serif;
+    cursor: pointer;
+}
+
+.necessity-readonly {
+    color: var(--slate);
+    font-weight: 400;
+    cursor: default;
+}
+
+.necessity-edit span {
+    margin-left: 4px;
+}
+
+.necessity-empty {
+    min-height: 280px;
+    padding: 36px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    text-align: center;
+}
+
+.necessity-empty h2 {
+    margin: 16px 0 0;
+    font-size: var(--font-subtitle);
+}
+
+.necessity-empty p {
+    margin: 8px 0 20px;
+    color: var(--slate);
+    font-size: var(--font-body);
+}
+
+.necessity-dialog {
+    width: min(540px, calc(100% - 32px));
+    max-width: none;
+    max-height: min(90vh, 760px);
+    padding: 0;
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--ink);
+    background: var(--surface);
+    box-shadow: 0 20px 50px rgb(15 23 42 / 20%);
+}
+
+.necessity-dialog::backdrop {
+    background: rgb(15 23 42 / 52%);
+}
+
+.necessity-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.necessity-dialog__header,
+.necessity-dialog__footer {
+    min-height: 68px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.necessity-dialog__header {
+    border-bottom: 1px solid var(--border);
+}
+
+.necessity-dialog__header h2 {
+    margin: 0;
+    font-size: var(--font-section);
+}
+
+.necessity-dialog__close {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    color: var(--slate);
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.necessity-dialog__body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.necessity-field {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: var(--font-body);
+    font-weight: 600;
+}
+
+.necessity-field input,
+.necessity-field select {
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    padding: 10px 14px;
+    border: 1px solid var(--color-control-border);
+    border-radius: 8px;
+    color: var(--ink);
+    background: var(--surface);
+    font: 400 var(--font-body) / 1.5 Inter, sans-serif;
+}
+
+.necessity-field input::placeholder,
+.necessity-field select:invalid {
+    color: #94a3b8;
+}
+
+.necessity-field--quantity {
+    width: 120px;
+}
+
+.necessity-priority-field {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.necessity-priority-field legend {
+    margin-bottom: 10px;
+    font-size: var(--font-body);
+    font-weight: 600;
+}
+
+.necessity-priority-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.necessity-priority-options label {
+    position: relative;
+    min-width: 0;
+    cursor: pointer;
+}
+
+.necessity-priority-options input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.necessity-priority-options span {
+    min-height: 40px;
+    padding: 8px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: var(--font-body);
+    font-weight: 600;
+    text-align: center;
+}
+
+.necessity-priority-options input[value="low"] + span {
+    color: var(--slate);
+    background: #f1f5f9;
+}
+
+.necessity-priority-options input[value="medium"] + span {
+    color: var(--slate);
+    background: #f1f5f9;
+}
+
+.necessity-priority-options input[value="high"] + span {
+    color: var(--slate);
+    background: #f1f5f9;
+}
+
+.necessity-priority-options input:checked + span {
+    border-color: var(--green);
+    color: var(--color-success-dark);
+    background: var(--color-success-surface);
+}
+
+.necessity-priority-options input:focus-visible + span {
+    outline: 2px solid var(--color-success);
+    outline-offset: 2px;
+}
+
+.necessity-dialog__footer {
+    justify-content: flex-end;
+    border-top: 1px solid var(--border);
+}
+
+.necessity-cancel {
+    padding: 12px 16px;
+    color: var(--slate);
+}
+
+.necessity-form-error {
+    margin: 0;
+    color: var(--color-danger);
+    font-size: var(--font-body);
+}
+
+.necessity-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+.necessity-edit:focus-visible,
+.necessity-dialog__close:focus-visible,
+.necessity-cancel:focus-visible {
+    outline: 2px solid var(--color-success);
+    outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+    .necessities-page {
+        padding: 32px 28px 60px;
+    }
+
+    .necessities-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .necessities-page {
+        padding: 28px 18px 48px;
+    }
+
+    .necessities-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .necessities-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .necessity-dialog__header,
+    .necessity-dialog__footer {
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+
+    .necessity-dialog__body {
+        padding: 20px 18px;
+    }
+}
