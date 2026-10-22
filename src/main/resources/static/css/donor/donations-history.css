@@ -1,0 +1,336 @@
+
+/* Página Minhas Doações */
+
+.donations-page {
+    min-height: calc(100vh - 80px);
+    background: #f8fafc;
+    padding: 48px 24px 80px;
+    font-family: "Inter", sans-serif;
+}
+
+.donations-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Cabeçalho */
+
+.donations-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 36px;
+}
+
+.donations-header h1 {
+    margin: 0;
+    font-family: "Outfit", sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.donations-header p {
+    margin: 8px 0 0;
+    color: #475569;
+    font-size: 15px;
+}
+
+.donations-header .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+/* Tabela */
+
+.donations-table-wrapper {
+    overflow-x: auto;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
+}
+
+.donations-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.donations-table th {
+    padding: 16px 20px;
+    background: #f1f5f9;
+    color: #475569;
+    text-align: left;
+    font-family: "Outfit", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.donations-table td {
+    height: 80px;
+    padding: 16px 20px;
+    border-top: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.donations-table tbody tr:nth-child(even) {
+    background: #f1f5f9;
+}
+
+.donations-table tbody tr:hover {
+    background: #eaf7f1;
+}
+
+.donations-table th:nth-child(1) {
+    width: 24%;
+}
+
+.donations-table th:nth-child(2) {
+    width: 21%;
+}
+
+.donations-table th:nth-child(3) {
+    width: 15%;
+}
+
+.donations-table th:nth-child(4) {
+    width: 20%;
+}
+
+.donations-table th:nth-child(5) {
+    width: 20%;
+    text-align: right;
+}
+
+/* Item doado */
+
+.donation-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.donation-item__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.donation-item__icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.donation-item__name {
+    overflow: hidden;
+    color: #0f172a;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.donation-recipient {
+    color: #475569;
+}
+
+/* Status */
+
+.history-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    overflow-wrap: anywhere;
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* Registrado */
+
+.history-status--registered {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* Aguardando aceite */
+
+.history-status--awaiting_acceptance,
+.history-status--proposed {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+/* Aguardando envio */
+
+.history-status--awaiting_shipment,
+.history-status--accepted {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+/* Transporte */
+
+.history-status--in_transit,
+.history-status--awaiting_delivery,
+.history-status--awaiting_ngo_confirmation {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+/* Concluído */
+
+.history-status--completed {
+    background: #d1fae5;
+    color: #059669;
+}
+
+/* Cancelado ou recusado */
+
+.history-status--cancelled,
+.history-status--rejected {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Ações */
+
+.donation-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.donation-action {
+    color: #10b981;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: right;
+}
+
+.donation-action:hover {
+    color: #047857;
+    text-decoration: underline;
+}
+
+.donation-action:focus-visible,
+.pagination-link:focus-visible {
+    outline: 2px solid #047857;
+    outline-offset: 3px;
+}
+
+/* Paginação */
+
+.donations-pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.pagination-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 6px;
+    color: #475569;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.pagination-link:hover {
+    color: #059669;
+    background: #ecfdf5;
+}
+
+.pagination-link--active {
+    color: #059669;
+    background: #ecfdf5;
+    font-weight: 700;
+}
+
+.pagination-link--next {
+    color: #10b981;
+}
+
+.pagination-link--disabled {
+    color: #94a3b8;
+    cursor: default;
+}
+
+/* Estado vazio */
+
+.donations-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 64px 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: white;
+    text-align: center;
+}
+
+.donations-empty h2 {
+    font-family: "Outfit", sans-serif;
+    font-size: 22px;
+    color: #0f172a;
+}
+
+.donations-empty p {
+    color: #475569;
+}
+
+/* Responsividade */
+
+@media (max-width: 768px) {
+    .donations-page {
+        padding: 32px 16px 56px;
+    }
+
+    .donations-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .donations-header h1 {
+        font-size: 28px;
+    }
+
+    .donations-table td,
+    .donations-table th {
+        padding: 14px 12px;
+    }
+
+    .donations-pagination {
+        justify-content: center;
+    }
+}

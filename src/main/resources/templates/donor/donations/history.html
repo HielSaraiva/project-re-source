@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout/head :: head('Minhas Doações', ~{::pageStyles}, 'donor')}">
+
+    <th:block th:fragment="pageStyles">
+        <link rel="stylesheet"
+              th:href="@{/css/donor/donations-history.css}">
+    </th:block>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header th:replace="~{fragments/layout/donor-header :: header('donations')}">
+    </header>
+
+    <main class="donations-page">
+
+        <div class="donations-container">
+
+            <!-- Cabeçalho -->
+            <section class="donations-header">
+
+                <div class="donations-header__text">
+                    <h1>Minhas Doações</h1>
+
+                    <p>
+                        Acompanhe o histórico e o status
+                        dos seus envios.
+                    </p>
+                </div>
+
+                <a class="button button--primary"
+                   th:href="@{/donor/needs}">
+
+                    <span aria-hidden="true">+</span>
+                    Nova Doação
+                </a>
+
+            </section>
+
+            <!-- Conteúdo -->
+            <section class="donations-content"
+                     aria-label="Histórico das minhas doações">
+
+                <!-- Estado vazio -->
+                <div class="donations-empty"
+                     th:if="${donations.isEmpty()}">
+
+                    <h2>Nenhuma doação encontrada</h2>
+
+                    <p>
+                        Você ainda não possui doações
+                        cadastradas.
+                    </p>
+
+                    <a class="button button--primary"
+                       th:href="@{/donor/needs}">
+                        Fazer minha primeira doação
+                    </a>
+
+                </div>
+
+                <!-- Tabela -->
+                <div class="donations-table-wrapper"
+                     th:unless="${donations.isEmpty()}">
+
+                    <table class="donations-table">
+
+                        <thead>
+                            <tr>
+                                <th scope="col">Item doado</th>
+                                <th scope="col">Destinatário</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr th:each="donation : ${donations.content}">
+
+                                <!-- Item -->
+                                <td>
+                                    <div class="donation-item">
+
+                                        <span class="donation-item__icon">
+                                            <img th:src="@{/images/shared/categories/package.svg}"
+                                                 alt="">
+                                        </span>
+
+                                        <span class="donation-item__name"
+                                              th:text="${donation.itemName}"
+                                              th:title="${donation.itemName}">
+                                            Monitor Dell 24"
+                                        </span>
+
+                                    </div>
+                                </td>
+
+                                <!-- Destinatário -->
+                                <td>
+                                    <span class="donation-recipient"
+                                          th:text="${donation.recipientName}">
+                                        Associação Vida
+                                    </span>
+                                </td>
+
+                                <!-- Data -->
+                                <td>
+                                    <time th:text="${donation.dateLabel()}">
+                                        25/08/2026
+                                    </time>
+                                </td>
+
+                                <!-- Status -->
+                                <td>
+                                    <span class="history-status"
+                                          th:classappend="${' history-status--' + donation.status}"
+                                          th:text="${donation.statusLabel}">
+                                        Aguardando aceite
+                                    </span>
+                                </td>
+
+                                <!-- Ações -->
+                                <td>
+                                    <div class="donation-actions">
+
+                                        <a class="donation-action"
+                                           th:href="@{${donation.actionUrl}}"
+                                           th:text="${donation.actionLabel}">
+                                            Ver detalhes
+                                        </a>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- Paginação -->
+                <nav class="donations-pagination"
+                     aria-label="Paginação das doações"
+                     th:if="${totalPages > 1}">
+
+                    <!-- Página anterior -->
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/donor/donations(page=${currentPage - 1})}"
+                       class="pagination-link">
+                        ← Anterior
+                    </a>
+
+                    <span th:unless="${currentPage > 0}"
+                          class="pagination-link pagination-link--disabled">
+                        ← Anterior
+                    </span>
+
+                    <!-- Números das páginas -->
+                    <a th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+                       th:href="@{/donor/donations(page=${pageNumber})}"
+                       th:text="${pageNumber + 1}"
+                       th:classappend="${pageNumber == currentPage} ? ' pagination-link--active' : ''"
+                       th:attr="aria-current=${pageNumber == currentPage} ? 'page' : null"
+                       class="pagination-link">
+                        1
+                    </a>
+
+                    <!-- Próxima página -->
+                    <a th:if="${currentPage + 1 < totalPages}"
+                       th:href="@{/donor/donations(page=${currentPage + 1})}"
+                       class="pagination-link pagination-link--next">
+                        Próxima →
+                    </a>
+
+                    <span th:unless="${currentPage + 1 < totalPages}"
+                          class="pagination-link pagination-link--disabled">
+                        Próxima →
+                    </span>
+
+                </nav>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
