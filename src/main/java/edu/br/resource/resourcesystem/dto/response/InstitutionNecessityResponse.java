@@ -11,5 +11,6 @@ public record InstitutionNecessityResponse(
         ItemCategory category,
         String description,
         Integer quantity,
+        long remainingQuantity,
         NecessityPriority priority,
         NecessityStatus status) {}

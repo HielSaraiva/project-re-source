@@ -2,6 +2,7 @@ package edu.br.resource.resourcesystem;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import edu.br.resource.resourcesystem.model.entity.Institution;
@@ -16,7 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -90,5 +93,24 @@ class ResourceSystemApplicationTests {
 
         org.junit.jupiter.api.Assertions.assertFalse(
                 result.getResponse().getContentAsString().contains("Cobertores atendidos"));
+    }
+
+    @Test
+    @WithMockUser(username = "ong@example.org", roles = "ONG")
+    void necessityApiRejectsFractionalQuantities() throws Exception {
+        mvc.perform(
+                        post("/api/institution/necessities")
+                                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                                        {
+                                          "category": "furniture",
+                                          "description": "Cadeiras",
+                                          "quantity": 1.9,
+                                          "priority": "high"
+                                        }
+                                        """))
+                .andExpect(status().isBadRequest());
     }
 }

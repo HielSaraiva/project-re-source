@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -50,6 +51,13 @@ public class NecessityManagementService {
                                         necessity.getItemType().getCategory(),
                                         necessity.getDescription(),
                                         necessity.getQuantityRequested(),
+                                        Math.max(
+                                                0,
+                                                necessity.getQuantityRequested()
+                                                        - matches.sumAllocatedByNecessity(
+                                                                necessity.getId(),
+                                                                MatchStatus
+                                                                        .allocationConsumingStatuses())),
                                         necessity.getPriority(),
                                         necessity.getStatus()))
                 .toList();
@@ -63,7 +71,7 @@ public class NecessityManagementService {
                         .institution(institution)
                         .itemType(itemType(request))
                         .description(request.description().strip())
-                        .quantityRequested(request.quantity())
+                        .quantityRequested(request.quantity().intValueExact())
                         .priority(request.priority())
                         .build());
     }
@@ -77,15 +85,17 @@ public class NecessityManagementService {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT, "Somente necessidades ativas podem ser editadas.");
 
-        long allocated =
-                matches.sumAllocatedByNecessity(
-                        necessityId, MatchStatus.allocationConsumingStatuses());
-        if (allocated > 0
+        boolean hasProposals = matches.existsByNecessityId(necessityId);
+        if (hasProposals
                 && request.category() != necessity.getItemType().getCategory())
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "A categoria não pode ser alterada enquanto houver propostas associadas.");
-        if (request.quantity() < allocated)
+        long allocated =
+                matches.sumAllocatedByNecessity(
+                        necessityId, MatchStatus.allocationConsumingStatuses());
+        int requestedQuantity = request.quantity().intValueExact();
+        if (requestedQuantity < allocated)
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "A quantidade mínima é "
@@ -95,8 +105,12 @@ public class NecessityManagementService {
 
         necessity.setItemType(itemType(request));
         necessity.setDescription(request.description().strip());
-        necessity.setQuantityRequested(request.quantity());
+        necessity.setQuantityRequested(requestedQuantity);
         necessity.setPriority(request.priority());
+        long received =
+                matches.sumAllocatedByNecessity(
+                        necessityId, Set.of(MatchStatus.COMPLETED));
+        if (received >= requestedQuantity) necessity.setStatus(NecessityStatus.FULFILLED);
     }
 
     @Transactional

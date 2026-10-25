@@ -7,7 +7,7 @@
 | **ID** | UC-023 |
 | **Nome** | Gerenciar necessidades da ONG |
 | **Ator(es)** | ONG |
-| **Versão** | 1.0 |
+| **Versão** | 1.1 |
 | **Status** | Ativo |
 
 ## Descrição
@@ -26,6 +26,7 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 4. O sistema apresenta o formulário com categoria, nome do item, quantidade e prioridade.
 5. A ONG informa ou atualiza os dados e confirma a operação.
 6. O sistema valida a entrada, salva a alteração e atualiza a lista.
+7. Se a nova quantidade solicitada for igual ou inferior à quantidade já recebida em propostas concluídas, o sistema marca a necessidade como atendida.
 
 ### FA-03: Exclusão permanente
 
@@ -46,6 +47,12 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 1. A ONG tenta reduzir a quantidade solicitada abaixo da soma alocada em propostas existentes.
 2. O sistema rejeita a atualização e informa a quantidade mínima permitida.
 
+### FA-04: Quantidade atendida após edição
+
+1. A ONG reduz a quantidade solicitada para um valor igual ou inferior ao total recebido em propostas concluídas.
+2. O sistema marca a necessidade como atendida e ela deixa de aparecer em “Minhas necessidades”.
+3. Quantidades reservadas em propostas ainda não concluídas não são contabilizadas como recebidas.
+
 ## Fluxos de Exceção
 
 ### FE-01: Necessidade de outra instituição
@@ -63,6 +70,16 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 1. A ONG confirma a exclusão de uma necessidade que possui propostas associadas.
 2. O sistema bloqueia a exclusão e preserva o histórico e os registros de doação.
 
+### FE-04: Troca de categoria com propostas históricas
+
+1. A ONG tenta alterar a categoria de uma necessidade que possui proposta associada, ainda que cancelada ou recusada.
+2. O sistema rejeita a alteração; a ONG pode cadastrar uma nova necessidade para a outra categoria.
+
+### FE-05: Quantidade fracionária
+
+1. O cliente envia uma quantidade não inteira à API.
+2. O sistema rejeita a requisição sem truncar ou persistir o valor.
+
 ## Pós-condições
 
 - Uma necessidade nova foi cadastrada, os dados de uma necessidade ativa foram atualizados ou uma necessidade sem propostas foi removida permanentemente.
@@ -73,3 +90,4 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 | Versão | Data | Autor | Descrição |
 |---|---|---|---|
 | 1.0 | 2026-10-18 | João Marcelo Pimenta  | Criação do caso de uso de gerenciamento de necessidades |
+| 1.1 | 2026-10-25 | João Marcelo Pimenta | Regras para atendimento após edição, categoria com propostas históricas e quantidade inteira |

@@ -97,6 +97,12 @@
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
         clearError();
+        const quantityField = form.elements.quantity;
+        quantityField.setCustomValidity(
+            quantityField.value !== '' && !Number.isInteger(quantityField.valueAsNumber)
+                ? 'Informe uma quantidade inteira.'
+                : '',
+        );
         if (!form.reportValidity()) return;
 
         const creating = form.dataset.mode === 'create';

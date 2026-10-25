@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 class NecessityManagementServiceTest {
@@ -34,6 +35,34 @@ class NecessityManagementServiceTest {
         service =
                 new NecessityManagementService(
                         necessities, itemTypes, institutions, matches, icons);
+    }
+
+    @Test
+    void listShowsRemainingQuantityAndKeepsRequestedQuantityForEditing() {
+        var necessity =
+                Necessity.builder()
+                        .id(12)
+                        .itemType(
+                                ItemType.builder()
+                                        .name("Cadeiras")
+                                        .category(ItemCategory.FURNITURE)
+                                        .build())
+                        .description("Cadeiras")
+                        .quantityRequested(20)
+                        .priority(NecessityPriority.MEDIUM)
+                        .status(NecessityStatus.ACTIVE)
+                        .build();
+        when(necessities.findAllByInstitutionIdAndStatusNotOrderByCreatedAtDesc(
+                        7, NecessityStatus.FULFILLED))
+                .thenReturn(java.util.List.of(necessity));
+        when(matches.sumAllocatedByNecessity(
+                        12, MatchStatus.allocationConsumingStatuses()))
+                .thenReturn(10L);
+
+        var listed = service.list(7).getFirst();
+
+        assertEquals(20, listed.quantity());
+        assertEquals(10, listed.remainingQuantity());
     }
 
     @Test
@@ -232,9 +261,7 @@ class NecessityManagementServiceTest {
                         .quantityRequested(20)
                         .build();
         when(necessities.findForUpdate(12)).thenReturn(Optional.of(necessity));
-        when(matches.sumAllocatedByNecessity(
-                        12, MatchStatus.allocationConsumingStatuses()))
-                .thenReturn(2L);
+        when(matches.existsByNecessityId(12)).thenReturn(true);
 
         var error =
                 assertThrows(
@@ -252,6 +279,105 @@ class NecessityManagementServiceTest {
         assertEquals(409, error.getStatusCode().value());
         assertEquals(ItemCategory.FURNITURE, necessity.getItemType().getCategory());
         verifyNoInteractions(itemTypes);
+    }
+
+    @Test
+    void updateRejectsChangingCategoryWhenOnlyRejectedOrCancelledProposalsRemain() {
+        var necessity =
+                Necessity.builder()
+                        .id(12)
+                        .institution(Institution.builder().id(7).build())
+                        .itemType(
+                                ItemType.builder()
+                                        .category(ItemCategory.FURNITURE)
+                                        .name("Cadeiras")
+                                        .build())
+                        .status(NecessityStatus.ACTIVE)
+                        .quantityRequested(20)
+                        .build();
+        when(necessities.findForUpdate(12)).thenReturn(Optional.of(necessity));
+        when(matches.existsByNecessityId(12)).thenReturn(true);
+
+        var error =
+                assertThrows(
+                        ResponseStatusException.class,
+                        () ->
+                                service.update(
+                                        7,
+                                        12,
+                                        new ManageNecessityRequest(
+                                                ItemCategory.EDUCATION,
+                                                "Cadernos",
+                                                20,
+                                                NecessityPriority.HIGH)));
+
+        assertEquals(409, error.getStatusCode().value());
+        assertEquals(ItemCategory.FURNITURE, necessity.getItemType().getCategory());
+        verify(matches, never())
+                .sumAllocatedByNecessity(any(), any());
+        verifyNoInteractions(itemTypes);
+    }
+
+    @Test
+    void updateMarksNeedFulfilledWhenReducedQuantityEqualsReceivedQuantity() {
+        var necessity =
+                Necessity.builder()
+                        .id(12)
+                        .institution(Institution.builder().id(7).build())
+                        .itemType(
+                                ItemType.builder()
+                                        .category(ItemCategory.FURNITURE)
+                                        .name("Cadeiras")
+                                        .build())
+                        .status(NecessityStatus.ACTIVE)
+                        .quantityRequested(20)
+                        .build();
+        when(necessities.findForUpdate(12)).thenReturn(Optional.of(necessity));
+        when(matches.sumAllocatedByNecessity(
+                        12, MatchStatus.allocationConsumingStatuses()))
+                .thenReturn(5L);
+        when(matches.sumAllocatedByNecessity(12, Set.of(MatchStatus.COMPLETED)))
+                .thenReturn(5L);
+
+        service.update(
+                7,
+                12,
+                new ManageNecessityRequest(
+                        ItemCategory.FURNITURE, "Cadeiras", 5, NecessityPriority.HIGH));
+
+        assertEquals(5, necessity.getQuantityRequested());
+        assertEquals(NecessityStatus.FULFILLED, necessity.getStatus());
+    }
+
+    @Test
+    void updateDoesNotMarkNeedFulfilledForUnitsOnlyReservedInOpenProposals() {
+        var necessity =
+                Necessity.builder()
+                        .id(12)
+                        .institution(Institution.builder().id(7).build())
+                        .itemType(
+                                ItemType.builder()
+                                        .category(ItemCategory.FURNITURE)
+                                        .name("Cadeiras")
+                                        .build())
+                        .status(NecessityStatus.ACTIVE)
+                        .quantityRequested(20)
+                        .build();
+        when(necessities.findForUpdate(12)).thenReturn(Optional.of(necessity));
+        when(matches.sumAllocatedByNecessity(
+                        12, MatchStatus.allocationConsumingStatuses()))
+                .thenReturn(10L);
+        when(matches.sumAllocatedByNecessity(12, Set.of(MatchStatus.COMPLETED)))
+                .thenReturn(5L);
+
+        service.update(
+                7,
+                12,
+                new ManageNecessityRequest(
+                        ItemCategory.FURNITURE, "Cadeiras", 10, NecessityPriority.HIGH));
+
+        assertEquals(10, necessity.getQuantityRequested());
+        assertEquals(NecessityStatus.ACTIVE, necessity.getStatus());
     }
 
     @Test
