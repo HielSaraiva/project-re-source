@@ -183,7 +183,7 @@ public class MatchPageService {
 
     public Map<String, Object> institutionMatches(Integer id, MatchFilterRequest f) {
         Page<edu.br.resource.resourcesystem.model.entity.DonationMatch> entities =
-                f.order() == MatchSortOrder.DEADLINE
+                f.order() == MatchSortOrder.DEADLINE && f.necessityId() == null
                         ? matches.findForInstitutionOrderedByDeadline(
                                 id,
                                 f.status(),
@@ -193,6 +193,7 @@ public class MatchPageService {
                                 PageRequest.of(f.page() - 1, f.size()))
                         : matches.findAll(
                                 MatchSpecifications.forInstitution(id)
+                                        .and(MatchSpecifications.forNecessity(f.necessityId()))
                                         .and(MatchSpecifications.withStatus(f.status()))
                                         .and(MatchSpecifications.search(f.query())),
                                 PageRequest.of(

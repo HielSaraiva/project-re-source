@@ -7,7 +7,7 @@
 | **ID** | UC-023 |
 | **Nome** | Gerenciar necessidades da ONG |
 | **Ator(es)** | ONG |
-| **Versão** | 1.1 |
+| **Versão** | 1.2 |
 | **Status** | Ativo |
 
 ## Descrição
@@ -21,17 +21,18 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 ## Fluxo Principal
 
 1. A ONG abre “Minhas necessidades”.
-2. O sistema apresenta as necessidades da instituição, suas quantidades, prioridades e status.
+2. O sistema apresenta necessidades ativas paginadas por padrão, com opção de consultar as concluídas, e exibe quantidades solicitadas, reservadas, recebidas e disponíveis.
 3. A ONG escolhe cadastrar, editar uma necessidade ativa ou solicitar a exclusão de uma necessidade.
 4. O sistema apresenta o formulário com categoria, nome do item, quantidade e prioridade.
-5. A ONG informa ou atualiza os dados e confirma a operação.
-6. O sistema valida a entrada, salva a alteração e atualiza a lista.
-7. Se a nova quantidade solicitada for igual ou inferior à quantidade já recebida em propostas concluídas, o sistema marca a necessidade como atendida.
+5. Ao editar, o sistema informa a quantidade mínima permitida e sua composição entre recebimentos e propostas reservadas; a categoria permanece somente para leitura se houver propostas associadas.
+6. A ONG informa ou atualiza os dados e confirma a operação.
+7. Se a redução fizer a necessidade ficar atendida, o sistema explica a consequência e solicita confirmação.
+8. O sistema valida os dados atuais sob bloqueio transacional, salva a operação, atualiza a lista e apresenta uma confirmação visual.
 
 ### FA-03: Exclusão permanente
 
 1. A ONG solicita excluir uma necessidade.
-2. O sistema exibe confirmação com o número e a descrição da necessidade e informa que a operação é permanente.
+2. O sistema exibe confirmação com a descrição da necessidade e informa que a operação é permanente.
 3. A ONG confirma a exclusão.
 4. Se não houver propostas associadas, o sistema apaga a necessidade do banco de dados e atualiza a lista.
 
@@ -45,7 +46,7 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 ### FA-02: Quantidade abaixo das alocações existentes
 
 1. A ONG tenta reduzir a quantidade solicitada abaixo da soma alocada em propostas existentes.
-2. O sistema rejeita a atualização e informa a quantidade mínima permitida.
+2. O sistema rejeita a atualização e informa a quantidade mínima permitida, detalhando unidades recebidas e reservadas.
 
 ### FA-04: Quantidade atendida após edição
 
@@ -80,6 +81,23 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 1. O cliente envia uma quantidade não inteira à API.
 2. O sistema rejeita a requisição sem truncar ou persistir o valor.
 
+### FE-06: Limite atualizado durante a edição
+
+1. Uma nova proposta é registrada enquanto a ONG mantém o formulário de edição aberto.
+2. O sistema rejeita a atualização se a quantidade informada ficar abaixo do novo mínimo.
+3. O sistema atualiza a justificativa do mínimo sem apagar os demais dados preenchidos; a ONG pode ajustar o valor e enviar novamente.
+
+### FE-07: Exclusão bloqueada por propostas
+
+1. O sistema identifica propostas associadas antes de exibir uma confirmação de exclusão.
+2. A exclusão não é oferecida; a ONG recebe a explicação do bloqueio e um acesso à lista de propostas vinculadas.
+
+### FE-08: Retorno após autenticação
+
+1. Uma ONG não autenticada solicita “Minhas necessidades”.
+2. O sistema encaminha a ONG ao login e salva a rota solicitada.
+3. Após autenticar, o sistema retorna à página “Minhas necessidades”.
+
 ## Pós-condições
 
 - Uma necessidade nova foi cadastrada, os dados de uma necessidade ativa foram atualizados ou uma necessidade sem propostas foi removida permanentemente.
@@ -91,3 +109,4 @@ Permitir que a ONG consulte as necessidades de sua instituição, cadastre novas
 |---|---|---|---|
 | 1.0 | 2026-10-18 | João Marcelo Pimenta  | Criação do caso de uso de gerenciamento de necessidades |
 | 1.1 | 2026-10-25 | João Marcelo Pimenta | Regras para atendimento após edição, categoria com propostas históricas e quantidade inteira |
+| 1.2 | 2026-10-25 | João Marcelo Pimenta | Acompanhamento, limites dinâmicos, concorrência, paginação e feedback de operações |

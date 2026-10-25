@@ -23,6 +23,13 @@ public final class MatchSpecifications {
                 status == null ? builder.conjunction() : builder.equal(root.get("status"), status);
     }
 
+    public static Specification<DonationMatch> forNecessity(Integer necessityId) {
+        return (root, query, builder) ->
+                necessityId == null
+                        ? builder.conjunction()
+                        : builder.equal(root.get("necessity").get("id"), necessityId);
+    }
+
     public static Specification<DonationMatch> search(String term) {
         return (root, query, builder) -> {
             if (term == null || term.isBlank()) return builder.conjunction();

@@ -5,10 +5,12 @@ import edu.br.resource.resourcesystem.model.enums.MatchStatus;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public record MatchFilterRequest(
         @Size(max = 200) String query,
+        @Positive Integer necessityId,
         MatchStatus status,
         MatchSortOrder order,
         @Min(1) Integer page,

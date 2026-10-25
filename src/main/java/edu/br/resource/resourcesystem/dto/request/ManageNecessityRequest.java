@@ -20,16 +20,27 @@ public record ManageNecessityRequest(
                 @Digits(integer = 10, fraction = 0)
                 @DecimalMax("2147483647")
                 BigDecimal quantity,
-        @NotNull NecessityPriority priority) {
+        @NotNull NecessityPriority priority,
+        Boolean confirmFulfillment) {
     public ManageNecessityRequest(
             ItemCategory category,
             String description,
             Integer quantity,
             NecessityPriority priority) {
+        this(category, description, quantity, priority, false);
+    }
+
+    public ManageNecessityRequest(
+            ItemCategory category,
+            String description,
+            Integer quantity,
+            NecessityPriority priority,
+            Boolean confirmFulfillment) {
         this(
                 category,
                 description,
                 quantity == null ? null : BigDecimal.valueOf(quantity),
-                priority);
+                priority,
+                confirmFulfillment);
     }
 }

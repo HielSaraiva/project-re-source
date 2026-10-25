@@ -12,5 +12,9 @@ public record InstitutionNecessityResponse(
         String description,
         Integer quantity,
         long remainingQuantity,
+        long reservedQuantity,
+        long receivedQuantity,
+        long minimumQuantity,
+        boolean hasProposals,
         NecessityPriority priority,
         NecessityStatus status) {}

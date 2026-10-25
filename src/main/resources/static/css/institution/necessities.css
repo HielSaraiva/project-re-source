@@ -33,6 +33,72 @@
     line-height: 1;
 }
 
+.necessities-filters {
+    margin-bottom: 16px;
+    padding: 18px;
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(140px, 1fr)) auto;
+    align-items: end;
+    gap: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+}
+
+.necessities-filters label {
+    min-width: 0;
+    display: grid;
+    gap: 7px;
+    color: var(--ink);
+    font-size: var(--font-caption);
+    font-weight: 600;
+}
+
+.necessities-filters input,
+.necessities-filters select {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    padding: 8px 11px;
+    border: 1px solid var(--color-control-border);
+    border-radius: 8px;
+    color: var(--ink);
+    background: var(--surface);
+    font: 400 var(--font-body) / 1.5 Inter, sans-serif;
+}
+
+.necessities-filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.necessities-filter-actions > * {
+    min-height: 42px;
+    white-space: nowrap;
+}
+
+.necessities-results {
+    margin: 0 0 12px;
+    color: var(--slate);
+    font-size: var(--font-caption);
+}
+
+.necessities-success {
+    margin: 0 0 20px;
+    padding: 13px 16px;
+    border: 1px solid #a7f3d0;
+    border-radius: 8px;
+    color: #065f46;
+    background: #ecfdf5;
+    font-size: var(--font-body);
+    font-weight: 600;
+}
+
+.necessities-success:focus {
+    outline: 2px solid var(--color-success);
+    outline-offset: 3px;
+}
+
 .necessities-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -101,10 +167,93 @@
     font-size: var(--font-subtitle);
 }
 
-.necessity-status {
-    margin: 8px 0 18px;
+.necessity-quantities {
+    margin: 0 0 18px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.necessity-quantities > div {
+    min-width: 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--background);
+}
+
+.necessity-quantities dt {
+    color: var(--slate);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.necessity-quantities dd {
+    margin: 4px 0 0;
+    font-size: var(--font-body);
+    font-weight: 700;
+}
+
+.necessity-quantities__available {
+    border: 1px solid #a7f3d0;
+    background: #ecfdf5 !important;
+}
+
+.necessity-quantities--completed {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.necessity-quantities--completed > div {
+    max-width: 220px;
+}
+
+.necessity-delete-restriction {
+    flex-basis: 100%;
+    margin: 0;
     color: var(--slate);
     font-size: var(--font-caption);
+    line-height: 1.5;
+}
+
+.necessity-inline-action {
+    display: inline-block;
+    width: fit-content;
+    padding: 0;
+    border: 0;
+    color: var(--color-success-dark);
+    background: transparent;
+    font: 600 var(--font-caption) / 1.5 Inter, sans-serif;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.necessity-inline-action:focus-visible {
+    outline: 2px solid var(--color-success);
+    outline-offset: 3px;
+}
+
+.necessity-status {
+    margin: 8px 0 18px;
+    width: fit-content;
+    padding: 4px 9px;
+    border-radius: 999px;
+    color: var(--slate);
+    font-size: var(--font-caption);
+    background: #f1f5f9;
+}
+
+.necessity-status--active {
+    color: #047857;
+    background: #d1fae5;
+}
+
+.necessity-status--cancelled {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+.necessity-status--fulfilled {
+    color: #047857;
+    background: #d1fae5;
 }
 
 .necessity-card__actions {
@@ -115,6 +264,7 @@
     justify-content: space-between;
     gap: 12px;
     border-top: 1px solid var(--border);
+    flex-wrap: wrap;
 }
 
 .necessity-edit,
@@ -297,8 +447,42 @@ dialog.necessity-dialog
     color: #94a3b8;
 }
 
+.necessity-field input:disabled,
+.necessity-field select:disabled {
+    color: var(--slate);
+    background: #f1f5f9;
+    cursor: not-allowed;
+}
+
+.necessity-field > label {
+    font-size: var(--font-body);
+    font-weight: 600;
+}
+
+.necessity-field-hint {
+    color: var(--slate);
+    font-size: var(--font-caption);
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.necessity-field-hint[hidden] {
+    display: none;
+}
+
 .necessity-field--quantity {
-    width: 120px;
+    width: 100%;
+}
+
+.necessity-quantity-control {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+}
+
+.necessity-quantity-control .necessity-field-hint {
+    margin: 0;
 }
 
 .necessity-priority-field {
@@ -346,24 +530,36 @@ dialog.necessity-dialog
 }
 
 .necessity-priority-options input[value="low"] + span {
-    color: var(--slate);
-    background: #f1f5f9;
+    border-color: #a7f3d0;
+    color: #047857;
+    background: #ecfdf5;
 }
 
 .necessity-priority-options input[value="medium"] + span {
-    color: var(--slate);
-    background: #f1f5f9;
+    border-color: #fde68a;
+    color: #92400e;
+    background: #fffbeb;
 }
 
 .necessity-priority-options input[value="high"] + span {
-    color: var(--slate);
-    background: #f1f5f9;
+    border-color: #fecaca;
+    color: #b91c1c;
+    background: #fef2f2;
 }
 
-.necessity-priority-options input:checked + span {
-    border-color: var(--green);
-    color: var(--color-success-dark);
-    background: var(--color-success-surface);
+.necessity-priority-options input[value="low"]:checked + span {
+    border-color: #059669;
+    box-shadow: inset 0 0 0 1px #059669;
+}
+
+.necessity-priority-options input[value="medium"]:checked + span {
+    border-color: #d97706;
+    box-shadow: inset 0 0 0 1px #d97706;
+}
+
+.necessity-priority-options input[value="high"]:checked + span {
+    border-color: #dc2626;
+    box-shadow: inset 0 0 0 1px #dc2626;
 }
 
 .necessity-priority-options input:focus-visible + span {
@@ -414,6 +610,10 @@ dialog.necessity-dialog
     .necessities-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .necessities-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 600px) {
@@ -428,6 +628,27 @@ dialog.necessity-dialog
 
     .necessities-grid {
         grid-template-columns: 1fr;
+    }
+
+    .necessities-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .necessities-filter-actions {
+        flex-wrap: wrap;
+    }
+
+    .necessities-filter-actions > * {
+        flex: 1 1 auto;
+    }
+
+    .necessity-quantities {
+        gap: 8px;
+    }
+
+    .necessity-quantity-control {
+        grid-template-columns: minmax(100px, 120px) minmax(0, 1fr);
+        gap: 8px;
     }
 
     .necessity-dialog__header,

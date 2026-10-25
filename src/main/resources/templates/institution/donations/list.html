@@ -36,6 +36,12 @@
                 method="get"
                 role="search"
             >
+                <input
+                    type="hidden"
+                    name="necessityId"
+                    th:value="${filter.necessityId}"
+                    th:if="${filter.necessityId != null}"
+                />
                 <label
                     >Buscar doação<input
                         type="search"

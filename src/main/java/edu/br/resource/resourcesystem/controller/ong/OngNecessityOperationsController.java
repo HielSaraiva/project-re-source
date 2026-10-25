@@ -1,6 +1,7 @@
 package edu.br.resource.resourcesystem.controller.ong;
 
 import edu.br.resource.resourcesystem.dto.request.ManageNecessityRequest;
+import edu.br.resource.resourcesystem.dto.response.InstitutionNecessityResponse;
 import edu.br.resource.resourcesystem.security.CurrentActor;
 import edu.br.resource.resourcesystem.service.necessity.NecessityManagementService;
 
@@ -29,13 +30,18 @@ public class OngNecessityOperationsController {
         necessities.create(actors.institution(authentication).getId(), request);
     }
 
+    @GetMapping("/{id}")
+    public InstitutionNecessityResponse editDetails(
+            Authentication authentication, @PathVariable Integer id) {
+        return necessities.editDetails(actors.institution(authentication).getId(), id);
+    }
+
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(
+    public InstitutionNecessityResponse update(
             Authentication authentication,
             @PathVariable Integer id,
             @Valid @RequestBody ManageNecessityRequest request) {
-        necessities.update(actors.institution(authentication).getId(), id, request);
+        return necessities.update(actors.institution(authentication).getId(), id, request);
     }
 
     @DeleteMapping("/{id}")
