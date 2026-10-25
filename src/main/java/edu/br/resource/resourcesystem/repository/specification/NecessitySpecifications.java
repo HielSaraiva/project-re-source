@@ -31,6 +31,13 @@ public final class NecessitySpecifications {
                         : builder.equal(root.get("priority"), priority);
     }
 
+    public static Specification<Necessity> withStatus(NecessityStatus status) {
+        return (root, query, builder) ->
+                status == null
+                        ? builder.conjunction()
+                        : builder.equal(root.get("status"), status);
+    }
+
     public static Specification<Necessity> inState(Integer stateId) {
         return (root, query, builder) -> {
             if (stateId == null) return builder.conjunction();

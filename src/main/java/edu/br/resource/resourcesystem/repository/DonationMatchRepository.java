@@ -74,6 +74,8 @@ public interface DonationMatchRepository
     boolean existsByDonationIdAndNecessityIdAndStatusIn(
             Integer donationId, Integer necessityId, Collection<MatchStatus> statuses);
 
+    boolean existsByNecessityId(Integer necessityId);
+
     long countByNecessityInstitutionIdAndStatus(Integer institutionId, MatchStatus status);
 
     @Query(
