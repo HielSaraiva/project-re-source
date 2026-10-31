@@ -31,8 +31,12 @@
         });
         if (response.status === 204) return null;
         const body = await response.json().catch(() => null);
-        if (!response.ok || response.redirected || body === null)
-            throw new Error(body?.detail || errorMessage);
+        if (!response.ok || response.redirected || body === null) {
+            const error = new Error(body?.detail || errorMessage);
+            error.status = response.status;
+            error.body = body;
+            throw error;
+        }
         return body;
     };
     window.ResourceHttp = Object.freeze({ context, url, json });

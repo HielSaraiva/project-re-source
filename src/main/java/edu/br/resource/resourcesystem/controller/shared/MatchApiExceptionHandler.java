@@ -1,5 +1,6 @@
 package edu.br.resource.resourcesystem.controller.shared;
 
+import edu.br.resource.resourcesystem.controller.ong.OngNecessityOperationsController;
 import edu.br.resource.resourcesystem.observability.FailureDetails;
 
 import jakarta.validation.ConstraintViolationException;
@@ -20,7 +21,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Order(0)
-@RestControllerAdvice(assignableTypes = MatchOperationsController.class)
+@RestControllerAdvice(
+        assignableTypes = {
+            MatchOperationsController.class,
+            OngNecessityOperationsController.class
+        })
 public class MatchApiExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     ResponseEntity<ProblemDetail> business(ResponseStatusException exception) {

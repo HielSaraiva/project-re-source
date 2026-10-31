@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav
+    th:fragment="pages(pagination, filter)"
+    th:if="${pagination.totalElements > 0}"
+    th:with="pages=${pagination.visiblePages()}"
+    class="pagination"
+    aria-label="Paginação das necessidades"
+>
+    <a
+        th:if="${pagination.hasPrevious()}"
+        th:href="@{/institution/necessities(page=${pagination.page - 1},query=${filter.query},category=${filter.category?.value},priority=${filter.priority?.value},status=${filter.status?.value},size=${filter.size})}"
+        aria-label="Página anterior"
+    >‹</a>
+    <button
+        th:if="${!pagination.hasPrevious()}"
+        type="button"
+        aria-label="Página anterior"
+        disabled
+    >‹</button>
+    <th:block th:each="number, position : ${pages}">
+        <span
+            th:if="${position.index > 0 and number - pages[position.index - 1] > 1}"
+            aria-hidden="true"
+        >…</span>
+        <a
+            th:classappend="${number == pagination.page ? ' current' : ''}"
+            th:attr="aria-current=${number == pagination.page ? 'page' : null}"
+            th:href="@{/institution/necessities(page=${number},query=${filter.query},category=${filter.category?.value},priority=${filter.priority?.value},status=${filter.status?.value},size=${filter.size})}"
+            th:text="${number}"
+        ></a>
+    </th:block>
+    <a
+        th:if="${pagination.hasNext()}"
+        th:href="@{/institution/necessities(page=${pagination.page + 1},query=${filter.query},category=${filter.category?.value},priority=${filter.priority?.value},status=${filter.status?.value},size=${filter.size})}"
+        aria-label="Próxima página"
+    >›</a>
+    <button
+        th:if="${!pagination.hasNext()}"
+        type="button"
+        aria-label="Próxima página"
+        disabled
+    >›</button>
+</nav>
+</body>
+</html>
