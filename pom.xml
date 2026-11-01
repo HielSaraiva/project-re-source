@@ -201,12 +201,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <failIfNoTests>true</failIfNoTests>
+                </configuration>
             </plugin>
 
             <!-- Integration Tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <failIfNoTests>true</failIfNoTests>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -260,7 +266,7 @@
 						<param>edu.br.resource.resourcesystem.*</param>
 					</targetClasses>
                     <targetTests>
-                        <param>edu.br.resource.resourcesystem.*Test</param> <!-- Foca apenas nos testes unitários e nos IT mais simples-->
+                        <param>edu.br.resource.resourcesystem.quality.unit.*Test</param>
                     </targetTests>
                 </configuration>
             </plugin>
