@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <section class="donation-history" aria-labelledby="history-title" th:fragment="history(events, flow, donor, organization)">
+            <h2 id="history-title">Histórico da doação</h2>
+            <p class="donation-history-description">Eventos registrados com data, responsável e observações.</p>
+            <ol class="donation-timeline" th:attr="data-history-flow=${flow},data-donor-name=${donor},data-organization-name=${organization},data-intention-history=${flow == 'ong' ? 'true' : null},data-donor-history=${flow != 'ong' ? 'true' : null}">
+                <li th:each="event : ${events}"><strong th:text="${event.title}"></strong><time th:datetime="${event.at}" th:text="${event.dateLabel}"></time><span th:text="${event.actor}"></span>
+                    <p th:text="${event.description}"></p>
+                </li>
+            </ol>
+        </section>
+    </body>
+</html>

@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head
+        th:replace="~{fragments/layout/head :: head('Minhas doações', ~{::pageStyles}, 'donor')}"
+    >
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/shared/pagination.css}" />
+            <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}" />
+            <link rel="stylesheet" th:href="@{/css/shared/empty-state.css}" />
+            <link
+                rel="stylesheet"
+                th:href="@{/css/donor/donations-history.css}"
+            />
+            <script th:src="@{/js/donations-history.js}" defer></script>
+        </th:block>
+    </head>
+    <body>
+        <header
+            th:replace="~{fragments/layout/donor-header :: header('donations')}"
+        ></header>
+        <main
+            class="donations-page"
+            data-inventory-page
+            th:data-donor-id="${donorId}"
+        >
+            <div class="donations-heading">
+                <div>
+                    <h1>Minhas doações</h1>
+                    <p>
+                        Gerencie seus itens e acompanhe todas as propostas de
+                        doação, inclusive as encerradas.
+                    </p>
+                </div>
+                <a
+                    class="ui-button ui-button--secondary"
+                    th:if="${filter.historical()}"
+                    th:href="@{/donor/donations}"
+                    >Voltar ao inventário</a
+                >
+                <button
+                    class="ui-button"
+                    type="button"
+                    data-open-new-donation
+                    th:unless="${filter.historical()}"
+                >
+                    <span aria-hidden="true">+</span> Nova doação
+                </button>
+            </div>
+            <p
+                class="donations-success"
+                role="status"
+                tabindex="-1"
+                data-operation-success
+                th:if="${successMessage != null}"
+                th:text="${successMessage}"
+            ></p>
+            <form
+                class="donations-filters"
+                role="search"
+                method="get"
+                th:action="@{/donor/donations}"
+            >
+                <label
+                    >Buscar doação<input
+                        type="search"
+                        name="query"
+                        maxlength="200"
+                        th:value="${filter.query}"
+                        placeholder="Item, número, ONG ou protocolo"
+                /></label>
+                <label
+                    >Categoria<select name="category">
+                        <option value="">Todas as categorias</option>
+                        <option
+                            th:each="category : ${categories}"
+                            th:value="${category.value}"
+                            th:text="${category.label}"
+                            th:selected="${category == filter.category}"
+                        ></option></select
+                ></label>
+                <label
+                    >Status da doação<select
+                        name="status"
+                        th:disabled="${filter.historical()}"
+                    >
+                        <option
+                            value=""
+                            th:text="${filter.completed() ? 'Concluída' : filter.archived() ? 'Excluída' : 'Todos os status'}"
+                        ></option>
+                        <option
+                            th:each="status : ${statuses}"
+                            th:value="${status.value}"
+                            th:text="${status.label}"
+                            th:selected="${!filter.historical() and filter.status?.value == status.value}"
+                        ></option></select
+                ></label>
+                <label
+                    >Exibir<select name="view">
+                        <option
+                            value="inventory"
+                            th:selected="${!filter.historical()}"
+                        >
+                            No inventário
+                        </option>
+                        <option
+                            value="completed"
+                            th:selected="${filter.completed()}"
+                        >
+                            Concluídas
+                        </option>
+                        <option
+                            value="archived"
+                            th:selected="${filter.archived()}"
+                        >
+                            Excluídas (histórico)
+                        </option>
+                    </select></label
+                >
+                <div class="donations-filter-actions">
+                    <button class="ui-button" type="submit">Buscar</button
+                    ><a
+                        class="ui-button ui-button--secondary"
+                        th:href="@{/donor/donations(archived=${filter.historical()})}"
+                        >Limpar filtros</a
+                    >
+                </div>
+            </form>
+            <p
+                class="donations-results"
+                role="status"
+                th:text="${pagination.totalElements + (pagination.totalElements == 1 ? ' doação encontrada' : ' doações encontradas')}"
+            ></p>
+            <section
+                class="donations-grid"
+                aria-label="Doações do seu inventário"
+                th:if="${!donations.isEmpty()}"
+            >
+                <article
+                    class="inventory-card"
+                    th:each="donation : ${donations}"
+                >
+                    <div class="inventory-card__top">
+                        <span class="inventory-icon" aria-hidden="true"
+                            ><img
+                                th:src="@{${donation.iconPath}}"
+                                alt="" /></span
+                        ><span
+                            class="inventory-category"
+                            th:text="${donation.categoryLabel}"
+                        ></span>
+                    </div>
+                    <p class="inventory-identifier">
+                        <span th:text="${'Doação #' + donation.id}"></span
+                        ><span aria-hidden="true"> · </span
+                        ><time
+                            th:datetime="${donation.createdAt}"
+                            th:text="${donation.dateLabel()}"
+                        ></time>
+                    </p>
+                    <h2 th:text="${donation.itemName}"></h2>
+                    <p
+                        class="inventory-status"
+                        th:classappend="${' inventory-status--' + donation.status.value}"
+                        th:text="${donation.statusLabel}"
+                    ></p>
+                    <dl class="inventory-quantities">
+                        <div>
+                            <dt>Quantidade cadastrada</dt>
+                            <dd th:text="${donation.quantity}"></dd>
+                        </div>
+                        <div th:if="${donation.archived}">
+                            <dt>Propostas encerradas</dt>
+                            <dd th:text="${donation.proposalCount}"></dd>
+                        </div>
+                        <div th:unless="${donation.archived}">
+                            <dt>Em propostas ativas</dt>
+                            <dd th:text="${donation.reservedQuantity}"></dd>
+                        </div>
+                        <div th:unless="${donation.archived}">
+                            <dt>Quantidade recebida</dt>
+                            <dd th:text="${donation.receivedQuantity}"></dd>
+                        </div>
+                        <div
+                            class="inventory-quantities__available"
+                            th:unless="${donation.archived}"
+                        >
+                            <dt>Disponível para doar</dt>
+                            <dd th:text="${donation.availableQuantity}"></dd>
+                        </div>
+                    </dl>
+                    <div class="inventory-card__actions">
+                        <div class="inventory-primary-actions">
+                            <button
+                                class="ui-button ui-button--secondary"
+                                type="button"
+                                data-open-proposals
+                                th:if="${donation.proposalCount > 0}"
+                                th:attr="data-id=${donation.id},data-title=${donation.itemName},aria-label=${'Ver todas as propostas da doação #' + donation.id}"
+                                th:text="${'Ver propostas (' + donation.proposalCount + ')'}"
+                            ></button>
+                            <a
+                                class="inventory-inline-action"
+                                th:if="${!donation.archived and donation.availableQuantity > 0}"
+                                th:href="@{/donor/needs}"
+                                >Encontrar necessidades
+                                <span aria-hidden="true"> →</span></a
+                            >
+                        </div>
+                        <p
+                            class="inventory-restriction"
+                            th:if="${donation.archived}"
+                        >
+                            Excluída do inventário. Os protocolos foram
+                            preservados para consulta.
+                        </p>
+                        <div
+                            class="inventory-card__buttons"
+                            th:unless="${donation.archived or donation.status.value == 'completed'}"
+                        >
+                            <button
+                                class="ui-button ui-button--secondary"
+                                type="button"
+                                data-edit-donation
+                                th:data-id="${donation.id}"
+                                th:disabled="${!donation.editable}"
+                                th:attr="aria-label=${'Editar doação #' + donation.id},aria-describedby=${!donation.editable ? 'edit-restriction-' + donation.id : null}"
+                            >
+                                Editar
+                            </button>
+                            <button
+                                class="ui-button ui-button--danger"
+                                type="button"
+                                data-delete-donation
+                                th:disabled="${!donation.deletable}"
+                                th:attr="data-id=${donation.id},data-version=${donation.version},data-title=${donation.itemName},data-quantity=${donation.quantity},data-has-proposals=${donation.proposalCount > 0},aria-label=${'Excluir doação #' + donation.id},aria-describedby=${!donation.deletable ? 'delete-restriction-' + donation.id : null}"
+                            >
+                                Excluir
+                            </button>
+                        </div>
+                        <p
+                            class="inventory-restriction"
+                            th:if="${!donation.archived and donation.status.value != 'completed' and donation.editRestriction != null}"
+                            th:id="${'edit-restriction-' + donation.id}"
+                            th:text="${donation.editRestriction}"
+                        ></p>
+                        <p
+                            class="inventory-restriction"
+                            th:if="${!donation.archived and donation.status.value != 'completed' and donation.deleteRestriction != null}"
+                            th:id="${'delete-restriction-' + donation.id}"
+                            th:text="${donation.deleteRestriction}"
+                        ></p>
+                    </div>
+                </article>
+            </section>
+            <section
+                class="inventory-empty"
+                th:if="${donations.isEmpty()}"
+                th:with="filtered=${filter.historical() or !#strings.isEmpty(filter.query) or filter.category != null or filter.status != null}"
+            >
+                <div
+                    th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/package.svg', ${filter.completed() ? 'Nenhuma doação concluída encontrada' : filter.archived() ? 'Nenhuma doação excluída encontrada' : filtered ? 'Nenhuma doação encontrada' : 'Seu inventário ainda está vazio'}, ${filter.completed() ? 'Doações totalmente recebidas ficam disponíveis aqui, com acesso às propostas e aos protocolos.' : filter.archived() ? 'As doações excluídas com propostas canceladas ou recusadas ficam disponíveis aqui. Ajuste os filtros para consultar o histórico.' : filtered ? 'Ajuste ou limpe os filtros para encontrar suas doações.' : 'Cadastre os itens que você pode doar. Depois, encontre uma necessidade para enviar uma proposta.'}, null, null)}"
+                ></div>
+                <a
+                    th:if="${filtered}"
+                    class="ui-button ui-button--secondary"
+                    th:href="@{/donor/donations(archived=${filter.historical()})}"
+                    >Limpar filtros</a
+                >
+                <button
+                    th:unless="${filtered}"
+                    class="ui-button"
+                    type="button"
+                    data-open-new-donation
+                >
+                    Cadastrar primeira doação
+                </button>
+            </section>
+            <nav
+                th:replace="~{fragments/ui/inventory-pagination :: pages(${pagination}, ${filter})}"
+            ></nav>
+        </main>
+        <dialog
+            id="inventory-form-dialog"
+            class="ui-dialog"
+            aria-labelledby="inventory-form-title"
+            aria-describedby="inventory-form-description"
+        >
+            <form class="ui-dialog-content" data-inventory-form>
+                <div class="title-block">
+                    <p class="donation-protocol">MINHAS DOAÇÕES</p>
+                    <div
+                        th:replace="~{fragments/ui/dialog :: heading('inventory-form-title', 'Nova doação', 'Novo cadastro', '', '/images/donor/donation-status/gift.svg')}"
+                    ></div>
+                </div>
+                <p
+                    id="inventory-form-description"
+                    class="ui-dialog-description"
+                >
+                    Informe os itens que você pode doar. A descrição é opcional.
+                </p>
+                <p
+                    class="inventory-field-hint"
+                    role="status"
+                    data-form-loading
+                    hidden
+                >
+                    Carregando dados atualizados…
+                </p>
+                <fieldset class="inventory-fields" data-inventory-fields>
+                    <label class="inventory-field" for="inventory-category"
+                        >Categoria
+                        <select
+                            id="inventory-category"
+                            name="category"
+                            required
+                            aria-describedby="error-category category-edit-hint"
+                        >
+                            <option value="" selected disabled>
+                                Selecione uma categoria
+                            </option>
+                            <option
+                                th:each="category : ${categories}"
+                                th:value="${category.value}"
+                                th:text="${category.label}"
+                            ></option>
+                        </select>
+                        <small
+                            id="category-edit-hint"
+                            class="inventory-field-hint"
+                            data-category-hint
+                            hidden
+                            >A categoria permanece a mesma após o
+                            cadastro.</small
+                        >
+                        <small
+                            id="error-category"
+                            class="inventory-field-error"
+                            data-error-for="category"
+                            hidden
+                        ></small>
+                    </label>
+                    <label class="inventory-field" for="inventory-title"
+                        >Nome do item
+                        <input
+                            id="inventory-title"
+                            name="title"
+                            maxlength="120"
+                            required
+                            placeholder="Ex.: cadeiras escolares"
+                            aria-describedby="error-title"
+                        />
+                        <small
+                            id="error-title"
+                            class="inventory-field-error"
+                            data-error-for="title"
+                            hidden
+                        ></small>
+                    </label>
+                    <div class="inventory-fields-row">
+                        <label class="inventory-field" for="inventory-quantity"
+                            >Quantidade cadastrada
+                            <input
+                                id="inventory-quantity"
+                                type="number"
+                                name="quantity"
+                                value="1"
+                                min="1"
+                                max="2147483647"
+                                step="1"
+                                required
+                                aria-describedby="quantity-edit-hint error-quantity"
+                            />
+                            <small
+                                id="error-quantity"
+                                class="inventory-field-error"
+                                data-error-for="quantity"
+                                hidden
+                            ></small>
+                        </label>
+                        <label class="inventory-field" for="inventory-condition"
+                            >Estado de conservação
+                            <select
+                                id="inventory-condition"
+                                name="condition"
+                                required
+                                aria-describedby="error-condition"
+                            >
+                                <option value="" selected disabled>
+                                    Selecione
+                                </option>
+                                <option
+                                    th:each="condition : ${conditions}"
+                                    th:value="${condition.value}"
+                                    th:text="${condition.label}"
+                                ></option>
+                            </select>
+                            <small
+                                id="error-condition"
+                                class="inventory-field-error"
+                                data-error-for="condition"
+                                hidden
+                            ></small>
+                        </label>
+                    </div>
+                    <p
+                        id="quantity-edit-hint"
+                        class="inventory-field-hint"
+                        data-quantity-hint
+                        hidden
+                    ></p>
+                    <label class="inventory-field" for="inventory-description"
+                        >Descrição
+                        <span class="inventory-field-hint">(opcional)</span>
+                        <textarea
+                            id="inventory-description"
+                            name="description"
+                            maxlength="1000"
+                            rows="3"
+                            placeholder="Informe características e detalhes dos itens."
+                            aria-describedby="error-description"
+                        ></textarea>
+                        <small
+                            id="error-description"
+                            class="inventory-field-error"
+                            data-error-for="description"
+                            hidden
+                        ></small>
+                    </label>
+                </fieldset>
+                <p
+                    class="backend-error"
+                    data-form-error
+                    role="alert"
+                    tabindex="-1"
+                    hidden
+                ></p>
+                <div class="inventory-recovery" data-form-recovery hidden>
+                    <button
+                        class="ui-button ui-button--secondary"
+                        type="button"
+                        data-new-attempt
+                        hidden
+                    >
+                        Iniciar outro cadastro
+                    </button>
+                    <button
+                        class="ui-button ui-button--secondary"
+                        type="button"
+                        data-reload-form
+                    >
+                        Recarregar dados
+                    </button>
+                    <button
+                        class="ui-button ui-button--secondary"
+                        type="button"
+                        data-form-proposals
+                        hidden
+                    >
+                        Ver propostas
+                    </button>
+                    <a
+                        class="inventory-inline-action"
+                        th:href="@{/donor/donations}"
+                        data-refresh-inventory
+                        >Atualizar lista</a
+                    >
+                </div>
+                <div class="ui-actions">
+                    <button
+                        class="ui-button ui-button--secondary"
+                        type="button"
+                        data-close-inventory
+                    >
+                        Cancelar</button
+                    ><button
+                        class="ui-button"
+                        type="submit"
+                        data-save-inventory
+                    >
+                        Cadastrar doação
+                    </button>
+                </div>
+            </form>
+        </dialog>
+        <dialog
+            id="inventory-delete-dialog"
+            class="ui-dialog"
+            aria-labelledby="inventory-delete-title"
+            aria-describedby="inventory-delete-description"
+        >
+            <form class="ui-dialog-content" data-inventory-delete>
+                <div class="title-block">
+                    <p class="donation-protocol">MINHAS DOAÇÕES</p>
+                    <div
+                        th:replace="~{fragments/ui/dialog :: heading('inventory-delete-title', 'Excluir doação?', 'Doação', '', '/images/shared/icons/trash.svg')}"
+                    ></div>
+                </div>
+                <p
+                    id="inventory-delete-description"
+                    class="ui-dialog-description"
+                >
+                    A doação será removida do seu inventário. Esta ação não pode
+                    ser desfeita.
+                </p>
+                <dl class="inventory-delete-summary">
+                    <div>
+                        <dt>Item</dt>
+                        <dd data-delete-title></dd>
+                    </div>
+                    <div>
+                        <dt>Quantidade cadastrada</dt>
+                        <dd data-delete-quantity></dd>
+                    </div>
+                </dl>
+                <p class="inventory-field-hint" data-delete-history hidden>
+                    As propostas canceladas ou recusadas e seus protocolos
+                    continuarão disponíveis no histórico.
+                </p>
+                <p
+                    class="backend-error"
+                    role="alert"
+                    tabindex="-1"
+                    data-delete-error
+                    hidden
+                ></p>
+                <button
+                    class="ui-button ui-button--secondary"
+                    type="button"
+                    data-delete-proposals
+                    hidden
+                >
+                    Ver propostas vinculadas
+                </button>
+                <a
+                    class="inventory-inline-action"
+                    data-delete-refresh
+                    th:href="@{/donor/donations}"
+                    hidden
+                    >Atualizar lista</a
+                >
+                <div class="ui-actions">
+                    <button
+                        class="ui-button ui-button--secondary"
+                        type="button"
+                        data-close-delete
+                    >
+                        Manter doação</button
+                    ><button
+                        class="ui-button ui-button--danger"
+                        type="submit"
+                        data-confirm-delete
+                    >
+                        Excluir doação
+                    </button>
+                </div>
+            </form>
+        </dialog>
+        <dialog
+            id="inventory-proposals-dialog"
+            class="ui-dialog"
+            aria-labelledby="inventory-proposals-title"
+            aria-describedby="inventory-proposals-description"
+        >
+            <div class="ui-dialog-content">
+                <div class="title-block">
+                    <p class="donation-protocol">MINHAS DOAÇÕES</p>
+                    <div
+                        th:replace="~{fragments/ui/dialog :: heading('inventory-proposals-title', 'Propostas da doação', 'Doação', '', '/images/shared/icons/clipboard-list.svg')}"
+                    ></div>
+                </div>
+                <p
+                    id="inventory-proposals-description"
+                    class="ui-dialog-description"
+                    data-proposals-description
+                >
+                    Consulte todas as propostas e seus protocolos, inclusive
+                    recusadas e canceladas.
+                </p>
+                <label class="inventory-field" for="inventory-proposal-status"
+                    >Status da proposta
+                    <select id="inventory-proposal-status" data-proposal-status>
+                        <option value="">Todos os status</option>
+                        <option
+                            th:each="status : ${proposalStatuses}"
+                            th:value="${status.value}"
+                            th:text="${status.label}"
+                        ></option>
+                    </select>
+                </label>
+                <p
+                    class="inventory-field-hint"
+                    data-proposals-loading
+                    role="status"
+                    hidden
+                >
+                    Carregando propostas…
+                </p>
+                <p
+                    class="backend-error"
+                    data-proposals-error
+                    role="alert"
+                    tabindex="-1"
+                    hidden
+                ></p>
+                <button
+                    class="ui-button ui-button--secondary"
+                    type="button"
+                    data-retry-proposals
+                    hidden
+                >
+                    Tentar novamente
+                </button>
+                <div class="inventory-proposals" data-proposals-list></div>
+                <nav
+                    class="inventory-dialog-pager"
+                    data-proposals-pager
+                    aria-label="Páginas das propostas"
+                    hidden
+                >
+                    <button
+                        class="ui-button ui-button--secondary"
+                        type="button"
+                        data-proposals-previous
+                    >
+                        Anterior
+                    </button>
+                    <p data-proposals-page role="status"></p>
+                    <button
+                        class="ui-button ui-button--secondary"
+                        type="button"
+                        data-proposals-next
+                    >
+                        Próxima
+                    </button>
+                </nav>
+                <div class="ui-actions">
+                    <button
+                        class="ui-button ui-button--secondary"
+                        type="button"
+                        data-close-proposals
+                    >
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        </dialog>
+    </body>
+</html>

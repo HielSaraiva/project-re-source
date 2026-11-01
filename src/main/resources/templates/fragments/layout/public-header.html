@@ -1,0 +1,38 @@
+<header
+    xmlns:th="http://www.thymeleaf.org"
+    th:fragment="publicHeader"
+    class="navbar public-header landing-header"
+>
+    <a
+        th:replace="~{fragments/layout/header-components :: brand('/', 'ReSource — página inicial')}"
+    ></a>
+    <button th:replace="~{fragments/layout/navigation-toggle :: toggle}"></button>
+    <div class="navigation-panel">
+        <div class="navigation-panel__content">
+            <nav id="primary-navigation" class="nav-links" aria-label="Navegação principal">
+                <a
+                    class="nav-link"
+                    th:href="${publicSection == null} ? '#how-it-works' : @{/about#how-it-works}"
+                    >Como funciona</a
+                >
+                <a
+                    class="nav-link"
+                    th:href="${publicSection == null} ? '#get-involved' : @{/about#get-involved}"
+                    >Para quem é</a
+                >
+                <a class="nav-link" th:href="${publicSection == null} ? '#faq' : @{/about#faq}"
+                    >Dúvidas</a
+                >
+            </nav>
+        </div>
+    </div>
+    <div class="nav-actions">
+        <a
+            class="public-header__action"
+            th:with="hasDashboard=${errorHomePath != null and errorHomePath != '/' and errorHomePath != '/about'}"
+            th:href="@{${hasDashboard ? errorHomePath : '/login'}}"
+            ><span th:text="${hasDashboard ? 'Meu painel' : 'Entrar'}">Entrar</span
+            ><svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+        ></a>
+    </div>
+</header>

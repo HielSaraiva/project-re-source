@@ -1,0 +1,108 @@
+.information-chapter blockquote {
+    margin: 28px 0 0;
+    padding: 8px 0 8px 24px;
+    border-left: 3px solid var(--color-brand);
+    color: var(--color-success-dark);
+    font:
+        700 22px/1.5 Outfit,
+        sans-serif;
+}
+.sustainability-practice {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 0;
+    margin-top: 24px;
+    border-block: 1px solid var(--color-border);
+}
+.sustainability-practice .ui-icon {
+    color: var(--color-brand);
+}
+.sustainability-practice p {
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+}
+.information-chapter .sustainability-practice p {
+    margin: 0;
+}
+.sustainability-practice strong {
+    display: block;
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+.sustainability-care {
+    display: grid;
+    gap: 24px;
+    padding: 0;
+    margin: 28px 0 0;
+    list-style: none;
+}
+.sustainability-care li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+.sustainability-care .ui-icon {
+    color: var(--color-brand);
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+}
+.sustainability-care strong {
+    font-weight: 600;
+}
+.sustainability-care p {
+    margin-top: 5px;
+    color: var(--color-text-secondary);
+    font-size: 16px;
+    line-height: 1.8;
+}
+.information-chapter .sustainability-care p {
+    margin-top: 6px;
+}
+.information-chapter__content > .text-link {
+    display: inline-block;
+    min-height: 44px;
+    margin-top: 24px;
+}
+.sustainability-invitation {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 28px;
+    border-top: 1px solid #c6e6d7;
+    background: var(--color-success-surface);
+    border-radius: 4px 4px 16px 16px;
+}
+.information-page .sustainability-invitation h2 {
+    font:
+        700 24px/1.35 Outfit,
+        sans-serif;
+    letter-spacing: -0.02em;
+}
+.sustainability-invitation p {
+    margin-top: 10px;
+    color: var(--color-text-secondary);
+}
+.sustainability-invitation .text-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 16px;
+}
+@media (max-width: 760px) {
+    .information-chapter blockquote {
+        font-size: 20px;
+        padding-left: 18px;
+    }
+    .sustainability-invitation {
+        flex-direction: column;
+        gap: 16px;
+        padding: 24px;
+    }
+}
+@media print {
+    .sustainability-invitation {
+        display: none;
+    }
+}

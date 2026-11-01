@@ -1,0 +1,94 @@
+/* Semantic typography shared by the donor and NGO screens. */
+main h1 {
+    font: 700 var(--font-page)/1.2 Outfit, sans-serif;
+}
+
+main h2, main h3, .ui-dialog h2, .ui-dialog h3 {
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+main h2, .ui-dialog h2 {
+    font-size: var(--font-section);
+}
+
+main h3, .ui-dialog h3 {
+    font-size: var(--font-subtitle);
+}
+
+.section-heading h1, .section-heading h2 {
+    font: 700 var(--font-section)/1.4 Inter, sans-serif;
+}
+
+main :is(.page-heading, .needs-heading) > p:not(.donation-protocol),
+.ong-donation-heading > div > p:not(.donation-protocol), .hero p {
+    font-size: var(--font-subtitle);
+    line-height: 1.5;
+}
+
+main :is(.title-block, .section-heading) p,
+.ui-dialog p:not(.donation-protocol),
+.proposal-selected p, .proposal-empty p, .proposal-inventory-feedback,
+.proposal-note p, .proposal-next-step p, .ong-donation-description,
+.donation-timeline p {
+    font-size: var(--font-body);
+    line-height: 1.6;
+}
+
+main :is(.detail-content, .ong-donation-item, .ong-donation-info) strong,
+.shipment-item strong, .recipient {
+    font-size: var(--font-body);
+    line-height: 1.5;
+}
+
+main :is(.need, .need-card) > strong {
+    font-size: var(--font-subtitle);
+}
+
+main :is(.detail-content, .delivery-summary, .proposal-summary, .ong-donation-summary) :is(dt, strong) {
+    font-size: var(--font-caption);
+    font-weight: 500;
+}
+
+.ui-dialog :is(.delivery-summary, .proposal-summary, .ong-donation-summary) dt {
+    font-size: var(--font-caption);
+    font-weight: 500;
+}
+
+main :is(.detail-content, .delivery-summary, .proposal-summary, .ong-donation-summary) :is(dd, span),
+.ui-dialog :is(.delivery-summary, .proposal-summary, .ong-donation-summary) dd {
+    font-size: var(--font-body);
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+main :is(.status-badge, .donation-status, .proposal-inventory-status,
+    .priority-badge, .priority, .proposal-priority, .card-badge, .logistics-badge) {
+    font-size: var(--font-caption);
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+main :is(input, select, textarea), .ui-dialog :is(input, select, textarea) {
+    font-family: Inter, sans-serif;
+    font-size: var(--font-body);
+    line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+    main h1 {
+        font-size: var(--font-page-mobile);
+    }
+
+    .section-heading h1 {
+        font-size: var(--font-section);
+    }
+}
+
+@media (max-width: 600px) {
+    main :is(input, select, textarea), .ui-dialog :is(input, select, textarea) {
+        font-size: var(--font-subtitle);
+    }
+}

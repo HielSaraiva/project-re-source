@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/auth/layout :: page('Crie sua conta', true, 'auth-layout--register', ~{::content})}"
+>
+    <body>
+        <section th:fragment="content" class="auth-panel" aria-labelledby="register-title">
+            <div class="auth-card">
+                <header class="auth-heading"
+                    ><h1 id="register-title">Crie sua conta</h1
+                    ><p>Junte-se à rede e ajude a reduzir o desperdício.</p></header
+                >
+                <nav th:replace="~{fragments/auth/profiles :: profiles(true, false)}"></nav>
+                <div class="auth-content">
+                    <div class="auth-body">
+                        <form
+                            class="auth-form"
+                            method="post"
+                            th:action="@{/register/donor}"
+                            th:object="${registration}"
+                            th:attr="data-existing-account=${existingAccount == true ? 'true' : null}"
+                        >
+                            <p
+                                th:if="${#fields.hasErrors('*') and existingAccount != true}"
+                                class="backend-error auth-feedback"
+                                role="alert"
+                                tabindex="-1"
+                                data-registration-errors
+                                >Não foi possível cadastrar. Seu nome e e-mail foram mantidos.
+                                Confira os campos indicados e informe as senhas novamente.</p
+                            >
+                            <div
+                                th:replace="~{fragments/auth/text-field :: field('fullName', 'Nome Completo', 'user', 'text', 'Seu nome completo', 'name', 200)}"
+                            ></div>
+                            <div
+                                th:replace="~{fragments/auth/text-field :: field('email', 'E-mail', 'mail', 'email', 'seu@email.com', 'username', 320)}"
+                            ></div>
+                            <div
+                                th:replace="~{fragments/auth/password-field :: passwordField('password', 'Senha', 'new-password', true)}"
+                            ></div>
+                            <div
+                                th:replace="~{fragments/auth/password-field :: passwordField('passwordConfirmation', 'Confirmar Senha', 'new-password', true)}"
+                            ></div>
+                            <button class="button auth-submit" type="submit">Cadastrar</button>
+                        </form>
+                        <th:block
+                            th:replace="~{fragments/auth/google-entry :: googleEntry('Cadastrar com Google')}"
+                        ></th:block>
+                    </div>
+                    <footer class="auth-footer"
+                        >Já possui uma conta?
+                        <a class="text-link" th:href="@{/login}">Faça Login</a></footer
+                    >
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

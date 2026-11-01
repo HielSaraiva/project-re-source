@@ -1,0 +1,12 @@
+.delivery-instructions {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    font-size: var(--font-body);
+}
+
+.delivery-instructions ul {
+    margin: 12px 0 0;
+    padding-left: 20px;
+    color: var(--slate);
+    line-height: 1.8;
+}

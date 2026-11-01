@@ -1,0 +1,9 @@
+<footer xmlns:th="http://www.thymeleaf.org" th:fragment="footer" class="public-footer public-container">
+    <div><a th:replace="~{fragments/layout/header-components :: brand('/', 'ReSource — página inicial')}"></a><p>Recursos que conectam pessoas.</p></div>
+    <nav aria-label="Navegação do rodapé">
+        <th:block th:replace="~{fragments/public/information-links :: links}"></th:block>
+        <a th:href="@{/register/donor}">Quero doar</a>
+        <a th:href="@{/register/institution}">Sou uma instituição</a>
+    </nav>
+    <small>© <span th:text="${#temporals.year(#temporals.createToday())}">2026</span> ReSource</small>
+</footer>

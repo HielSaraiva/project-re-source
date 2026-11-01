@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:th="http://www.thymeleaf.org" th:fragment="icon(name)" class="auth-icon" th:attr="data-auth-icon=${name}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <th:block th:replace="~{fragments/ui/icon :: paths(${name})}"></th:block>
+</svg>

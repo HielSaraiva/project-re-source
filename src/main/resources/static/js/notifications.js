@@ -1,0 +1,156 @@
+(() => {
+    const menu = document.querySelector('[data-notifications]');
+    if (!menu) return;
+    const trigger = menu.querySelector('summary');
+    const panel = menu.querySelector('.notification-panel');
+    const badge = menu.querySelector('[data-notification-count]');
+    const list = menu.querySelector('[data-notification-list]');
+    const status = menu.querySelector('[data-notification-status]');
+    const readAll = menu.querySelector('[data-read-all]');
+    const previous = menu.querySelector('[data-notification-previous]');
+    const next = menu.querySelector('[data-notification-next]');
+    const retry = menu.querySelector('[data-notification-retry]');
+    const { context } = window.ResourceHttp;
+    const endpoint = '/api/notifications';
+    let page = 0,
+        loading = false,
+        mutating = false,
+        unreadCount = 0;
+    panel.inert = true;
+    const close = (restoreFocus = false) => {
+        menu.open = false;
+        if (restoreFocus) trigger.focus();
+    };
+    const request = (path, method = 'GET') =>
+        window.ResourceHttp.json(path, {
+            method,
+            cache: 'no-store',
+            signal: AbortSignal.timeout(10000),
+        });
+    const setBadge = (count) => {
+        unreadCount = count;
+        badge.hidden = count === 0;
+        badge.textContent = count > 99 ? '99+' : String(count);
+        trigger.setAttribute(
+            'aria-label',
+            count ? `Notificações: ${count} não lidas` : 'Notificações: nenhuma não lida',
+        );
+        readAll.disabled = count === 0 || mutating || loading;
+    };
+    const showError = () => {
+        status.hidden = false;
+        status.textContent = 'Não foi possível carregar suas notificações. Tente novamente.';
+        retry.hidden = false;
+    };
+    const load = async (requestedPage = page) => {
+        if (loading || mutating) return;
+        loading = true;
+        readAll.disabled = true;
+        retry.hidden = true;
+        try {
+            const data = await request(`${endpoint}?page=${requestedPage}`);
+            page = requestedPage;
+            setBadge(data.unreadCount);
+            list.replaceChildren();
+            for (const notice of data.items) {
+                const li = document.createElement('li');
+                li.className = `notification-item${notice.read ? '' : ' notification-item--unread'}`;
+                const a = document.createElement('a');
+                a.href = context + notice.targetPath;
+                const title = document.createElement('strong');
+                title.textContent = notice.title;
+                const text = document.createElement('p');
+                text.textContent = notice.message;
+                const date = document.createElement('time');
+                date.dateTime = notice.createdAt;
+                date.textContent = new Intl.DateTimeFormat('pt-BR', {
+                    dateStyle: 'short',
+                    timeStyle: 'short',
+                }).format(new Date(notice.createdAt));
+                a.append(title, text, date);
+                li.append(a);
+                list.append(li);
+                a.addEventListener('click', async (event) => {
+                    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                    event.preventDefault();
+                    if (mutating) return;
+                    mutating = true;
+                    try {
+                        await request(`${endpoint}/${notice.id}/read`, 'POST');
+                    } catch {}
+                    location.assign(a.href);
+                });
+            }
+            status.hidden = data.items.length > 0;
+            status.textContent =
+                page === 0
+                    ? 'Você está em dia! As principais atualizações das suas doações aparecerão aqui.'
+                    : 'Não há mais notificações nesta página.';
+            menu.querySelector('.notification-panel__footer').hidden =
+                data.items.length === 0 && page === 0;
+            previous.disabled = page === 0;
+            next.disabled = !data.hasMore;
+            menu.querySelector('[data-notification-page]').textContent = `Página ${page + 1}`;
+        } catch {
+            if (menu.open) showError();
+        } finally {
+            loading = false;
+            readAll.disabled = unreadCount === 0 || mutating;
+        }
+    };
+    menu.addEventListener('toggle', () => {
+        trigger.setAttribute('aria-expanded', String(menu.open));
+        panel.inert = !menu.open;
+        if (menu.open) {
+            document
+                .querySelectorAll('.profile-menu summary[aria-expanded="true"]')
+                .forEach((summary) => summary.click());
+            load();
+        }
+    });
+    document.addEventListener('pointerdown', (event) => {
+        if (!menu.contains(event.target)) close();
+    });
+    document.addEventListener('focusin', (event) => {
+        if (!menu.contains(event.target)) close();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && menu.open) {
+            event.preventDefault();
+            close(true);
+        }
+    });
+    retry.addEventListener('click', () => load());
+    previous.addEventListener('click', () => {
+        if (!loading && !mutating) {
+            load(page - 1);
+        }
+    });
+    next.addEventListener('click', () => {
+        if (!loading && !mutating) {
+            load(page + 1);
+        }
+    });
+    readAll.addEventListener('click', async () => {
+        if (mutating || loading) return;
+        mutating = true;
+        readAll.disabled = true;
+        try {
+            await request(`${endpoint}/read-all`, 'POST');
+        } catch {
+            mutating = false;
+            showError();
+            readAll.disabled = false;
+            return;
+        }
+        mutating = false;
+        await load();
+    });
+    load();
+    setInterval(() => {
+        if (!document.hidden && !menu.open) load();
+    }, 60000);
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) load();
+    });
+})();

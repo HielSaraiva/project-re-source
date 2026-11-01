@@ -1,0 +1,59 @@
+.carrier-instructions {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--slate);
+    font-size: var(--font-body);
+    line-height: 1.7;
+}
+
+.carrier-instructions li + li {
+    margin-top: 12px;
+}
+
+.carrier-note {
+    margin: 0;
+    padding: 16px;
+    border-radius: 8px;
+    background: var(--color-success-surface);
+    color: var(--color-success-dark);
+    font-size: var(--font-body);
+    line-height: 1.5;
+}
+
+.carrier-documentation {
+    margin: 0;
+    color: var(--slate);
+    font-size: var(--font-body);
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+}
+
+.carrier-documentation summary {
+    cursor: pointer;
+    color: var(--ink);
+    font-weight: 600;
+    padding: 4px 0;
+}
+
+.carrier-documentation-content {
+    display: grid;
+    gap: 12px;
+    padding-top: 12px;
+}
+
+.carrier-documentation-content p {
+    margin: 0;
+}
+
+.carrier-documentation a {
+    color: var(--color-success);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+
+
+.carrier-delivery .delivery-fields {
+    align-items: start;
+}

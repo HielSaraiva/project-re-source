@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/public/layout :: page('Política de Privacidade', 'Entenda quais dados o ReSource utiliza, como são protegidos e como entrar em contato para exercer seus direitos de privacidade.', ~{::content})}"
+>
+    <body>
+        <th:block th:fragment="content">
+            <header class="information-intro public-container">
+                <p class="public-eyebrow">CLAREZA PARA CONSTRUIR CONFIANÇA</p>
+                <h1>Política de Privacidade</h1>
+                <p class="information-lead"
+                    >Seus dados.<br /><span>Um cuidado que importa.</span></p
+                >
+                <div class="information-description"
+                    >Entenda o que usamos, por que usamos e como falar com o ReSource sobre seus
+                    dados.</div
+                >
+                <p class="privacy-version"
+                    ><svg th:replace="~{fragments/ui/icon :: icon('file-text')}"></svg>Atualizada em
+                    <time datetime="2026-10-10">10 de outubro de 2026</time></p
+                >
+            </header>
+            <div class="information-reading public-container">
+                <aside class="information-index" aria-label="Índice da política">
+                    <p>Nesta página</p>
+                    <nav aria-label="Tópicos de privacidade">
+                        <a href="#overview"><span>01</span>Visão geral</a>
+                        <a href="#data"><span>02</span>Dados utilizados</a>
+                        <a href="#purposes"><span>03</span>Por que usamos</a>
+                        <a href="#sharing"><span>04</span>Compartilhamento</a>
+                        <a href="#protection"><span>05</span>Proteção e cookies</a>
+                        <a href="#retention"><span>06</span>Armazenamento</a>
+                        <a href="#rights"><span>07</span>Seus direitos</a>
+                        <a href="#contact"><span>08</span>Contato</a>
+                    </nav>
+                    <a class="information-related" th:href="@{/sustainability}"
+                        ><img
+                            th:src="@{/images/shared/leaf.svg}"
+                            alt=""
+                            width="20"
+                            height="20" />Conheça nosso propósito
+                        <svg th:replace="~{fragments/ui/icon :: icon('arrow-up-right')}"></svg
+                    ></a>
+                </aside>
+                <article
+                    class="information-content"
+                    aria-label="Política de Privacidade do ReSource"
+                >
+                    <section id="overview" class="information-chapter">
+                        <div class="information-chapter__label"
+                            ><span>01</span><p class="public-eyebrow">VISÃO GERAL</p></div
+                        ><h2>Privacidade em cada conexão.</h2
+                        ><p
+                            >Esta política descreve o uso de dados no site, no cadastro de doadores
+                            e instituições, no acompanhamento de doações e nas comunicações do
+                            ReSource.</p
+                        >
+                        <div class="privacy-note"
+                            ><svg th:replace="~{fragments/ui/icon :: icon('shield')}"></svg
+                            ><p
+                                >Você pode conhecer as páginas públicas sem criar uma conta. Para
+                                propor ou receber doações, precisamos de informações de cadastro e
+                                autenticação.</p
+                            ></div
+                        >
+                    </section>
+                    <section id="data" class="information-chapter">
+                        <div class="information-chapter__label"
+                            ><span>02</span><p class="public-eyebrow">DADOS UTILIZADOS</p></div
+                        ><h2>O que entra nessa relação.</h2>
+                        <div class="privacy-table-wrapper"
+                            ><table class="privacy-table"
+                                ><caption>Dados utilizados em cada parte do ReSource</caption
+                                ><thead
+                                    ><tr
+                                        ><th scope="col">Quando</th
+                                        ><th scope="col">Quais informações</th></tr
+                                    ></thead
+                                ><tbody>
+                                    <tr
+                                        ><th scope="row">Cadastro de doador</th
+                                        ><td
+                                            >Nome completo, e-mail e senha protegida por hash.</td
+                                        ></tr
+                                    >
+                                    <tr
+                                        ><th scope="row">Cadastro de instituição</th
+                                        ><td
+                                            >CNPJ, razão social, e-mail, senha protegida por hash,
+                                            nome e CPF do representante, documento de identificação
+                                            e documento da organização.</td
+                                        ></tr
+                                    >
+                                    <tr
+                                        ><th scope="row">Entrada com Google</th
+                                        ><td
+                                            >Nome, e-mail verificado e identificador da conta
+                                            Google. Sua senha do Google não é recebida pelo
+                                            ReSource. Essa opção está disponível para doadores.</td
+                                        ></tr
+                                    >
+                                    <tr
+                                        ><th scope="row">Doações e entregas</th
+                                        ><td
+                                            >Itens, quantidades, estado de conservação, mensagens,
+                                            protocolos e histórico. Conforme a entrega: data, nome
+                                            de quem recebeu, observações e código de rastreamento.
+                                            Informações de endereço e contato da instituição ajudam
+                                            a organizar o recebimento.</td
+                                        ></tr
+                                    >
+                                    <tr
+                                        ><th scope="row">Uso e segurança</th
+                                        ><td
+                                            >Identificador de sessão, registros de operações,
+                                            notificações e estado de leitura. Na recuperação de
+                                            senha, usamos o endereço de rede transformado em hash
+                                            para limitar solicitações.</td
+                                        ></tr
+                                    >
+                                </tbody></table
+                            ></div
+                        >
+                        <p
+                            >Evite incluir dados pessoais desnecessários nas descrições de itens,
+                            mensagens ou observações de entrega.</p
+                        >
+                    </section>
+                    <section id="purposes" class="information-chapter">
+                        <div class="information-chapter__label"
+                            ><span>03</span><p class="public-eyebrow">FINALIDADES</p></div
+                        ><h2>Dados com uma função.</h2
+                        ><ul class="privacy-list"
+                            ><li>Criar e autenticar contas e recuperar o acesso por e-mail.</li
+                            ><li
+                                >Analisar o cadastro e os documentos de instituições antes de
+                                liberar o acesso.</li
+                            ><li
+                                >Conectar propostas a necessidades, organizar entregas e registrar o
+                                recebimento.</li
+                            ><li
+                                >Enviar avisos sobre atualizações relevantes no site e por
+                                e-mail.</li
+                            ><li
+                                >Proteger as contas, limitar abusos e manter o histórico das
+                                operações.</li
+                            ></ul
+                        >
+                        <p
+                            >As informações necessárias ao serviço são tratadas para sua execução.
+                            Segurança e prevenção de abusos podem envolver interesse legítimo,
+                            respeitados os direitos do titular. Obrigações legais podem justificar a
+                            manutenção de determinados registros. Uma nova finalidade deve ser
+                            informada e ter uma base legal adequada.</p
+                        >
+                    </section>
+                    <section id="sharing" class="information-chapter">
+                        <div class="information-chapter__label"
+                            ><span>04</span><p class="public-eyebrow">COMPARTILHAMENTO</p></div
+                        ><h2>Quem participa do fluxo.</h2
+                        ><p
+                            >Doadores e instituições envolvidos em uma proposta acessam as
+                            informações necessárias para avaliá-la e acompanhar a entrega. A equipe
+                            responsável pelo cadastro institucional utiliza os documentos para
+                            análise; esses arquivos não são publicados nas páginas do site.</p
+                        >
+                        <ul class="privacy-list"
+                            ><li
+                                ><strong>Google:</strong> autenticação quando você escolhe essa
+                                forma de entrada. As fontes do site também são carregadas pelo
+                                Google Fonts, que recebe dados de conexão do navegador.</li
+                            ><li
+                                ><strong>BrasilAPI:</strong> consulta do CNPJ para preencher
+                                informações públicas da instituição. Isso não substitui a análise
+                                dos documentos.</li
+                            ><li
+                                ><strong>Serviços de infraestrutura e e-mail:</strong> hospedagem,
+                                armazenamento e entrega de mensagens. O provedor de envio recebe o
+                                endereço do destinatário e o conteúdo necessário à comunicação.</li
+                            ></ul
+                        >
+                        <p
+                            >Esses serviços podem processar dados fora do Brasil, conforme sua
+                            infraestrutura e suas próprias políticas. O compartilhamento também pode
+                            ocorrer para atender obrigações legais ou determinações de autoridades
+                            competentes.</p
+                        >
+                    </section>
+                    <section id="protection" class="information-chapter">
+                        <div class="information-chapter__label"
+                            ><span>05</span><p class="public-eyebrow">PROTEÇÃO E COOKIES</p></div
+                        ><h2>Cuidados com seu acesso.</h2
+                        ><p
+                            >Senhas locais são armazenadas como hash, sem guardar seu texto
+                            original. Documentos institucionais ficam em armazenamento privado,
+                            separado dos arquivos públicos. O acesso aos painéis depende de
+                            autenticação e do perfil da conta.</p
+                        ><p
+                            >A recuperação de senha utiliza um link temporário de uso único. Não
+                            compartilhe esse link ou sua senha com outras pessoas.</p
+                        ><p
+                            >Cookies de sessão mantêm seu acesso e o fluxo de autenticação. São
+                            necessários para essas funções e não são usados pelo ReSource para
+                            publicidade. Bloqueá-los pode impedir o login. Nenhuma medida elimina
+                            todos os riscos; mantenha sua conta e seu dispositivo protegidos.</p
+                        >
+                    </section>
+                    <section id="retention" class="information-chapter">
+                        <div class="information-chapter__label"
+                            ><span>06</span><p class="public-eyebrow">ARMAZENAMENTO</p></div
+                        ><h2>O tempo também faz parte do cuidado.</h2
+                        ><p
+                            >Dados de cadastro, documentos e históricos são armazenados para a
+                            operação da conta, a análise institucional e o acompanhamento das
+                            doações. A conservação considera a finalidade do tratamento e os
+                            registros necessários à segurança e às obrigações legais.</p
+                        ><p
+                            >Links de recuperação expiram e os registros temporários desse fluxo são
+                            limpos periodicamente. Solicitações de correção ou exclusão devem ser
+                            encaminhadas ao canal de privacidade e são analisadas pelo responsável,
+                            considerando as hipóteses legais de conservação.</p
+                        >
+                    </section>
+                    <section id="rights" class="information-chapter">
+                        <div class="information-chapter__label"
+                            ><span>07</span><p class="public-eyebrow">SEUS DIREITOS</p></div
+                        ><h2>Você pode perguntar e solicitar.</h2
+                        ><p
+                            >Nos termos da LGPD, você pode solicitar confirmação e acesso aos dados,
+                            correção, informações sobre compartilhamento, portabilidade nas
+                            condições aplicáveis, anonimização, bloqueio ou eliminação de dados
+                            inadequados e revogação de consentimento, quando essa for a base
+                            utilizada. A exclusão pode estar sujeita às hipóteses legais de
+                            conservação.</p
+                        ><p
+                            >Envie sua solicitação ao contato abaixo. Podemos pedir informações
+                            proporcionais para confirmar sua identidade antes de atender, protegendo
+                            seus dados de acessos indevidos.</p
+                        ><p class="privacy-reference"
+                            >Consulte a
+                            <a
+                                href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm"
+                                >Lei Geral de Proteção de Dados</a
+                            >
+                            e as
+                            <a
+                                href="https://www.gov.br/anpd/pt-br/assuntos/titular-de-dados/direito-dos-titulares"
+                                >orientações da ANPD sobre seus direitos</a
+                            >.</p
+                        >
+                    </section>
+                    <section id="contact" class="information-chapter privacy-contact">
+                        <div class="information-chapter__label"
+                            ><span>08</span><p class="public-eyebrow">CONTATO</p></div
+                        ><h2>Fale com o ReSource.</h2
+                        ><p
+                            >Para dúvidas sobre esta política ou solicitações referentes aos seus
+                            dados, utilize nosso canal de privacidade.</p
+                        >
+                        <dl
+                            ><div
+                                ><dt>Canal de privacidade</dt
+                                ><dd
+                                    ><a
+                                        th:href="${'mailto:' + privacyContact.contactEmail}"
+                                        th:text="${privacyContact.contactEmail}"
+                                        >resource.company.rc@gmail.com</a
+                                    ></dd
+                                ></div
+                            ></dl
+                        >
+                        <p class="privacy-reference"
+                            >Esta política pode ser atualizada quando o funcionamento do serviço
+                            mudar. A data no início da página identifica a versão publicada.</p
+                        >
+                    </section>
+                </article>
+            </div>
+        </th:block>
+    </body>
+</html>

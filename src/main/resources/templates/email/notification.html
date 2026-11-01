@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html
+    lang="pt-BR"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{email/layout :: message(${title}, ${message}, ~{::content})}"
+>
+    <body>
+        <th:block th:fragment="content">
+            <h1
+                class="email-title"
+                th:text="${title}"
+                style="
+                    margin: 0 0 16px;
+                    font-size: 28px;
+                    line-height: 36px;
+                    letter-spacing: -0.6px;
+                    color: #0f172a;
+                "
+                >Atualização da doação</h1
+            >
+            <p
+                th:text="${message}"
+                style="
+                    margin: 0 0 24px;
+                    font-size: 16px;
+                    line-height: 27px;
+                    color: #475569;
+                    white-space: pre-line;
+                "
+                >Acompanhe sua doação.</p
+            >
+            <table th:replace="~{email/action :: button(${targetUrl}, ${actionLabel})}"></table>
+            <th:block
+                th:replace="~{email/action :: fallback(${targetUrl})}"
+            ></th:block>
+        </th:block>
+    </body>
+</html>

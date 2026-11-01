@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <th:block th:fragment="postalDetails(donation)" th:if="${donation.deliveryMethod == 'carrier'}">
+            <div>
+                <dt>Tipo de entrega</dt>
+                <dd>Envio pelos Correios</dd>
+            </div>
+            <div>
+                <dt>Postagem informada em</dt>
+                <dd th:text="${donation.postedOnLabel}"></dd>
+            </div>
+            <div class="ong-donation-summary-wide">
+                <dt>Código de rastreamento</dt>
+                <dd th:text="${donation.trackingCode}"></dd>
+            </div>
+        </th:block>
+        <th:block th:fragment="deliveryDetails(donation)" th:if="${donation.deliveryMethod != null}">
+            <th:block th:replace="~{fragments/donation/recipient-summary :: postalDetails(${donation})}"></th:block>
+            <th:block th:if="${donation.deliveryMethod == 'in_person'}">
+                <div><dt>Modalidade de entrega</dt><dd>Entrega presencial</dd></div>
+                <div><dt>Data da entrega informada pelo doador</dt><dd th:text="${donation.deliveredOnLabel ?: 'Ainda não informada'}"></dd></div>
+                <div class="ong-donation-summary-wide"><dt>Recebedor informado pelo doador</dt><dd th:text="${donation.receivedByName ?: 'Ainda não informado'}"></dd></div>
+            </th:block>
+            <div class="ong-donation-summary-wide" th:if="${!#strings.isEmpty(donation.deliveryNotes)}"><dt>Observações da entrega informadas pelo doador</dt><dd th:text="${donation.deliveryNotes}"></dd></div>
+            <div class="ong-donation-summary-wide"><dt>Recebimento confirmado pela ONG</dt><dd th:text="${donation.receiptConfirmedLabel ?: 'Aguardando confirmação'}"></dd></div>
+        </th:block>
+    </body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <a class="brand" th:fragment="brand(homePath, label)" th:href="@{${homePath}}" th:attr="aria-label=${label}">
+            <img th:src="@{/images/shared/leaf.svg}" alt="" class="brand__mark">
+            <span>ReSource</span>
+        </a>
+        <div class="nav-actions" th:fragment="actions(name, role, label)">
+            <details class="notification-menu" data-notifications>
+                <summary class="icon-button notification-trigger" aria-label="Notificações" aria-expanded="false" aria-controls="notification-panel" title="Notificações">
+                    <img th:src="@{/images/shared/notification.svg}" alt="">
+                    <span class="notification-badge" data-notification-count hidden aria-hidden="true"></span>
+                </summary>
+                <section class="notification-panel" id="notification-panel" aria-label="Suas notificações">
+                    <div class="notification-panel__header"><h2>Notificações</h2><button type="button" class="notification-text-button" data-read-all disabled>Marcar todas como lidas</button></div>
+                    <p class="notification-status" data-notification-status role="status" aria-live="polite">Carregando suas atualizações…</p>
+                    <ul class="notification-list" data-notification-list></ul>
+                    <div class="notification-panel__footer"><button type="button" class="notification-text-button" data-notification-previous disabled>Anterior</button><span data-notification-page>Página 1</span><button type="button" class="notification-text-button" data-notification-next disabled>Próxima</button></div>
+                    <button type="button" class="notification-retry notification-text-button" data-notification-retry hidden>Tentar novamente</button>
+                </section>
+            </details>
+            <details class="profile-menu">
+                <summary class="profile" th:attr="aria-label=${label + ': ' + name},title=${name + (role == null ? '' : ' — ' + role)}"
+                    th:with="cleanName=${name == null ? '' : name.trim().replaceAll('\s+', ' ')},words=${#strings.arraySplit(#strings.isEmpty(cleanName) ? '?' : cleanName, ' ')}">
+                    <span class="profile__avatar" aria-hidden="true"
+                        th:text="${#strings.toUpperCase(#strings.substring(words[0], 0, 1) + (words.length > 1 ? #strings.substring(words[words.length - 1], 0, 1) : ''))}">JS</span>
+                    <span class="profile__identity">
+                        <strong th:text="${name}">ONG EcoVida</strong>
+                        <small th:if="${role != null}" th:text="${role}">Administrador</small>
+                    </span>
+                    <img class="profile__chevron" th:src="@{/images/shared/chevron.svg}" alt="">
+                </summary>
+                <form class="profile-menu__logout" method="post" th:action="@{/logout}">
+                    <button type="submit"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H5v14h4M14 8l4 4-4 4M9 12h9"/></svg><span>Sair da conta</span></button>
+                </form>
+            </details>
+        </div>
+    </body>
+</html>

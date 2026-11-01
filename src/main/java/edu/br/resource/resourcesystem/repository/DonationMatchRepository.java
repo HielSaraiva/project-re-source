@@ -1,0 +1,234 @@
+package edu.br.resource.resourcesystem.repository;
+
+import edu.br.resource.resourcesystem.model.entity.DonationMatch;
+import edu.br.resource.resourcesystem.model.enums.MatchStatus;
+
+import jakarta.persistence.LockModeType;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
+import java.util.Optional;
+
+@Repository
+public interface DonationMatchRepository
+        extends JpaRepository<DonationMatch, Integer>, JpaSpecificationExecutor<DonationMatch> {
+    @Override
+    @EntityGraph(
+            attributePaths = {
+                "donation.donor",
+                "donation.donationPackage.item.itemType",
+                "necessity.institution",
+                "necessity.itemType"
+            })
+    Page<DonationMatch> findAll(Specification<DonationMatch> specification, Pageable pageable);
+
+    @EntityGraph(
+            attributePaths = {
+                "donation",
+                "donation.donor",
+                "donation.donationPackage.item.itemType",
+                "necessity",
+                "necessity.itemType",
+                "necessity.institution"
+            })
+    Optional<DonationMatch> findByProtocolAndDonationDonorId(String protocol, Integer donorId);
+
+    @EntityGraph(
+            attributePaths = {
+                "donation",
+                "donation.donor",
+                "donation.donationPackage.item.itemType",
+                "necessity",
+                "necessity.itemType",
+                "necessity.institution"
+            })
+    Optional<DonationMatch> findByProtocolAndNecessityInstitutionId(
+            String protocol, Integer institutionId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select m from DonationMatch m where m.protocol = :protocol")
+    Optional<DonationMatch> findForUpdate(@Param("protocol") String protocol);
+
+    @Modifying(flushAutomatically = true)
+    @Query(
+            value = "update matches set updated_at = clock_timestamp() where id = :matchId",
+            nativeQuery = true)
+    void recordFlowUpdate(@Param("matchId") Integer matchId);
+
+    Optional<DonationMatch> findByProtocol(String protocol);
+
+    @EntityGraph(attributePaths = {"donation", "necessity"})
+    java.util.List<DonationMatch> findAllByDonationId(Integer donationId);
+
+    @EntityGraph(attributePaths = {"necessity", "necessity.institution"})
+    java.util.List<DonationMatch> findAllByDonationIdIn(Collection<Integer> donationIds);
+
+    interface InventoryTotals {
+        Integer getDonationId();
+
+        Long getReceivedQuantity();
+
+        Long getReservedQuantity();
+
+        Long getActiveCount();
+
+        Long getProposalCount();
+    }
+
+    @Query(
+            """
+            select m.donation.id as donationId,
+              sum(case when m.status = :completed then m.allocatedQuantity else 0 end) as receivedQuantity,
+              sum(case when m.status <> :completed and m.status <> :rejected and m.status <> :cancelled then m.allocatedQuantity else 0 end) as reservedQuantity,
+              sum(case when m.status <> :completed and m.status <> :rejected and m.status <> :cancelled then 1 else 0 end) as activeCount,
+              count(m) as proposalCount
+            from DonationMatch m where m.donation.id in :ids group by m.donation.id
+            """)
+    java.util.List<InventoryTotals> summarizeInventory(
+            @Param("ids") Collection<Integer> ids,
+            @Param("completed") MatchStatus completed,
+            @Param("rejected") MatchStatus rejected,
+            @Param("cancelled") MatchStatus cancelled);
+
+    @EntityGraph(attributePaths = {"necessity", "necessity.institution"})
+    Page<DonationMatch> findByDonationIdAndDonationDonorId(
+            Integer donationId, Integer donorId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"necessity", "necessity.institution"})
+    Page<DonationMatch> findByDonationIdAndDonationDonorIdAndStatusIn(
+            Integer donationId,
+            Integer donorId,
+            Collection<MatchStatus> statuses,
+            Pageable pageable);
+
+    boolean existsByDonationIdAndNecessityIdAndStatusIn(
+            Integer donationId, Integer necessityId, Collection<MatchStatus> statuses);
+
+    boolean existsByNecessityId(Integer necessityId);
+
+    boolean existsByNecessityIdAndStatusNotIn(
+            Integer necessityId, Collection<MatchStatus> statuses);
+
+    interface NecessityTotals {
+        Integer getNecessityId();
+
+        Long getReceivedQuantity();
+
+        Long getReservedQuantity();
+
+        Long getBlockingProposals();
+
+        Long getProposalCount();
+    }
+
+    @Query(
+            """
+            select m.necessity.id as necessityId,
+              sum(case when m.status = :completed then m.allocatedQuantity else 0 end) as receivedQuantity,
+              sum(case when m.status <> :completed and m.status <> :rejected and m.status <> :cancelled
+                  then m.allocatedQuantity else 0 end) as reservedQuantity,
+              sum(case when m.status <> :cancelled and m.status <> :rejected then 1 else 0 end) as blockingProposals,
+              count(m) as proposalCount
+            from DonationMatch m where m.necessity.id in :ids group by m.necessity.id
+            """)
+    java.util.List<NecessityTotals> summarizeNecessities(
+            @Param("ids") Collection<Integer> ids,
+            @Param("completed") MatchStatus completed,
+            @Param("rejected") MatchStatus rejected,
+            @Param("cancelled") MatchStatus cancelled);
+
+    long countByNecessityInstitutionIdAndStatus(Integer institutionId, MatchStatus status);
+
+    @Query(
+            "select coalesce(sum(m.allocatedQuantity), 0) from DonationMatch m where m.donation.id"
+                    + " = :donationId and m.status in :statuses")
+    long sumAllocatedByDonation(
+            @Param("donationId") Integer donationId,
+            @Param("statuses") Collection<MatchStatus> statuses);
+
+    @Query(
+            "select coalesce(sum(m.allocatedQuantity), 0) from DonationMatch m where m.necessity.id"
+                    + " = :necessityId and m.status in :statuses")
+    long sumAllocatedByNecessity(
+            @Param("necessityId") Integer necessityId,
+            @Param("statuses") Collection<MatchStatus> statuses);
+
+    default Page<DonationMatch> findForInstitutionOrderedByDeadline(
+            Integer institutionId,
+            Integer necessityId,
+            MatchStatus status,
+            String searchPattern,
+            Pageable pageable) {
+        return findForInstitutionOrderedByDeadline(
+                institutionId,
+                necessityId,
+                status != null,
+                status == null ? MatchStatus.AWAITING_ACCEPTANCE : status,
+                searchPattern,
+                MatchStatus.AWAITING_ACCEPTANCE,
+                MatchStatus.AWAITING_DELIVERY,
+                MatchStatus.AWAITING_SHIPMENT,
+                MatchStatus.ACCEPTED,
+                pageable);
+    }
+
+    @EntityGraph(
+            attributePaths = {
+                "donation.donor",
+                "donation.donationPackage.item.itemType",
+                "necessity.institution",
+                "necessity.itemType"
+            })
+    @Query(
+            value =
+                    """
+                    select m from DonationMatch m left join Delivery d on d.match = m
+                    where m.necessity.institution.id = :institutionId
+                      and (:necessityId is null or m.necessity.id = :necessityId)
+                      and (:filterByStatus = false or m.status = :status)
+                      and (:searchPattern is null or lower(m.protocol) like :searchPattern escape '\\'
+                        or lower(m.donation.donor.fullName) like :searchPattern escape '\\'
+                        or lower(m.offeredTitle) like :searchPattern escape '\\'
+                        or lower(m.necessity.itemType.name) like :searchPattern escape '\\'
+                        or lower(m.necessity.institution.legalName) like :searchPattern escape '\\')
+                    order by case
+                      when m.status = :awaitingAcceptance then m.acceptanceDeadline
+                      when m.status = :awaitingDelivery then d.inPersonDeadline
+                      when m.status = :awaitingShipment or m.status = :accepted then coalesce(d.shippingDeadline, m.deliveryMethodDeadline)
+                      else null end asc nulls last, m.createdAt desc, m.id desc
+                    """,
+            countQuery =
+                    """
+                    select count(m) from DonationMatch m
+                    where m.necessity.institution.id = :institutionId
+                      and (:necessityId is null or m.necessity.id = :necessityId)
+                      and (:filterByStatus = false or m.status = :status)
+                      and (:searchPattern is null or lower(m.protocol) like :searchPattern escape '\\'
+                        or lower(m.donation.donor.fullName) like :searchPattern escape '\\'
+                        or lower(m.offeredTitle) like :searchPattern escape '\\'
+                        or lower(m.necessity.itemType.name) like :searchPattern escape '\\'
+                        or lower(m.necessity.institution.legalName) like :searchPattern escape '\\')
+                    """)
+    Page<DonationMatch> findForInstitutionOrderedByDeadline(
+            @Param("institutionId") Integer institutionId,
+            @Param("necessityId") Integer necessityId,
+            @Param("filterByStatus") boolean filterByStatus,
+            @Param("status") MatchStatus status,
+            @Param("searchPattern") String searchPattern,
+            @Param("awaitingAcceptance") MatchStatus awaitingAcceptance,
+            @Param("awaitingDelivery") MatchStatus awaitingDelivery,
+            @Param("awaitingShipment") MatchStatus awaitingShipment,
+            @Param("accepted") MatchStatus accepted,
+            Pageable pageable);
+}

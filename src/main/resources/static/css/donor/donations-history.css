@@ -1,0 +1,425 @@
+.donations-page {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 40px 80px 80px;
+}
+.donations-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+.donations-heading h1 {
+    margin: 0;
+    font:
+        700 var(--font-page) / 1.2 Outfit,
+        sans-serif;
+}
+.donations-heading p {
+    margin: 8px 0 0;
+    color: var(--slate);
+    line-height: 1.5;
+}
+.donations-add {
+    flex-shrink: 0;
+}
+.donations-filters {
+    display: grid;
+    grid-template-columns: minmax(180px, 2fr) repeat(3, minmax(120px, 1fr));
+    gap: 16px;
+    align-items: end;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+}
+.donations-filters label {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    color: var(--ink);
+    font-size: var(--font-caption);
+    font-weight: 600;
+}
+.donations-filters :is(input, select),
+.inventory-field :is(input, select) {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid var(--color-control-border);
+    border-radius: 8px;
+    color: var(--ink);
+    background: var(--surface);
+    font:
+        400 var(--font-body) / 1.5 Inter,
+        sans-serif;
+}
+.donations-filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+}
+.donations-results {
+    color: var(--slate);
+    font-size: var(--font-caption);
+    margin: 0 0 16px;
+}
+.donations-success {
+    padding: 16px;
+    margin-bottom: 24px;
+    border: 1px solid #a7f3d0;
+    border-radius: 8px;
+    background: var(--color-success-surface);
+    color: var(--color-success-dark);
+    line-height: 1.5;
+}
+.donations-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+.inventory-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+}
+.inventory-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.inventory-icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: var(--color-success-surface);
+}
+.inventory-icon img {
+    width: 24px;
+    height: 24px;
+}
+.inventory-identifier {
+    margin: 16px 0 0;
+    color: var(--slate);
+    font-size: var(--font-caption);
+    font-weight: 600;
+    line-height: 1.5;
+}
+.inventory-card h2 {
+    margin: 20px 0 12px;
+    overflow-wrap: anywhere;
+    font-size: var(--font-subtitle);
+    line-height: 1.4;
+}
+.inventory-identifier + h2 {
+    margin-top: 6px;
+}
+.inventory-status {
+    align-self: flex-start;
+    border-radius: 999px;
+    padding: 5px 10px;
+    margin: 0 0 20px;
+    color: #065f46;
+    background: #d1fae5;
+    font-size: var(--font-caption);
+}
+.inventory-status--cancelled {
+    color: var(--slate);
+    background: var(--background);
+}
+.inventory-quantities {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0 0 24px;
+}
+.inventory-quantities > div {
+    min-width: 0;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--background);
+}
+.inventory-quantities dt {
+    color: var(--slate);
+    font-size: var(--font-caption);
+    line-height: 1.5;
+}
+.inventory-quantities dd {
+    margin: 6px 0 0;
+    font-weight: 700;
+}
+.inventory-quantities--completed {
+    grid-template-columns: 1fr;
+}
+.inventory-quantities .inventory-quantities__available {
+    background: var(--color-success-surface);
+    border: 1px solid #a7f3d0;
+}
+.inventory-card__actions {
+    display: grid;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+.inventory-card__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.inventory-card__buttons > button {
+    flex: 1;
+}
+.inventory-restriction {
+    margin: 0;
+    color: var(--slate);
+    font-size: var(--font-caption);
+    line-height: 1.6;
+}
+.inventory-inline-action {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--color-success-dark);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-size: var(--font-caption);
+}
+.inventory-empty {
+    display: grid;
+    justify-items: center;
+    gap: 16px;
+    padding: 48px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-align: center;
+}
+.inventory-fields {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+.inventory-fields:disabled {
+    opacity: 0.7;
+}
+.inventory-field {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    font-weight: 600;
+}
+.inventory-field-hint {
+    color: var(--slate);
+    font-weight: 400;
+    font-size: var(--font-caption);
+    line-height: 1.5;
+}
+.inventory-recovery {
+    display: grid;
+    gap: 12px;
+}
+.inventory-delete-summary {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 16px;
+    border: 1px solid var(--border);
+    background: var(--background);
+    border-radius: 8px;
+}
+.inventory-delete-summary dt {
+    color: var(--slate);
+    font-size: var(--font-caption);
+}
+.inventory-delete-summary dd {
+    margin: 4px 0 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.donations-page :focus-visible {
+    outline: 2px solid var(--color-success);
+    outline-offset: 3px;
+}
+@media (max-width: 1100px) {
+    .donations-page {
+        padding: 32px 28px 60px;
+    }
+    .donations-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .donations-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 600px) {
+    .donations-page {
+        padding: 28px 18px 48px;
+    }
+    .donations-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .donations-grid,
+    .donations-filters {
+        grid-template-columns: 1fr;
+    }
+    .inventory-card {
+        padding: 20px;
+    }
+    .donations-filter-actions > * {
+        flex: 1;
+    }
+}
+
+.donations-filters {
+    grid-template-columns: minmax(200px, 2fr) repeat(3, minmax(140px, 1fr));
+}
+.inventory-category {
+    padding: 6px 10px;
+    color: var(--slate);
+    background: var(--color-neutral-surface);
+    border-radius: 999px;
+    font-size: var(--font-caption);
+}
+.inventory-status {
+    color: var(--slate);
+    background: var(--color-neutral-surface);
+}
+.inventory-status--completed {
+    color: #065f46;
+    background: #d1fae5;
+}
+.inventory-status--in_transit {
+    color: #1e40af;
+    background: #dbeafe;
+}
+.inventory-status--awaiting_acceptance,
+.inventory-status--awaiting_shipment,
+.inventory-status--awaiting_delivery,
+.inventory-status--awaiting_ngo_confirmation,
+.inventory-status--accepted {
+    color: #92400e;
+    background: #fef3c7;
+}
+.inventory-primary-actions {
+    display: grid;
+    gap: 8px;
+}
+.inventory-primary-actions > .ui-button {
+    width: 100%;
+}
+.inventory-field textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    padding: 12px;
+    border: 1px solid var(--color-control-border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 400;
+    line-height: 1.5;
+}
+.inventory-field [aria-invalid='true'] {
+    border-color: var(--color-danger);
+}
+.inventory-field-error {
+    color: var(--color-danger);
+    font-size: var(--font-caption);
+    font-weight: 400;
+    line-height: 1.5;
+}
+.inventory-field-error[hidden] {
+    display: none;
+}
+.inventory-fields-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+.inventory-proposals {
+    display: grid;
+    gap: 16px;
+}
+.inventory-proposal {
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+}
+.inventory-proposal__heading {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+.inventory-proposal p {
+    margin: 12px 0;
+    color: var(--slate);
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+.inventory-proposal dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin: 12px 0;
+}
+.inventory-proposal dt {
+    color: var(--slate);
+    font-size: var(--font-caption);
+}
+.inventory-proposal dd {
+    margin: 4px 0 0;
+    font-weight: 600;
+}
+.inventory-dialog-pager {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.inventory-dialog-pager button {
+    min-height: 44px;
+}
+.inventory-dialog-pager p {
+    margin: 0;
+    color: var(--slate);
+    font-size: var(--font-caption);
+}
+@media (max-width: 1100px) {
+    .donations-filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 600px) {
+    .donations-filters,
+    .inventory-fields-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+#inventory-proposals-dialog .ui-dialog-description {
+    overflow-wrap: anywhere;
+}

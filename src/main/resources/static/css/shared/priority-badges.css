@@ -1,0 +1,14 @@
+.priority--high {
+    color: #ef4444;
+    background: #fee2e2;
+}
+
+.priority--medium {
+    color: #f59e0b;
+    background: var(--color-warning-surface);
+}
+
+.priority--low {
+    color: var(--color-brand);
+    background: var(--color-success-soft);
+}
