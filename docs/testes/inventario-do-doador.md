@@ -30,3 +30,9 @@ O rascunho de cadastro fica na sessão da aba, separado por doador, para que um 
 - Resposta atrasada de outro registro: sem contaminação do modal recém-aberto.
 - Resposta de cadastro perdida após persistência: retry com a mesma chave, uma única doação criada.
 - Consulta paginada de propostas e isolamento por proprietário exercitados nos testes de integração. Não representa validação completa de todos os fluxos do MVP em navegador.
+
+### Histórico da entrega presencial
+
+O evento “Entrega informada” também exibe “Recebedor informado pelo doador”, usando o nome já persistido na entrega. O responsável pelo evento continua sendo o doador; a confirmação da ONG permanece um evento separado. Isso contempla registros anteriores sem reescrever o histórico; sem nome registrado, nenhum recebedor é inventado.
+
+Regressão adicionada: informar entrega presencial, conferir o nome e o responsável no evento, renderizar a página da ONG antes da confirmação, confirmar recebimento e renderizar a página de conclusão do doador com o nome preservado.

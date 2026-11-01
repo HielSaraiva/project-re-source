@@ -40,6 +40,7 @@ class DonorInventoryIntegrationTest {
     @Autowired UserRepository users;
     @Autowired DonationRepository donations;
     @Autowired DonationMatchRepository matches;
+    @Autowired DeliveryRepository deliveries;
     @Autowired JdbcTemplate db;
     @Autowired MockMvc mvc;
     @Autowired TransactionTemplate tx;
@@ -116,6 +117,80 @@ class DonorInventoryIntegrationTest {
             Integer id, int quantity) {
         return workflow.propose(
                 donor.getId(), new SubmitProposalRequest(needId, id, quantity, null));
+    }
+
+    @Test
+    void personalDeliveryHistoryShowsReportedRecipientBeforeAndAfterConfirmation()
+            throws Exception {
+        var proposal = propose(create(), 4);
+        workflow.accept(ong.getId(), proposal.protocol());
+        tx.executeWithoutResult(
+                s -> {
+                    var match = matches.findById(proposal.id()).orElseThrow();
+                    match.setStatus(MatchStatus.AWAITING_DELIVERY);
+                    deliveries.save(
+                            Delivery.builder()
+                                    .match(match)
+                                    .method(DeliveryMethod.IN_PERSON)
+                                    .methodConfirmedAt(java.time.Instant.now().minusSeconds(60))
+                                    .inPersonDeadline(java.time.Instant.now().plusSeconds(86400))
+                                    .deliveryAddress("Endereço fictício de teste")
+                                    .build());
+                });
+        var reported =
+                workflow.reportDelivery(
+                        donor.getId(),
+                        proposal.protocol(),
+                        new ConfirmInPersonDeliveryRequest(
+                                java.time.LocalDate.now(java.time.ZoneId.of("America/Fortaleza")),
+                                "  Maria Oliveira  ",
+                                null,
+                                true));
+        var event =
+                reported.history().stream()
+                        .filter(e -> e.type() == MatchEventType.DELIVERY_REPORTED)
+                        .findFirst()
+                        .orElseThrow();
+        assertEquals(donor.getFullName(), event.actor());
+        assertTrue(
+                event.description().contains("Recebedor informado pelo doador: Maria Oliveira."));
+        assertTrue(event.description().contains("Aguarda conferência e confirmação da ONG"));
+        assertTrue(
+                reported.history().stream()
+                        .filter(e -> e.type() != MatchEventType.DELIVERY_REPORTED)
+                        .noneMatch(
+                                e ->
+                                        e.description() != null
+                                                && e.description().contains("Maria Oliveira")));
+        mvc.perform(
+                        get("/institution/donations/" + proposal.protocol())
+                                .with(user(ong.getEmail()).roles("ONG")))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content()
+                                .string(
+                                        org.hamcrest.Matchers.containsString(
+                                                "Recebedor informado pelo doador: Maria"
+                                                        + " Oliveira.")));
+        var completed = workflow.receive(ong.getId(), proposal.protocol());
+        assertTrue(
+                completed.history().stream()
+                        .anyMatch(
+                                e ->
+                                        e.type() == MatchEventType.DELIVERY_REPORTED
+                                                && e.description().contains("Maria Oliveira")));
+        mvc.perform(
+                        get("/donor/donation/completed")
+                                .servletPath("/donor/donation/completed")
+                                .param("protocol", proposal.protocol())
+                                .with(user(donor.getEmail()).roles("DONOR")))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content()
+                                .string(
+                                        org.hamcrest.Matchers.containsString(
+                                                "Recebedor informado pelo doador: Maria"
+                                                        + " Oliveira.")));
     }
 
     @Test

@@ -262,7 +262,7 @@ public class MatchDtoMapper {
                                                 e.getActorName() == null
                                                         ? "Sistema"
                                                         : e.getActorName(),
-                                                e.getNotes()))
+                                                historyDescription(e, d)))
                         .toList();
         var recipient = recipient(m.getNecessity().getInstitution());
         return new MatchDetailResponse(
@@ -289,6 +289,21 @@ public class MatchDtoMapper {
                 delivery,
                 events,
                 actions);
+    }
+
+    private String historyDescription(MatchStatusHistory event, Delivery delivery) {
+        // Read the persisted delivery so older events also display their recipient.
+        // The event actor remains the donor; this name is not the NGO's confirmation.
+        if (event.getEventType() != MatchEventType.DELIVERY_REPORTED
+                || delivery == null
+                || delivery.getMethod() != DeliveryMethod.IN_PERSON
+                || delivery.getReceivedByName() == null
+                || delivery.getReceivedByName().isBlank()) return event.getNotes();
+        String recipient =
+                "Recebedor informado pelo doador: " + delivery.getReceivedByName().strip() + ".";
+        return event.getNotes() == null || event.getNotes().isBlank()
+                ? recipient
+                : event.getNotes() + " " + recipient;
     }
 
     private LocalDate date(Instant at) {
