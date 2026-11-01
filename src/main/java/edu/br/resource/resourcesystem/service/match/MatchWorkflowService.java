@@ -88,6 +88,7 @@ public class MatchWorkflowService {
         lockPolicy.apply();
         var donation =
                 donations.findForUpdate(request.donationId(), donorId).orElseThrow(this::missing);
+        if (donation.getDeletedAt() != null) throw missing();
         var need = necessities.findForUpdate(request.necessityId()).orElseThrow(this::missing);
         if (need.getDeletedAt() != null
                 || need.getStatus() != NecessityStatus.ACTIVE

@@ -1,56 +1,38 @@
 package edu.br.resource.resourcesystem.dto.response;
 
-import java.time.Instant;
-import java.time.ZoneId;
+import edu.br.resource.resourcesystem.model.enums.*;
+
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 public record DonationHistoryResponse(
         Integer id,
         String itemName,
         String iconPath,
+        ItemCategory category,
         String categoryLabel,
-        String condition,
+        ItemCondition condition,
         String description,
         int quantity,
         long availableQuantity,
+        long reservedQuantity,
+        long receivedQuantity,
         Instant createdAt,
-        String status,
+        DonationStatus status,
         String statusLabel,
-        String recipientName,
-        String proposalProtocol,
-        String proposalCaption,
-        long otherActiveProposals,
-        String actionLabel,
-        String actionUrl,
+        long proposalCount,
+        long activeProposals,
         boolean editable,
-        boolean deletable) {
-    private static final DateTimeFormatter DATE_FORMAT =
-            DateTimeFormatter.ofPattern("dd/MM/yyyy").withZone(ZoneId.of("America/Fortaleza"));
-
+        boolean deletable,
+        String editRestriction,
+        String deleteRestriction,
+        long version,
+        boolean archived) {
     public String dateLabel() {
-        return createdAt == null ? "—" : DATE_FORMAT.format(createdAt);
-    }
-
-    public long committedQuantity() {
-        return quantity - availableQuantity;
-    }
-
-    public boolean hasProposal() {
-        return proposalProtocol != null;
-    }
-
-    public String quantityLabel() {
-        return quantity
-                + (quantity == 1 ? " unidade" : " unidades")
-                + " · "
-                + availableQuantity
-                + (availableQuantity == 1 ? " disponível" : " disponíveis");
-    }
-
-    public String otherProposalsLabel() {
-        return "+" + otherActiveProposals
-                + (otherActiveProposals == 1
-                        ? " outra proposta ativa"
-                        : " outras propostas ativas");
+        return createdAt == null
+                ? "—"
+                : DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                        .withZone(ZoneId.of("America/Fortaleza"))
+                        .format(createdAt);
     }
 }

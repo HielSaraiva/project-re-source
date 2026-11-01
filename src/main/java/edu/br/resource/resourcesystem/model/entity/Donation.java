@@ -29,6 +29,14 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @Table(name = "donations")
 public class Donation extends AuditedEntity {
+    // Revision of the whole inventory aggregate, incremented under the donation lock
+    // even when only the associated item or package changes.
+    @Column(name = "edit_version", nullable = false)
+    private long editVersion;
+
+    @Column(name = "deleted_at")
+    private java.time.Instant deletedAt;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "donor_user_id", nullable = false)
     private User donor;

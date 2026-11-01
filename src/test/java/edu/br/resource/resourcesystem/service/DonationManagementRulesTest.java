@@ -42,9 +42,15 @@ class DonationManagementRulesTest {
     }
 
     @Test
-    void deletingIsAllowedOnlyWithoutAnyProposal() {
+    void deletingIsAllowedWithoutProposalsOrWithOnlyCancelledAndRejected() {
         assertTrue(DonationManagementService.canDelete(List.of()));
         for (var status : MatchStatus.values())
-            assertFalse(DonationManagementService.canDelete(List.of(match(status))), status.name());
+            org.junit.jupiter.api.Assertions.assertEquals(
+                    status == MatchStatus.CANCELLED || status == MatchStatus.REJECTED,
+                    DonationManagementService.canDelete(List.of(match(status))),
+                    status.name());
+        assertTrue(
+                DonationManagementService.canDelete(
+                        List.of(match(MatchStatus.CANCELLED), match(MatchStatus.REJECTED))));
     }
 }

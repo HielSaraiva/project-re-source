@@ -1,121 +1,216 @@
 package edu.br.resource.resourcesystem.service;
 
-import edu.br.resource.resourcesystem.dto.response.DonationHistoryResponse;
+import edu.br.resource.resourcesystem.dto.request.DonationHistoryFilterRequest;
+import edu.br.resource.resourcesystem.dto.response.*;
 import edu.br.resource.resourcesystem.model.entity.Donation;
-import edu.br.resource.resourcesystem.model.entity.DonationMatch;
-import edu.br.resource.resourcesystem.model.enums.MatchStatus;
+import edu.br.resource.resourcesystem.model.enums.*;
 import edu.br.resource.resourcesystem.presentation.CategoryIconResolver;
-import edu.br.resource.resourcesystem.repository.DonationMatchRepository;
-import edu.br.resource.resourcesystem.repository.DonationRepository;
-import edu.br.resource.resourcesystem.service.match.DonationStatusPolicy;
+import edu.br.resource.resourcesystem.repository.*;
+import edu.br.resource.resourcesystem.repository.specification.DonationSpecifications;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class DonationHistoryService {
-    private static final Comparator<DonationMatch> NEWEST_FIRST =
-            Comparator.comparing(DonationMatch::getCreatedAt)
-                    .thenComparing(DonationMatch::getId)
-                    .reversed();
-
-    private final DonationRepository donationRepository;
-    private final DonationMatchRepository matchRepository;
+    private final DonationRepository donations;
+    private final DonationMatchRepository matches;
     private final CategoryIconResolver icons;
 
-    public DonationHistoryService(
-            DonationRepository donationRepository,
-            DonationMatchRepository matchRepository,
-            CategoryIconResolver icons) {
-        this.donationRepository = donationRepository;
-        this.matchRepository = matchRepository;
-        this.icons = icons;
+    public Page<DonationHistoryResponse> findDonationsByDonor(
+            Integer donorId, DonationHistoryFilterRequest filter) {
+        var spec =
+                DonationSpecifications.inventory(donorId, filter.archived())
+                        .and(DonationSpecifications.withCategory(filter.category()))
+                        .and(
+                                DonationSpecifications.withStatus(
+                                        filter.completed()
+                                                ? DonationStatus.COMPLETED
+                                                : filter.archived() ? null : filter.status()))
+                        .and(DonationSpecifications.search(filter.query()))
+                        .and(
+                                (root, query, builder) ->
+                                        filter.historical()
+                                                ? builder.conjunction()
+                                                : builder.notEqual(
+                                                        root.get("status"),
+                                                        DonationStatus.COMPLETED));
+        var sort = Sort.by("createdAt").descending().and(Sort.by("id").descending());
+        var page =
+                donations.findAll(
+                        spec,
+                        PageRequest.of(
+                                filter.page() - 1, DonationHistoryFilterRequest.PAGE_SIZE, sort));
+        if (page.isEmpty() && page.getTotalPages() > 0 && filter.page() > 1)
+            page =
+                    donations.findAll(
+                            spec,
+                            PageRequest.of(
+                                    page.getTotalPages() - 1,
+                                    DonationHistoryFilterRequest.PAGE_SIZE,
+                                    sort));
+        var totals = totals(page.getContent().stream().map(Donation::getId).toList());
+        return page.map(d -> response(d, totals.get(d.getId())));
     }
 
-    public Page<DonationHistoryResponse> findDonationsByDonor(Integer donorId, Pageable pageable) {
-        Page<Donation> page = donationRepository.findByDonorId(donorId, pageable);
-        Map<Integer, List<DonationMatch>> matchesByDonation =
-                page.isEmpty()
-                        ? Map.of()
-                        : matchRepository
-                                .findAllByDonationIdIn(
-                                        page.map(Donation::getId).getContent())
-                                .stream()
-                                .collect(
-                                        Collectors.groupingBy(
-                                                match -> match.getDonation().getId()));
-        return page.map(
-                donation ->
-                        toResponse(donation, matchesByDonation.getOrDefault(donation.getId(), List.of())));
+    public DonationHistoryResponse details(Integer donorId, Integer id) {
+        var donation = owned(donorId, id);
+        if (donation.getDeletedAt() != null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Doação não encontrada.");
+        return response(donation, totals(List.of(id)).get(id));
     }
 
-    DonationHistoryResponse toResponse(Donation donation, Collection<DonationMatch> matches) {
-        var item = donation.getDonationPackage().getItem();
-        int quantity = donation.getDonationPackage().getQuantity();
-        long available = Math.max(0, quantity - DonationStatusPolicy.allocatedQuantity(matches));
-        long activeCount = DonationStatusPolicy.activeCount(matches);
+    public static List<MatchStatus> proposalStatuses() {
+        return List.of(
+                MatchStatus.AWAITING_ACCEPTANCE,
+                MatchStatus.AWAITING_SHIPMENT,
+                MatchStatus.AWAITING_DELIVERY,
+                MatchStatus.IN_TRANSIT,
+                MatchStatus.AWAITING_NGO_CONFIRMATION,
+                MatchStatus.COMPLETED,
+                MatchStatus.REJECTED,
+                MatchStatus.CANCELLED);
+    }
 
-        DonationMatch highlighted =
-                DonationStatusPolicy.oldestActive(matches)
-                        .orElseGet(
-                                () ->
-                                        matches.stream()
-                                                .filter(m -> m.getStatus() == MatchStatus.COMPLETED)
-                                                .min(NEWEST_FIRST)
-                                                .orElse(null));
+    public PageResponse<DonationProposalResponse> proposals(Integer donorId, Integer id, int page) {
+        return proposals(donorId, id, page, null);
+    }
 
-        String recipient = null;
-        String protocol = null;
-        String caption = null;
-        String actionLabel = available > 0 && activeCount == 0 ? "Buscar ONGs" : null;
-        String actionUrl = actionLabel == null ? null : "/donor/needs";
-        long others = 0;
+    public PageResponse<DonationProposalResponse> proposals(
+            Integer donorId, Integer id, int requestedPage, MatchStatus status) {
+        owned(donorId, id); // Historical protocols remain readable after logical deletion.
+        if (requestedPage < 1)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Página inválida.");
+        if (status != null && !proposalStatuses().contains(status))
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Status de proposta inválido.");
+        var sort = Sort.by("createdAt").descending().and(Sort.by("id").descending());
+        var page = proposalPage(donorId, id, requestedPage, sort, status);
+        if (page.isEmpty() && page.getTotalPages() > 0 && requestedPage > 1)
+            page = proposalPage(donorId, id, page.getTotalPages(), sort, status);
+        var result =
+                page.map(
+                        m ->
+                                new DonationProposalResponse(
+                                        m.getProtocol(),
+                                        m.getNecessity().getInstitution().getLegalName(),
+                                        m.getAllocatedQuantity(),
+                                        m.getStatus(),
+                                        m.getStatus().getLabel(),
+                                        m.getCreatedAt()));
+        return new PageResponse<>(
+                result.getContent(),
+                result.getNumber() + 1,
+                result.getSize(),
+                result.getTotalElements(),
+                result.getTotalPages());
+    }
 
-        if (highlighted != null) {
-            boolean active = MatchStatus.activeStatuses().contains(highlighted.getStatus());
-            recipient = highlighted.getNecessity().getInstitution().getLegalName();
-            protocol = highlighted.getProtocol();
-            caption =
-                    (active ? "Proposta " : "Última proposta ")
-                            + protocol
-                            + " · "
-                            + highlighted.getStatus().getLabel();
-            others = Math.max(0, activeCount - 1);
-            actionLabel =
-                    highlighted.getStatus() == MatchStatus.AWAITING_SHIPMENT
-                            ? "Continuar envio"
-                            : "Ver detalhes";
-            actionUrl = "/donor/donation/status?protocol=" + protocol;
-        }
+    private Page<edu.br.resource.resourcesystem.model.entity.DonationMatch> proposalPage(
+            Integer donorId, Integer id, int page, Sort sort, MatchStatus status) {
+        var pageable = PageRequest.of(page - 1, 8, sort);
+        if (status == null)
+            return matches.findByDonationIdAndDonationDonorId(id, donorId, pageable);
+        var states =
+                switch (status) {
+                    case AWAITING_ACCEPTANCE ->
+                            Set.of(MatchStatus.PROPOSED, MatchStatus.AWAITING_ACCEPTANCE);
+                    case AWAITING_SHIPMENT ->
+                            Set.of(MatchStatus.ACCEPTED, MatchStatus.AWAITING_SHIPMENT);
+                    default -> Set.of(status);
+                };
+        return matches.findByDonationIdAndDonationDonorIdAndStatusIn(id, donorId, states, pageable);
+    }
 
+    private Donation owned(Integer donorId, Integer id) {
+        return donations
+                .findByIdAndDonorId(id, donorId)
+                .orElseThrow(
+                        () ->
+                                new ResponseStatusException(
+                                        HttpStatus.NOT_FOUND, "Doação não encontrada."));
+    }
+
+    private Map<Integer, DonationMatchRepository.InventoryTotals> totals(List<Integer> ids) {
+        if (ids.isEmpty()) return Map.of();
+        return matches
+                .summarizeInventory(
+                        ids, MatchStatus.COMPLETED, MatchStatus.REJECTED, MatchStatus.CANCELLED)
+                .stream()
+                .collect(
+                        Collectors.toMap(
+                                DonationMatchRepository.InventoryTotals::getDonationId,
+                                Function.identity()));
+    }
+
+    private DonationHistoryResponse response(
+            Donation d, DonationMatchRepository.InventoryTotals totals) {
+        var item = d.getDonationPackage().getItem();
+        int quantity = d.getDonationPackage().getQuantity();
+        long reserved = totals == null ? 0 : totals.getReservedQuantity(),
+                received = totals == null ? 0 : totals.getReceivedQuantity();
+        long active = totals == null ? 0 : totals.getActiveCount(),
+                count = totals == null ? 0 : totals.getProposalCount();
+        String editReason =
+                d.getStatus() == DonationStatus.COMPLETED
+                        ? "Doação concluída: a edição não está disponível."
+                        : active > 0
+                                ? "A edição fica bloqueada enquanto houver propostas em andamento."
+                                : null;
+        String deleteReason =
+                active > 0
+                        ? (received > 0
+                                ? "Há propostas em andamento e concluídas. A exclusão fica"
+                                        + " bloqueada."
+                                : "Há propostas em andamento. A exclusão fica bloqueada.")
+                        : received > 0
+                                ? "Há propostas concluídas. A exclusão fica bloqueada."
+                                : null;
+        boolean archived = d.getDeletedAt() != null;
         return new DonationHistoryResponse(
-                donation.getId(),
+                d.getId(),
                 item.getTitle(),
                 icons.resolve(item.getItemType().getCategory()),
+                item.getItemType().getCategory(),
                 item.getItemType().getCategory().getLabel(),
-                item.getCondition().getValue(),
+                item.getCondition(),
                 item.getDescription(),
                 quantity,
-                available,
-                donation.getCreatedAt(),
-                donation.getStatus().getValue(),
-                donation.getStatus().getLabel(),
-                recipient,
-                protocol,
-                caption,
-                others,
-                actionLabel,
-                actionUrl,
-                DonationManagementService.canEdit(donation.getStatus(), matches),
-                DonationManagementService.canDelete(matches));
+                Math.max(0, quantity - reserved - received),
+                reserved,
+                received,
+                d.getCreatedAt(),
+                d.getStatus(),
+                archived ? "Excluída" : label(d.getStatus()),
+                count,
+                active,
+                !archived && editReason == null,
+                !archived && deleteReason == null,
+                editReason,
+                deleteReason,
+                d.getEditVersion(),
+                archived);
+    }
+
+    public static String label(DonationStatus status) {
+        return switch (status) {
+            case REGISTERED -> "Registrada";
+            case COMPLETED -> "Concluída";
+            case IN_TRANSIT -> "Enviada";
+            case REJECTED -> "Recusada";
+            case ACCEPTED -> "Aceita";
+            default -> status.getLabel();
+        };
     }
 }

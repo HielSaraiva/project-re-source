@@ -27,6 +27,10 @@ Cadastro de itens a partir de uma necessidade.
 - O título tem espaços externos removidos; descrições vazias são armazenadas sem valor.
 - O cadastro registra um histórico de criação e não reserva quantidade para a necessidade.
 
+## Cadastro independente do inventário
+
+Minhas doações também permite cadastrar itens sem escolher uma necessidade. Nesse caso, o tipo é obtido atomicamente para a categoria selecionada; as demais regras de gestão, versão, exclusão e reenvio estão em RN-022. O cadastro anterior vinculado à escolha de uma necessidade permanece disponível no fluxo de proposta.
+
 ## Exceções
 
 Não há exceções implementadas.

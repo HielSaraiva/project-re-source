@@ -1,5 +1,6 @@
 package edu.br.resource.resourcesystem.controller.shared;
 
+import edu.br.resource.resourcesystem.controller.donor.DonorInventoryController;
 import edu.br.resource.resourcesystem.controller.ong.OngNecessityOperationsController;
 import edu.br.resource.resourcesystem.observability.FailureDetails;
 
@@ -23,7 +24,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @Order(0)
 @RestControllerAdvice(
-        assignableTypes = {MatchOperationsController.class, OngNecessityOperationsController.class})
+        assignableTypes = {
+            MatchOperationsController.class,
+            OngNecessityOperationsController.class,
+            DonorInventoryController.class
+        })
 public class MatchApiExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     ResponseEntity<ProblemDetail> business(ResponseStatusException exception) {
@@ -47,12 +52,25 @@ public class MatchApiExceptionHandler {
     })
     ResponseEntity<ProblemDetail> validation(Exception exception) {
         log.info("event=validation_rejected failure={}", exception.getClass().getSimpleName());
-        return ResponseEntity.badRequest()
-                .body(
-                        problem(
-                                HttpStatus.BAD_REQUEST,
-                                "Confira os campos obrigatórios, as quantidades, as datas e as"
-                                        + " confirmações do formulário."));
+        var detail =
+                problem(
+                        HttpStatus.BAD_REQUEST,
+                        "Confira os campos obrigatórios, as quantidades, as datas e as confirmações"
+                                + " do formulário.");
+        if (exception instanceof MethodArgumentNotValidException invalid) {
+            var fields = new java.util.LinkedHashMap<String, String>();
+            invalid.getBindingResult()
+                    .getFieldErrors()
+                    .forEach(
+                            error ->
+                                    fields.putIfAbsent(
+                                            error.getField(),
+                                            error.getDefaultMessage() == null
+                                                    ? "Confira este campo."
+                                                    : error.getDefaultMessage()));
+            detail.setProperty("errors", fields);
+        }
+        return ResponseEntity.badRequest().body(detail);
     }
 
     @ExceptionHandler({

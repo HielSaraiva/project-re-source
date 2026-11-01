@@ -19,10 +19,16 @@ public class DonationEditForm {
 
     @NotNull(message = "Informe a quantidade.")
     @Positive(message = "A quantidade deve ser maior que zero.")
+    @tools.jackson.databind.annotation.JsonDeserialize(
+            using = edu.br.resource.resourcesystem.validation.WholeQuantityDeserializer.class)
     private Integer quantity;
 
     @NotNull(message = "Selecione a condição do item.")
     private ItemCondition condition;
+
+    @NotNull(message = "Recarregue os dados antes de salvar.")
+    @jakarta.validation.constraints.PositiveOrZero
+    private Long version;
 
     @Size(max = 1000, message = "A descrição deve ter no máximo 1000 caracteres.")
     private String description;

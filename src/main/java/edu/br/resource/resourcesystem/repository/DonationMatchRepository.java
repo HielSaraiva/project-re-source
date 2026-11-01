@@ -74,6 +74,44 @@ public interface DonationMatchRepository
     @EntityGraph(attributePaths = {"necessity", "necessity.institution"})
     java.util.List<DonationMatch> findAllByDonationIdIn(Collection<Integer> donationIds);
 
+    interface InventoryTotals {
+        Integer getDonationId();
+
+        Long getReceivedQuantity();
+
+        Long getReservedQuantity();
+
+        Long getActiveCount();
+
+        Long getProposalCount();
+    }
+
+    @Query(
+            """
+            select m.donation.id as donationId,
+              sum(case when m.status = :completed then m.allocatedQuantity else 0 end) as receivedQuantity,
+              sum(case when m.status <> :completed and m.status <> :rejected and m.status <> :cancelled then m.allocatedQuantity else 0 end) as reservedQuantity,
+              sum(case when m.status <> :completed and m.status <> :rejected and m.status <> :cancelled then 1 else 0 end) as activeCount,
+              count(m) as proposalCount
+            from DonationMatch m where m.donation.id in :ids group by m.donation.id
+            """)
+    java.util.List<InventoryTotals> summarizeInventory(
+            @Param("ids") Collection<Integer> ids,
+            @Param("completed") MatchStatus completed,
+            @Param("rejected") MatchStatus rejected,
+            @Param("cancelled") MatchStatus cancelled);
+
+    @EntityGraph(attributePaths = {"necessity", "necessity.institution"})
+    Page<DonationMatch> findByDonationIdAndDonationDonorId(
+            Integer donationId, Integer donorId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"necessity", "necessity.institution"})
+    Page<DonationMatch> findByDonationIdAndDonationDonorIdAndStatusIn(
+            Integer donationId,
+            Integer donorId,
+            Collection<MatchStatus> statuses,
+            Pageable pageable);
+
     boolean existsByDonationIdAndNecessityIdAndStatusIn(
             Integer donationId, Integer necessityId, Collection<MatchStatus> statuses);
 
