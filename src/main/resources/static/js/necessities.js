@@ -141,6 +141,12 @@
         form.querySelector('#necessity-dialog-title').textContent = editing
             ? 'Editar necessidade'
             : 'Nova necessidade';
+        form.querySelector('[data-dialog-status]').textContent = editing
+            ? `Necessidade #${id}`
+            : 'Novo cadastro';
+        form.querySelector('[data-dialog-icon]').src = window.ResourceHttp.url(
+            `/images/shared/icons/${editing ? 'clipboard-pen' : 'clipboard-list'}.svg`,
+        );
         submit.textContent = editing
             ? 'Salvar alterações'
             : 'Cadastrar necessidade';
@@ -233,6 +239,8 @@
             opener = button;
             deleteDialog.dataset.necessityId = button.dataset.id;
             deleteDialog.dataset.version = button.dataset.version;
+            deleteForm.querySelector('[data-dialog-status]').textContent =
+                `Necessidade #${button.dataset.id}`;
             deleteForm.querySelector('[data-delete-description]').textContent =
                 button.dataset.description;
             deleteForm.querySelector('[data-delete-id]').textContent =

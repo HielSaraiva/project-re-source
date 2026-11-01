@@ -129,11 +129,21 @@
     color: #065f46;
     background: #d1fae5;
 }
+.necessity-identifier {
+    margin: 16px 0 0;
+    color: var(--slate);
+    font-size: var(--font-caption);
+    font-weight: 600;
+    line-height: 1.5;
+}
 .necessity-card h2 {
     margin: 20px 0 12px;
     overflow-wrap: anywhere;
     font-size: var(--font-subtitle);
     line-height: 1.4;
+}
+.necessity-identifier + h2 {
+    margin-top: 6px;
 }
 .necessity-status {
     align-self: flex-start;

@@ -146,6 +146,7 @@
                             >Média Prioridade</span
                         >
                     </div>
+                    <p class="necessity-identifier" th:text="${'Necessidade #' + necessity.id}"></p>
                     <h2 th:text="${necessity.itemName}">Cadeiras escolares</h2>
                     <p
                         class="necessity-status"
@@ -250,7 +251,7 @@
                 <div class="title-block">
                     <p class="donation-protocol">MINHAS NECESSIDADES</p>
                     <div
-                        th:replace="~{fragments/ui/dialog :: heading('necessity-dialog-title', 'Nova necessidade', null, null, '/images/shared/icons/info.svg')}"
+                        th:replace="~{fragments/ui/dialog :: heading('necessity-dialog-title', 'Nova necessidade', 'Novo cadastro', '', '/images/shared/icons/clipboard-list.svg')}"
                     ></div>
                 </div>
                 <p
@@ -408,7 +409,7 @@
                 <div class="title-block">
                     <p class="donation-protocol">MINHAS NECESSIDADES</p>
                     <div
-                        th:replace="~{fragments/ui/dialog :: heading('delete-dialog-title', 'Excluir necessidade?', null, null, '/images/shared/icons/info.svg')}"
+                        th:replace="~{fragments/ui/dialog :: heading('delete-dialog-title', 'Excluir necessidade?', 'Necessidade', '', '/images/shared/icons/trash.svg')}"
                     ></div>
                 </div>
                 <p id="delete-dialog-description" class="ui-dialog-description">
