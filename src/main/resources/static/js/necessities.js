@@ -144,7 +144,6 @@
         submit.textContent = editing
             ? 'Salvar alterações'
             : 'Cadastrar necessidade';
-        form.querySelector('[data-edit-context]').hidden = !editing;
         fields.disabled = editing;
         submit.disabled = editing;
         dialog.showModal();
