@@ -39,6 +39,31 @@ public class DonationMatch extends AuditedEntity {
     @JoinColumn(name = "necessity_id", nullable = false)
     private Necessity necessity;
 
+    @Column(updatable = false, name = "offered_title", length = 120)
+    private String offeredTitle;
+
+    @Column(updatable = false, name = "offered_condition", length = 40)
+    private String offeredCondition;
+
+    @Column(updatable = false, name = "offered_description", columnDefinition = "text")
+    private String offeredDescription;
+
+    @Column(updatable = false, name = "offered_category", length = 60)
+    private String offeredCategory;
+
+    @Column(updatable = false, name = "offered_total_quantity")
+    private Integer offeredTotalQuantity;
+
+    @jakarta.persistence.PrePersist
+    void preserveOfferedItem() {
+        var item = donation.getDonationPackage().getItem();
+        offeredTitle = item.getTitle();
+        offeredCondition = item.getCondition().getValue();
+        offeredDescription = item.getDescription();
+        offeredCategory = item.getItemType().getCategory().getValue();
+        offeredTotalQuantity = donation.getDonationPackage().getQuantity();
+    }
+
     @Column(name = "allocated_quantity", nullable = false)
     private Integer allocatedQuantity;
 

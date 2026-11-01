@@ -29,11 +29,9 @@ import java.util.*;
 @Transactional(noRollbackFor = WorkflowConflictException.class)
 public class MatchWorkflowService {
     private static final Duration DEADLINE = Duration.ofDays(7);
+    private final edu.br.resource.resourcesystem.service.DonationManagementService
+            inventoryManagement;
     private final MatchLockPolicy lockPolicy;
-    private final UserRepository users;
-    private final InstitutionRepository institutions;
-    private final ItemRepository items;
-    private final DonationPackageRepository packages;
     private final DonationRepository donations;
     private final NecessityRepository necessities;
     private final DonationMatchRepository matches;
@@ -45,6 +43,7 @@ public class MatchWorkflowService {
     private final MatchProtocolRepository protocols;
     private final jakarta.persistence.EntityManager entityManager;
 
+    @Transactional
     public InventoryDonationResponse register(
             Integer donorId, @Valid RegisterDonationRequest request) {
         var need =
@@ -53,35 +52,15 @@ public class MatchWorkflowService {
                         .orElseThrow(this::missing);
         if (need.getInstitution().getStatus() != InstitutionStatus.APPROVED)
             throw conflict("Instituição indisponível.");
-        var donor = users.findById(donorId).orElseThrow(this::missing);
-        var item =
-                items.save(
-                        Item.builder()
-                                .itemType(need.getItemType())
-                                .title(request.title().strip())
-                                .condition(request.condition())
-                                .description(clean(request.description()))
-                                .build());
-        var pack =
-                packages.save(
-                        DonationPackage.builder().item(item).quantity(request.quantity()).build());
-        var donation =
-                donations.saveAndFlush(
-                        Donation.builder().donor(donor).donationPackage(pack).build());
-        donationHistory.save(
-                DonationStatusHistory.builder()
-                        .donation(donation)
-                        .newStatus(DonationStatus.REGISTERED)
-                        .changedByUser(donor)
-                        .notes("Itens cadastrados para doação.")
-                        .build());
-        TransactionLog.afterCommit(
-                log,
-                "event=donation_registered donationId={} donorId={} quantity={}",
-                donation.getId(),
-                donorId,
-                request.quantity());
-        return mapper.inventory(donation);
+        var form = new NewDonationForm();
+        form.setCategory(need.getItemType().getCategory());
+        form.setTitle(request.title());
+        form.setQuantity(request.quantity());
+        form.setCondition(request.condition());
+        form.setDescription(request.description());
+        form.setSubmissionKey(request.submissionKey());
+        var id = inventoryManagement.registerForNeed(donorId, form, need.getItemType());
+        return mapper.inventory(donations.findById(id).orElseThrow(this::missing));
     }
 
     public MatchDetailResponse propose(Integer donorId, @Valid SubmitProposalRequest request) {
@@ -437,24 +416,7 @@ public class MatchWorkflowService {
 
     private void synchronizeDonation(Donation d, User user, Institution institution) {
         var all = matches.findAllByDonationId(d.getId());
-        var active =
-                all.stream()
-                        .filter(m -> MatchStatus.activeStatuses().contains(m.getStatus()))
-                        .min(Comparator.comparing(DonationMatch::getCreatedAt));
-        long used =
-                matches.sumAllocatedByDonation(
-                        d.getId(), MatchStatus.allocationConsumingStatuses());
-        var next =
-                active.map(
-                                m ->
-                                        DonationStatus.fromValue(
-                                                m.getStatus() == MatchStatus.PROPOSED
-                                                        ? "awaiting_acceptance"
-                                                        : m.getStatus().getValue()))
-                        .orElse(
-                                used >= d.getDonationPackage().getQuantity()
-                                        ? DonationStatus.COMPLETED
-                                        : DonationStatus.REGISTERED);
+        var next = DonationStatusPolicy.consolidate(d.getDonationPackage().getQuantity(), all);
         if (d.getStatus() != next) {
             var previous = d.getStatus();
             d.setStatus(next);

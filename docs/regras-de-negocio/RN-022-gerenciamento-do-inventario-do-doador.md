@@ -20,3 +20,5 @@
 - O filtro de doação oferece os estados efetivos do fluxo: Registrada, Aguardando aceite/envio/entrega, Enviada, Aguardando confirmação da ONG. Concluídas ficam na visão Exibir → Concluídas, fora do inventário principal. Canceladas e Recusadas são filtros das propostas vinculadas.
 - Toda proposta vinculada deve ser consultável por protocolo, sem substituir o status consolidado da doação por um estado individual.
 - Campos preenchidos permanecem disponíveis em falhas, validações e conflitos. Recarregar dados de outra versão deve ser uma decisão explícita do usuário.
+
+A tentativa única por UUID também é aplicada ao cadastro contextual durante o envio de proposta. O cadastro usa a mesma política de inventário; a necessidade determina a categoria compatível. Alterações futuras do inventário não afetam os dados preservados na proposta.

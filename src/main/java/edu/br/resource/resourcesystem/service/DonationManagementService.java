@@ -74,6 +74,17 @@ public class DonationManagementService {
 
     @Transactional
     public Integer register(Integer donorId, NewDonationForm form) {
+        return register(donorId, form, null);
+    }
+
+    @Transactional
+    public Integer registerForNeed(Integer donorId, NewDonationForm form, ItemType inheritedType) {
+        if (inheritedType.getCategory() != form.getCategory())
+            throw new WorkflowConflictException("A categoria deve corresponder à necessidade.");
+        return register(donorId, form, inheritedType);
+    }
+
+    private Integer register(Integer donorId, NewDonationForm form, ItemType inheritedType) {
         locks.apply();
         if (form.getSubmissionKey() == null)
             throw new ResponseStatusException(
@@ -112,9 +123,13 @@ public class DonationManagementService {
             return result.id();
         }
         var donor = users.findById(donorId).orElseThrow(this::missing);
-        var typeId =
-                itemTypes.obtainId(form.getCategory().getValue(), form.getCategory().getLabel());
-        ItemType type = itemTypes.findById(typeId).orElseThrow();
+        ItemType type = inheritedType;
+        if (type == null) {
+            var typeId =
+                    itemTypes.obtainId(
+                            form.getCategory().getValue(), form.getCategory().getLabel());
+            type = itemTypes.findById(typeId).orElseThrow();
+        }
         Item item =
                 items.save(
                         Item.builder()

@@ -17,6 +17,7 @@
     };
     const post = async (path, data, button, container) => {
         if (button?.disabled) return null;
+        delete container.dataset.failureStatus;
         const finishLoading = window.ResourceLoading.request(container, button);
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 20000);
@@ -27,6 +28,7 @@
                 signal: controller.signal,
             });
         } catch (error) {
+            container.dataset.failureStatus = String(error.status || '');
             if (error.name === 'AbortError' || error instanceof TypeError)
                 error = new Error(
                     'Não foi possível confirmar o resultado a tempo. Atualize a página e consulte o histórico antes de enviar novamente.',
@@ -39,7 +41,9 @@
         }
     };
     const close = (dialog, selector) =>
-        dialog?.querySelector(selector)?.addEventListener('click', () => dialog.close());
+        dialog
+            ?.querySelector(selector)
+            ?.addEventListener('click', () => dialog.close());
     const text = (container, selector, value) => {
         const el = container?.querySelector(selector);
         if (el) el.textContent = value ?? '';
@@ -53,7 +57,10 @@
             awaiting_acceptance: ['Aguardando aceite', 'waiting'],
             awaiting_shipment: ['Aguardando envio', 'waiting'],
             awaiting_delivery: ['Aguardando entrega', 'waiting'],
-            awaiting_ngo_confirmation: ['Aguardando confirmação da ONG', 'waiting'],
+            awaiting_ngo_confirmation: [
+                'Aguardando confirmação da ONG',
+                'waiting',
+            ],
             in_transit: ['Enviado', 'shipped'],
             completed: ['Concluído', 'completed'],
             cancelled: ['Doação cancelada', 'cancelled'],
@@ -66,11 +73,20 @@
             badge.className = `donation-status donation-status--${style}`;
         }
         text(dialog, 'h2', title);
-        text(dialog, '.ui-dialog-description, #intention-result-description', description);
-        dialog.addEventListener('close', () => window.ResourceLoading.reload(), { once: true });
+        text(
+            dialog,
+            '.ui-dialog-description, #intention-result-description',
+            description,
+        );
+        dialog.addEventListener(
+            'close',
+            () => window.ResourceLoading.reload(),
+            { once: true },
+        );
         dialog.showModal();
     };
-    const date = (value) => value?.split('-').reverse().join('/') || 'Não informada';
+    const date = (value) =>
+        value?.split('-').reverse().join('/') || 'Não informada';
     const units = (n) => `${n} ${n === 1 ? 'unidade' : 'unidades'}`;
     const data = (form) => Object.fromEntries(new FormData(form));
     const proposal = document.querySelector('#donation-proposal-form');
@@ -78,7 +94,9 @@
         const review = document.querySelector('#proposal-confirmation');
         const success = document.querySelector('#proposal-result');
         const registration = document.querySelector('#inventory-registration');
-        const registerForm = document.querySelector('#inventory-registration-form');
+        const registerForm = document.querySelector(
+            '#inventory-registration-form',
+        );
         const inventory = proposal.elements.donation;
         const quantity = proposal.elements.quantity;
         const remaining = Number(proposal.dataset.remainingQuantity);
@@ -88,8 +106,10 @@
             quantity.disabled = stock <= 0 || remaining <= 0;
             quantity.max = String(Math.min(stock, remaining));
             quantity.value = stock > 0 ? quantity.max : '';
-            proposal.querySelector('[type="submit"]').disabled = stock <= 0 || remaining <= 0;
-            proposal.querySelector('[data-use-all]').disabled = stock <= 0 || remaining <= 0;
+            proposal.querySelector('[type="submit"]').disabled =
+                stock <= 0 || remaining <= 0;
+            proposal.querySelector('[data-use-all]').disabled =
+                stock <= 0 || remaining <= 0;
             const details = document.querySelector('#selected-donation');
             details.hidden = !selected?.value;
             for (const [key, value] of Object.entries({
@@ -123,7 +143,9 @@
                 item: selected.dataset.item,
                 quantity: units(Number(quantity.value)),
                 condition: selected.dataset.condition,
-                remaining: units(Number(selected.dataset.quantity) - Number(quantity.value)),
+                remaining: units(
+                    Number(selected.dataset.quantity) - Number(quantity.value),
+                ),
                 'item-description': selected.dataset.description,
                 message: proposal.elements.description.value,
             }))
@@ -132,35 +154,94 @@
                 !proposal.elements.description.value.trim();
             review.showModal();
         });
-        review.querySelector('[data-confirm-proposal]').addEventListener('click', async (event) => {
-            if (!proposal.reportValidity()) return;
-            const body = data(proposal);
-            body.need = Number(body.need);
-            body.donation = Number(body.donation);
-            body.quantity = Number(body.quantity);
-            const saved = await post('/api/donor/proposals', body, event.currentTarget, review);
-            if (!saved) return;
-            review.close();
-            text(success, '[data-result-quantity]', units(saved.allocatedQuantity));
-            text(success, '[data-result-remaining]', units(saved.need.remainingQuantity));
-            text(
-                success,
-                '[data-result-message]',
-                'A proposta foi registrada. A ONG tem 7 dias para aceitar.',
-            );
-            result(
-                success,
-                'Proposta enviada',
-                'Sua proposta foi registrada. Acompanhe o aceite da ONG pelo painel.',
-                saved,
-            );
-        });
+        review
+            .querySelector('[data-confirm-proposal]')
+            .addEventListener('click', async (event) => {
+                if (!proposal.reportValidity()) return;
+                const body = data(proposal);
+                body.need = Number(body.need);
+                body.donation = Number(body.donation);
+                body.quantity = Number(body.quantity);
+                const saved = await post(
+                    '/api/donor/proposals',
+                    body,
+                    event.currentTarget,
+                    review,
+                );
+                if (!saved) return;
+                review.close();
+                text(
+                    success,
+                    '[data-result-quantity]',
+                    units(saved.allocatedQuantity),
+                );
+                text(
+                    success,
+                    '[data-result-remaining]',
+                    units(saved.need.remainingQuantity),
+                );
+                text(
+                    success,
+                    '[data-result-message]',
+                    'A proposta foi registrada. A ONG tem 7 dias para aceitar.',
+                );
+                result(
+                    success,
+                    'Proposta enviada',
+                    'Sua proposta foi registrada. Acompanhe o aceite da ONG pelo painel.',
+                    saved,
+                );
+            });
         close(review, '[data-close-confirmation]');
         close(success, '[data-close-result]');
         document
             .querySelectorAll('[data-open-registration]')
-            .forEach((b) => b.addEventListener('click', () => registration.showModal()));
+            .forEach((b) =>
+                b.addEventListener('click', () => registration.showModal()),
+            );
         close(registration, '[data-close-registration]');
+        const draftKey = `resource:proposal-inventory:${registerForm.dataset.donorId}:${registerForm.elements.need.value}`;
+        let registrationDraft;
+        try {
+            registrationDraft = JSON.parse(sessionStorage.getItem(draftKey));
+        } catch {
+            /* Optional draft storage. */
+        }
+        let registrationKey =
+            registrationDraft?.submissionKey || crypto.randomUUID();
+        if (registrationDraft)
+            for (const name of ['item', 'quantity', 'condition', 'description'])
+                registerForm.elements.namedItem(name).value =
+                    registrationDraft[name] ?? '';
+        const rememberRegistration = () => {
+            try {
+                sessionStorage.setItem(
+                    draftKey,
+                    JSON.stringify({
+                        ...data(registerForm),
+                        submissionKey: registrationKey,
+                    }),
+                );
+            } catch {
+                /* In-memory retries still retain the key. */
+            }
+        };
+        registerForm.addEventListener('input', rememberRegistration);
+        const resetAttempt = registerForm.querySelector(
+            '[data-reset-registration]',
+        );
+        resetAttempt.addEventListener('click', () => {
+            registerForm.reset();
+            registrationKey = crypto.randomUUID();
+            try {
+                sessionStorage.removeItem(draftKey);
+            } catch {
+                /* Optional storage. */
+            }
+            registration.querySelector('[data-backend-error]')?.remove();
+            resetAttempt.hidden = true;
+            registerForm.elements.namedItem('item').focus();
+        });
         registerForm.querySelector('[type="submit"]').disabled = false;
         registerForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -168,13 +249,19 @@
             const body = data(registerForm);
             body.need = Number(body.need);
             body.quantity = Number(body.quantity);
+            body.submissionKey = registrationKey;
+            rememberRegistration();
             const saved = await post(
                 '/api/donor/donations',
                 body,
                 registerForm.querySelector('[type="submit"]'),
                 registration,
             );
-            if (!saved) return;
+            if (!saved) {
+                resetAttempt.hidden =
+                    registration.dataset.failureStatus !== '409';
+                return;
+            }
             const option = new Option(
                 `${saved.item} • ${units(saved.availableQuantity)}`,
                 saved.id,
@@ -184,7 +271,9 @@
             Object.assign(option.dataset, {
                 item: saved.item,
                 quantity: String(saved.availableQuantity),
-                condition: registerForm.elements.condition.selectedOptions[0].textContent,
+                condition:
+                    registerForm.elements.condition.selectedOptions[0]
+                        .textContent,
                 description: saved.description || 'Sem descrição adicional.',
                 status: 'registered',
             });
@@ -192,13 +281,21 @@
             proposal.hidden = false;
             document.querySelector('#inventory-empty').hidden = true;
             registerForm.reset();
+            registrationKey = crypto.randomUUID();
+            try {
+                sessionStorage.removeItem(draftKey);
+            } catch {
+                /* Optional storage. */
+            }
             registration.close();
             update();
         });
     }
 
     const cancelButton = document.querySelector('[data-open-cancellation]');
-    const cancellation = document.querySelector('#donation-cancellation, #shipping-cancellation');
+    const cancellation = document.querySelector(
+        '#donation-cancellation, #shipping-cancellation',
+    );
     if (cancelButton && cancellation) {
         cancelButton.hidden = page.dataset.canCancel !== 'true';
         cancelButton.addEventListener('click', () => cancellation.showModal());
@@ -223,10 +320,12 @@
                             timeStyle: 'short',
                         })
                         .replace(', ', ' às ');
-                    success.querySelectorAll('[data-cancellation-date]').forEach((el) => {
-                        el.textContent = cancelledAt;
-                        el.dateTime = saved.cancelledAt;
-                    });
+                    success
+                        .querySelectorAll('[data-cancellation-date]')
+                        .forEach((el) => {
+                            el.textContent = cancelledAt;
+                            el.dateTime = saved.cancelledAt;
+                        });
                     result(
                         success,
                         'Doação cancelada',
@@ -240,39 +339,46 @@
                     );
             });
     }
-    const methodReview = document.querySelector('#delivery-method-confirmation');
+    const methodReview = document.querySelector(
+        '#delivery-method-confirmation',
+    );
     if (methodReview) {
         let method;
         let target;
         const current = page.dataset.matchMethod;
         document.querySelectorAll('[data-delivery-method]').forEach((card) => {
             if (current) card.hidden = card.dataset.deliveryMethod !== current;
-            card.querySelector('.action-button').addEventListener('click', (event) => {
-                if (current) return;
-                event.preventDefault();
-                method = card.dataset.deliveryMethod;
-                target = event.currentTarget.href;
-                text(
-                    methodReview,
-                    '#method-title',
-                    method === 'carrier'
-                        ? 'Confirmar envio pelos Correios'
-                        : 'Confirmar entrega presencial',
-                );
-                text(
-                    methodReview,
-                    '[data-method-summary]',
-                    method === 'carrier'
-                        ? 'Você escolheu enviar a doação pelos Correios à '
-                        : 'Você escolheu levar a doação diretamente à ',
-                );
-                text(
-                    methodReview,
-                    '[data-method-status]',
-                    method === 'carrier' ? 'Aguardando envio' : 'Aguardando entrega',
-                );
-                methodReview.showModal();
-            });
+            card.querySelector('.action-button').addEventListener(
+                'click',
+                (event) => {
+                    if (current) return;
+                    event.preventDefault();
+                    method = card.dataset.deliveryMethod;
+                    target = event.currentTarget.href;
+                    text(
+                        methodReview,
+                        '#method-title',
+                        method === 'carrier'
+                            ? 'Confirmar envio pelos Correios'
+                            : 'Confirmar entrega presencial',
+                    );
+                    text(
+                        methodReview,
+                        '[data-method-summary]',
+                        method === 'carrier'
+                            ? 'Você escolheu enviar a doação pelos Correios à '
+                            : 'Você escolheu levar a doação diretamente à ',
+                    );
+                    text(
+                        methodReview,
+                        '[data-method-status]',
+                        method === 'carrier'
+                            ? 'Aguardando envio'
+                            : 'Aguardando entrega',
+                    );
+                    methodReview.showModal();
+                },
+            );
         });
         close(methodReview, '[data-cancel-method]');
         methodReview
@@ -293,24 +399,40 @@
     const carrier = document.querySelector('#carrier-delivery-form');
     const deliveryForm = personal || carrier;
     if (deliveryForm) {
-        const review = document.querySelector(personal ? '#delivery-review' : '#carrier-review');
-        const success = document.querySelector(personal ? '#delivery-result' : '#carrier-result');
-        const reported = ['awaiting_ngo_confirmation', 'in_transit', 'completed'].includes(
-            page.dataset.matchStatus,
+        const review = document.querySelector(
+            personal ? '#delivery-review' : '#carrier-review',
         );
-        const report = document.querySelector(personal ? '#delivery-report' : '#carrier-report');
-        const sent = document.querySelector(personal ? '#delivery-sent' : '#carrier-sent');
+        const success = document.querySelector(
+            personal ? '#delivery-result' : '#carrier-result',
+        );
+        const reported = [
+            'awaiting_ngo_confirmation',
+            'in_transit',
+            'completed',
+        ].includes(page.dataset.matchStatus);
+        const report = document.querySelector(
+            personal ? '#delivery-report' : '#carrier-report',
+        );
+        const sent = document.querySelector(
+            personal ? '#delivery-sent' : '#carrier-sent',
+        );
         report.hidden = reported;
         sent.hidden = !reported;
-        const submit = document.querySelector(`[type="submit"][form="${deliveryForm.id}"]`);
+        const submit = document.querySelector(
+            `[type="submit"][form="${deliveryForm.id}"]`,
+        );
         submit.hidden = reported;
         submit.disabled =
-            page.dataset[personal ? 'canConfirmPersonal' : 'canConfirmShipment'] !== 'true';
+            page.dataset[
+                personal ? 'canConfirmPersonal' : 'canConfirmShipment'
+            ] !== 'true';
         if (reported) {
             text(
                 sent,
                 '[data-sent-date]',
-                date(personal ? page.dataset.deliveredOn : page.dataset.postedOn),
+                date(
+                    personal ? page.dataset.deliveredOn : page.dataset.postedOn,
+                ),
             );
             text(sent, '[data-sent-recipient]', page.dataset.receivedBy);
             text(sent, '[data-sent-tracking]', page.dataset.trackingCode);
@@ -335,15 +457,22 @@
             const body = data(deliveryForm);
             text(review, '[data-review-date]', date(body.date));
             text(review, '[data-review-recipient]', body.recipient);
-            text(review, '[data-review-tracking]', body.trackingCode?.toUpperCase());
+            text(
+                review,
+                '[data-review-tracking]',
+                body.trackingCode?.toUpperCase(),
+            );
             text(review, '[data-review-notes]', body.notes);
-            review.querySelector('[data-review-notes-row]').hidden = !body.notes?.trim();
+            review.querySelector('[data-review-notes-row]').hidden =
+                !body.notes?.trim();
             review.showModal();
         });
         close(review, '[data-close-review]');
         close(success, '[data-close-result]');
         review
-            .querySelector(personal ? '[data-confirm-delivery]' : '[data-confirm-posting]')
+            .querySelector(
+                personal ? '[data-confirm-delivery]' : '[data-confirm-posting]',
+            )
             .addEventListener('click', async (event) => {
                 const body = data(deliveryForm);
                 body[personal ? 'delivered' : 'posted'] = true;
@@ -357,7 +486,9 @@
                 review.close();
                 result(
                     success,
-                    personal ? 'Entrega informada com sucesso' : 'Postagem informada com sucesso',
+                    personal
+                        ? 'Entrega informada com sucesso'
+                        : 'Postagem informada com sucesso',
                     'O registro foi salvo. Aguarde a confirmação de recebimento pela ONG.',
                     saved,
                 );
@@ -377,12 +508,14 @@
                 form.elements.reason.required = rejection;
                 form.elements.receiptConfirmed.required = receiving;
                 form.querySelector('[data-reason-field]').hidden = !rejection;
-                form.querySelector('[data-receipt-attestation]').hidden = !receiving;
+                form.querySelector('[data-receipt-attestation]').hidden =
+                    !receiving;
                 form.querySelector('[data-postal-review]').hidden =
                     !receiving ||
-                    document.querySelector('[data-intention-detail]').dataset.deliveryMethod !==
-                        'carrier';
-                const decisionIcon = decision.querySelector('[data-dialog-icon]');
+                    document.querySelector('[data-intention-detail]').dataset
+                        .deliveryMethod !== 'carrier';
+                const decisionIcon =
+                    decision.querySelector('[data-dialog-icon]');
                 if (decisionIcon)
                     decisionIcon.src = url(
                         receiving
@@ -425,7 +558,10 @@
             }),
         );
         close(decision, '[data-close-decision]');
-        close(document.querySelector('#intention-result'), '[data-close-result]');
+        close(
+            document.querySelector('#intention-result'),
+            '[data-close-result]',
+        );
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             if (!form.reportValidity()) return;
@@ -433,7 +569,10 @@
                 choice === 'reject'
                     ? { reason: form.elements.reason.value }
                     : choice === 'receive'
-                      ? { receiptConfirmed: form.elements.receiptConfirmed.checked }
+                      ? {
+                            receiptConfirmed:
+                                form.elements.receiptConfirmed.checked,
+                        }
                       : { confirmed: true };
             const saved = await post(
                 `/api/institution/matches/${protocol}/${choice === 'receive' ? 'receipt' : choice}`,
@@ -460,10 +599,16 @@
     if (filters) {
         filters
             .querySelectorAll('select')
-            .forEach((select) => select.addEventListener('change', () => filters.requestSubmit()));
-        filters.querySelector('[data-clear-filters]').addEventListener('click', (event) => {
-            event.preventDefault();
-            window.ResourceLoading.navigate(url('/institution/donations'));
-        });
+            .forEach((select) =>
+                select.addEventListener('change', () =>
+                    filters.requestSubmit(),
+                ),
+            );
+        filters
+            .querySelector('[data-clear-filters]')
+            .addEventListener('click', (event) => {
+                event.preventDefault();
+                window.ResourceLoading.navigate(url('/institution/donations'));
+            });
     }
 })();

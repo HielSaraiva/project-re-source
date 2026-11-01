@@ -12,7 +12,7 @@
         </th:block>
     </head>
     <body>
-        <header th:replace="~{fragments/layout/donor-header :: header('dashboard')}"></header>
+        <header th:replace="~{fragments/layout/donor-header :: header('donations')}"></header>
         <main th:data-match-protocol="${protocol}" th:data-match-status="${match.status.value}"
             th:data-match-method="${delivery == null ? '' : delivery.method.value}"
             th:data-can-cancel="${actions.canCancel}" th:data-can-confirm-personal="${actions.canConfirmInPersonDelivery}"
@@ -23,8 +23,8 @@
             th:data-tracking-code="${delivery == null ? '' : delivery.trackingCode}"
             th:data-delivery-notes="${delivery == null ? '' : delivery.notes}" class="donation-page personal-delivery" th:attr="data-shipping-url=@{/donor/donation/shipping(protocol=${protocol})},data-carrier-url=@{/donor/donation/shipping/carrier(protocol=${protocol})}">
             <div class="header-area">
-                <a class="back-link" th:href="@{/donor/dashboard}">
-                    <span aria-hidden="true">←</span> Voltar ao painel</a>
+                <a class="back-link" th:href="@{/donor/donations}">
+                    <span aria-hidden="true">←</span> Voltar às minhas doações</a>
                 <div class="heading-row">
                     <div class="page-heading">
                         <p class="donation-protocol" th:text="${donation.protocol}"></p>
@@ -126,7 +126,7 @@
             <div class="ui-actions">
                 <button class="donation-action donation-action--cancel" type="button" data-open-cancellation th:if="${actions.canCancel}">Cancelar doação</button>
                 <button class="ui-button ui-button--primary" type="submit" form="in-person-delivery-form" disabled>Confirmar entrega</button>
-                <a class="ui-button ui-button--primary" data-sent-panel-link th:href="@{/donor/dashboard}" hidden>Voltar ao painel</a>
+                <a class="ui-button ui-button--primary" data-sent-panel-link th:href="@{/donor/donations}" hidden>Voltar às minhas doações</a>
             </div>
         </main>
         <th:block th:replace="~{fragments/donation/cancellation :: dialogs}"></th:block>
@@ -171,7 +171,7 @@
                 <p id="result-description" class="ui-dialog-description">Obrigado pela sua contribuição! A ONG agora confirmará o recebimento dos itens. Você pode acompanhar a doação pelo painel.</p>
                 <div class="ui-actions">
                     <button class="ui-button ui-button--secondary" type="button" data-close-result>Ver detalhes da entrega</button>
-                    <a class="ui-button ui-button--primary" th:href="@{/donor/dashboard}">Ir para o painel</a>
+                    <a class="ui-button ui-button--primary" th:href="@{/donor/donations}">Ir para o painel</a>
                 </div>
             </div>
         </dialog>

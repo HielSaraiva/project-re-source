@@ -76,7 +76,7 @@ public class TransactionalMailService {
                 "Recebemos sua proposta para "
                         + match.getNecessity().getInstitution().getLegalName()
                         + ". Item: "
-                        + match.getDonation().getDonationPackage().getItem().getTitle()
+                        + match.getOfferedTitle()
                         + ". Quantidade: "
                         + match.getAllocatedQuantity()
                         + ". Protocolo: "

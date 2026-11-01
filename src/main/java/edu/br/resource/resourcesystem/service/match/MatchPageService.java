@@ -79,6 +79,16 @@ public class MatchPageService {
                                                 .and(Sort.by("createdAt").descending())
                                                 .and(Sort.by("id").descending())))
                         .map(mapper::need);
+        if (page.isEmpty() && page.getTotalPages() > 0 && f.page() > page.getTotalPages())
+            return needs(
+                    donorId,
+                    new NeedFilterRequest(
+                            f.query(),
+                            f.category(),
+                            f.priority(),
+                            f.stateId(),
+                            page.getTotalPages(),
+                            f.size()));
         return MatchViewAssembler.fields(
                 "donorName",
                 users.findById(donorId).orElseThrow(this::missing).getFullName(),
@@ -112,6 +122,8 @@ public class MatchPageService {
                                 Pageable.unpaged())
                         .map(mapper::inventory);
         return MatchViewAssembler.fields(
+                "donorId",
+                donorId,
                 "donorName",
                 users.findById(donorId).orElseThrow(this::missing).getFullName(),
                 "need",
@@ -203,6 +215,18 @@ public class MatchPageService {
                                         Sort.by("createdAt")
                                                 .descending()
                                                 .and(Sort.by("id").descending())));
+        if (entities.isEmpty()
+                && entities.getTotalPages() > 0
+                && f.page() > entities.getTotalPages())
+            return institutionMatches(
+                    id,
+                    new MatchFilterRequest(
+                            f.query(),
+                            f.necessityId(),
+                            f.status(),
+                            f.order(),
+                            entities.getTotalPages(),
+                            f.size()));
         var page = entities.map(mapper::summary);
         return MatchViewAssembler.fields(
                 "ongName",

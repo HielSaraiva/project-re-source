@@ -1,8 +1,80 @@
 (() => {
     document.documentElement.dataset.navigationEnhanced = 'true';
 
+    const initializeDonationReturn = () => {
+        const context = window.ResourceHttp?.context || '';
+        const allowed = [
+            context + '/donor/donations',
+            context + '/donor/dashboard',
+        ];
+        const key = 'resource:donation-return';
+        const safe = (value) => {
+            if (!value) return null;
+            try {
+                const target = new URL(value, location.origin);
+                return target.origin === location.origin &&
+                    allowed.includes(target.pathname)
+                    ? target.pathname + target.search
+                    : null;
+            } catch {
+                return null;
+            }
+        };
+        document.addEventListener('click', (event) => {
+            const link = event.target.closest('a[href]');
+            if (
+                link &&
+                allowed.includes(location.pathname) &&
+                link.origin === location.origin &&
+                link.pathname.startsWith(context + '/donor/donation/')
+            ) {
+                try {
+                    sessionStorage.setItem(
+                        key,
+                        location.pathname + location.search,
+                    );
+                } catch {
+                    /* Optional navigation context. */
+                }
+            }
+        });
+        document.addEventListener('submit', (event) => {
+            if (new URL(event.target.action).pathname === context + '/logout') {
+                try {
+                    sessionStorage.removeItem(key);
+                } catch {
+                    /* Optional storage. */
+                }
+            }
+        });
+        if (
+            location.pathname.startsWith(context + '/donor/donation/') &&
+            document.querySelector('[data-match-protocol]')
+        ) {
+            let back;
+            try {
+                back = safe(sessionStorage.getItem(key));
+            } catch {
+                /* Use the inventory fallback. */
+            }
+            const link = document.querySelector('.back-link');
+            if (link) {
+                link.href = back || allowed[0];
+                link.textContent =
+                    (back || allowed[0]).split('?')[0] === allowed[1]
+                        ? '← Voltar ao painel'
+                        : '← Voltar às minhas doações';
+            }
+        }
+    };
+    document.addEventListener('DOMContentLoaded', initializeDonationReturn, {
+        once: true,
+    });
+
     const initializeProfileMenus = () => {
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const reducedMotion = window.matchMedia(
+            '(prefers-reduced-motion: reduce)',
+        );
         const menus = [...document.querySelectorAll('.profile-menu')]
             .map((menu) => {
                 const summary = menu.querySelector('summary');
@@ -22,14 +94,20 @@
                         return;
                     }
                     const frames = [
-                        { opacity: 0, transform: 'translateY(-6px) scale(.98)' },
+                        {
+                            opacity: 0,
+                            transform: 'translateY(-6px) scale(.98)',
+                        },
                         { opacity: 1, transform: 'translateY(0) scale(1)' },
                     ];
-                    animation = panel.animate(open ? frames : frames.toReversed(), {
-                        duration: open ? 180 : 120,
-                        easing: 'ease-out',
-                        fill: 'both',
-                    });
+                    animation = panel.animate(
+                        open ? frames : frames.toReversed(),
+                        {
+                            duration: open ? 180 : 120,
+                            easing: 'ease-out',
+                            fill: 'both',
+                        },
+                    );
                     const current = animation;
                     current.finished
                         .then(() => {
@@ -44,14 +122,19 @@
                 panel.inert = !menu.open;
                 summary.addEventListener('click', (event) => {
                     event.preventDefault();
-                    const open = summary.getAttribute('aria-expanded') !== 'true';
+                    const open =
+                        summary.getAttribute('aria-expanded') !== 'true';
                     if (open)
                         menus.forEach((other) => {
                             if (other && other.menu !== menu) other.close();
                         });
                     setOpen(open);
                 });
-                return { menu, close: (restoreFocus = false) => setOpen(false, restoreFocus) };
+                return {
+                    menu,
+                    close: (restoreFocus = false) =>
+                        setOpen(false, restoreFocus),
+                };
             })
             .filter(Boolean);
         document.addEventListener('pointerdown', (event) => {
@@ -67,7 +150,11 @@
         document.addEventListener('keydown', (event) => {
             if (event.key !== 'Escape') return;
             menus.forEach((entry) => {
-                if (entry.menu.querySelector('summary').getAttribute('aria-expanded') === 'true') {
+                if (
+                    entry.menu
+                        .querySelector('summary')
+                        .getAttribute('aria-expanded') === 'true'
+                ) {
                     event.preventDefault();
                     entry.close(true);
                 }
@@ -102,7 +189,10 @@
             setOpen(toggle.getAttribute('aria-expanded') !== 'true');
         });
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+            if (
+                event.key === 'Escape' &&
+                toggle.getAttribute('aria-expanded') === 'true'
+            ) {
                 close();
                 toggle.focus();
             }
@@ -140,7 +230,9 @@
     };
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeNavigation, { once: true });
+        document.addEventListener('DOMContentLoaded', initializeNavigation, {
+            once: true,
+        });
     } else {
         initializeNavigation();
     }

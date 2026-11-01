@@ -41,6 +41,7 @@ class DonorInventoryIntegrationTest {
     @Autowired DonationRepository donations;
     @Autowired DonationMatchRepository matches;
     @Autowired DeliveryRepository deliveries;
+    @Autowired edu.br.resource.resourcesystem.service.match.MatchPageService pages;
     @Autowired JdbcTemplate db;
     @Autowired MockMvc mvc;
     @Autowired TransactionTemplate tx;
@@ -170,6 +171,11 @@ class DonorInventoryIntegrationTest {
                         content()
                                 .string(
                                         org.hamcrest.Matchers.containsString(
+                                                "Data da entrega informada pelo doador")))
+                .andExpect(
+                        content()
+                                .string(
+                                        org.hamcrest.Matchers.containsString(
                                                 "Recebedor informado pelo doador: Maria"
                                                         + " Oliveira.")));
         var completed = workflow.receive(ong.getId(), proposal.protocol());
@@ -191,6 +197,213 @@ class DonorInventoryIntegrationTest {
                                         org.hamcrest.Matchers.containsString(
                                                 "Recebedor informado pelo doador: Maria"
                                                         + " Oliveira.")));
+    }
+
+    @Test
+    void contextualRegistrationIsIdempotentAndConflictingRetryIs409() throws Exception {
+        var key = UUID.randomUUID();
+        var request =
+                new RegisterDonationRequest(
+                        needId, "Contextual", 10, ItemCondition.GOOD, "Primeira tentativa", key);
+        var first = workflow.register(donor.getId(), request);
+        assertEquals(
+                db.queryForObject(
+                        "select item_type_id from necessities where id=?", Integer.class, needId),
+                db.queryForObject(
+                        "select i.item_type_id from donations d join packages p on"
+                            + " p.id=d.package_id join items i on i.id=p.item_id where d.id=?",
+                        Integer.class,
+                        first.id()));
+        assertEquals(first.id(), workflow.register(donor.getId(), request).id());
+        String payload =
+                "{\"need\":"
+                        + needId
+                        + ",\"item\":\"Outros"
+                        + " dados\",\"quantity\":10,\"condition\":\"good\",\"submissionKey\":\""
+                        + key
+                        + "\"}";
+        mvc.perform(
+                        post("/api/donor/donations")
+                                .with(user(donor.getEmail()).roles("DONOR"))
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(payload))
+                .andExpect(status().isConflict());
+        assertEquals(
+                1,
+                history.findDonationsByDonor(
+                                donor.getId(),
+                                new DonationHistoryFilterRequest(null, null, null, 1))
+                        .getTotalElements());
+    }
+
+    @Test
+    void matchingRejectsFractionalQuantitiesAndIdentifiersWithoutReserving() throws Exception {
+        var id = create();
+        var auth = user(donor.getEmail()).roles("DONOR");
+        String proposal = "{\"need\":" + needId + ",\"donation\":" + id + ",\"quantity\":1.9}";
+        mvc.perform(
+                        post("/api/donor/proposals")
+                                .with(auth)
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(proposal))
+                .andExpect(status().isBadRequest());
+        mvc.perform(
+                        post("/api/donor/proposals")
+                                .with(auth)
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        proposal.replace("1.9", "1")
+                                                .replace(
+                                                        "\"donation\":" + id,
+                                                        "\"donation\":" + id + ".9")))
+                .andExpect(status().isBadRequest());
+        String registration =
+                "{\"need\":"
+                        + needId
+                        + ",\"item\":\"Fração\",\"quantity\":2.9,\"condition\":\"good\",\"submissionKey\":\""
+                        + UUID.randomUUID()
+                        + "\"}";
+        mvc.perform(
+                        post("/api/donor/donations")
+                                .with(auth)
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(registration))
+                .andExpect(status().isBadRequest());
+        assertEquals(0, history.proposals(donor.getId(), id, 1).totalElements());
+        assertEquals(10, history.details(donor.getId(), id).availableQuantity());
+    }
+
+    @Test
+    void historicalItemSurvivesEditsToRemainingInventory() {
+        var id = create();
+        var proposal = propose(id, 4);
+        tx.executeWithoutResult(
+                s -> {
+                    matches.findById(proposal.id()).orElseThrow().setStatus(MatchStatus.COMPLETED);
+                    donations.findById(id).orElseThrow().setStatus(DonationStatus.REGISTERED);
+                });
+        management.update(donor.getId(), id, editForm("Novo lote", 12, 0));
+        var details =
+                (edu.br.resource.resourcesystem.dto.response.MatchDetailResponse)
+                        pages.institutionDetail(ong.getId(), proposal.protocol()).get("match");
+        assertEquals("Inventário teste", details.donation().item());
+        assertEquals(ItemCondition.GOOD, details.donation().condition());
+        assertEquals("Descrição inicial", details.donation().description());
+        assertEquals("Novo lote", history.details(donor.getId(), id).itemName());
+        for (var order : edu.br.resource.resourcesystem.dto.MatchSortOrder.values()) {
+            var found =
+                    pages.institutionMatches(
+                            ong.getId(),
+                            new MatchFilterRequest(
+                                    "Inventário teste",
+                                    needId,
+                                    MatchStatus.COMPLETED,
+                                    order,
+                                    1,
+                                    6));
+            assertEquals(
+                    1,
+                    ((edu.br.resource.resourcesystem.dto.response.PageResponse<?>)
+                                    found.get("pagination"))
+                            .totalElements());
+        }
+    }
+
+    @Test
+    void outOfRangePagesKeepMatchingFiltersAndReturnTheLastPage() {
+        var p = propose(create(), 2);
+        var model =
+                pages.institutionMatches(
+                        ong.getId(),
+                        new MatchFilterRequest(
+                                p.protocol(),
+                                needId,
+                                MatchStatus.AWAITING_ACCEPTANCE,
+                                edu.br.resource.resourcesystem.dto.MatchSortOrder.DEADLINE,
+                                999,
+                                6));
+        var page =
+                (edu.br.resource.resourcesystem.dto.response.PageResponse<?>)
+                        model.get("pagination");
+        assertEquals(1, page.page());
+        assertEquals(1, page.totalElements());
+        var discovered =
+                pages.needs(
+                        donor.getId(),
+                        new NeedFilterRequest(null, ItemCategory.FURNITURE, null, null, 999, 6));
+        var discoveryPage =
+                (edu.br.resource.resourcesystem.dto.response.PageResponse<?>)
+                        discovered.get("pagination");
+        assertTrue(discoveryPage.page() <= discoveryPage.totalPages());
+        assertFalse(discoveryPage.content().isEmpty());
+    }
+
+    @Test
+    void simultaneousProposalsCannotOverAllocateTheSameNeed() throws Exception {
+        var a = create();
+        var b = management.register(other.getId(), createForm("Outra doação"));
+        tx.executeWithoutResult(
+                t -> db.update("update necessities set quantity_requested=10 where id=?", needId));
+        var gate = new CountDownLatch(1);
+        try (var pool = Executors.newFixedThreadPool(2)) {
+            var first =
+                    pool.submit(
+                            () -> {
+                                gate.await();
+                                try {
+                                    workflow.propose(
+                                            donor.getId(),
+                                            new SubmitProposalRequest(needId, a, 7, null));
+                                    return 200;
+                                } catch (ResponseStatusException e) {
+                                    return e.getStatusCode().value();
+                                }
+                            });
+            var second =
+                    pool.submit(
+                            () -> {
+                                gate.await();
+                                try {
+                                    workflow.propose(
+                                            other.getId(),
+                                            new SubmitProposalRequest(needId, b, 7, null));
+                                    return 200;
+                                } catch (ResponseStatusException e) {
+                                    return e.getStatusCode().value();
+                                }
+                            });
+            gate.countDown();
+            assertEquals(
+                    java.util.List.of(200, 409),
+                    java.util.stream.Stream.of(first.get(), second.get()).sorted().toList());
+        }
+        assertEquals(
+                7,
+                db.queryForObject(
+                        "select coalesce(sum(allocated_quantity),0) from matches where"
+                                + " necessity_id=?",
+                        Long.class,
+                        needId));
+    }
+
+    @Test
+    void expiredAcceptanceCommitsCancellationAndReleasesStock() {
+        var id = create();
+        var proposal = propose(id, 4);
+        db.update(
+                "update matches set acceptance_deadline=now()-interval '1 second' where id=?",
+                proposal.id());
+        assertThrows(
+                ResponseStatusException.class,
+                () -> workflow.accept(ong.getId(), proposal.protocol()));
+        assertEquals(
+                MatchStatus.CANCELLED, matches.findById(proposal.id()).orElseThrow().getStatus());
+        assertEquals(10, history.details(donor.getId(), id).availableQuantity());
+        assertEquals(DonationStatus.REGISTERED, history.details(donor.getId(), id).status());
     }
 
     @Test

@@ -118,6 +118,20 @@ public class MatchDtoMapper {
                 d.getStatus());
     }
 
+    private InventoryDonationResponse offeredInventory(DonationMatch m) {
+        var current = inventory(m.getDonation());
+        return new InventoryDonationResponse(
+                current.id(),
+                m.getOfferedTitle(),
+                icons.resolve(ItemCategory.fromValue(m.getOfferedCategory())),
+                ItemCategory.fromValue(m.getOfferedCategory()),
+                ItemCondition.fromValue(m.getOfferedCondition()),
+                m.getOfferedDescription(),
+                m.getOfferedTotalQuantity(),
+                current.availableQuantity(),
+                current.status());
+    }
+
     public NeedSummaryResponse need(Necessity n) {
         var location =
                 addresses
@@ -174,12 +188,11 @@ public class MatchDtoMapper {
     public MatchSummaryResponse summary(DonationMatch m) {
         var d = deliveries.findByMatchId(m.getId()).orElse(null);
         var deadline = deadlines(m, d);
-        var item = m.getDonation().getDonationPackage().getItem();
         return new MatchSummaryResponse(
                 m.getId(),
                 m.getProtocol(),
-                item.getTitle(),
-                icons.resolve(item.getItemType().getCategory()),
+                m.getOfferedTitle(),
+                icons.resolve(ItemCategory.fromValue(m.getOfferedCategory())),
                 m.getAllocatedQuantity(),
                 m.getDonation().getDonor().getFullName(),
                 m.getNecessity().getInstitution().getLegalName(),
@@ -271,7 +284,7 @@ public class MatchDtoMapper {
                 m.getStatus(),
                 profile(m.getDonation().getDonor()),
                 recipient,
-                inventory(m.getDonation()),
+                offeredInventory(m),
                 need(
                         m.getNecessity(),
                         recipient.address() == null ? null : recipient.address().location()),

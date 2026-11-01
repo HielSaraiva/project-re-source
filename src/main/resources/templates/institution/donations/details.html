@@ -96,7 +96,7 @@
                             <dd th:text="${intention.message}"></dd>
                         </div>
                         <th:block
-                            th:replace="~{fragments/donation/recipient-summary :: postalDetails(${intention})}"
+                            th:replace="~{fragments/donation/recipient-summary :: deliveryDetails(${intention})}"
                         ></th:block>
                     </dl>
                     <p
@@ -169,7 +169,7 @@
                 </dl>
                 <dl class="ong-donation-summary" data-postal-review hidden>
                     <th:block
-                        th:replace="~{fragments/donation/recipient-summary :: postalDetails(${intention})}"
+                        th:replace="~{fragments/donation/recipient-summary :: deliveryDetails(${intention})}"
                     ></th:block>
                 </dl>
                 <label class="ong-donation-reason" data-reason-field hidden

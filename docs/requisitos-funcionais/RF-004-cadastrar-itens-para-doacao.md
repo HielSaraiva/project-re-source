@@ -23,7 +23,8 @@ O sistema deve permitir ao doador cadastrar itens para doação a partir de uma 
 ### Entradas (Dados necessários)
 - Necessidade (identificador inteiro positivo, obrigatório).
 - Título do item (texto não vazio de até 120 caracteres, obrigatório).
-- Quantidade (inteiro positivo, obrigatório).
+- Quantidade (inteiro positivo, obrigatório, sem truncamento de frações).
+- Chave UUID da tentativa (`submissionKey`), obrigatória. Reenvios idênticos reutilizam o cadastro; alterações no conteúdo de uma tentativa já processada são rejeitadas.
 - Estado de conservação (estado do item, obrigatório).
 - Descrição (texto de até 1.000 caracteres, opcional).
 

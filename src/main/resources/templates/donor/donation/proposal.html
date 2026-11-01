@@ -41,7 +41,7 @@
                         </div>
                         <div>
                             <dt>Localização</dt>
-                            <dd th:text="${need.city + ' • A ' + need.distance}">Curitiba, PR • A 4.2 km</dd>
+                            <dd th:text="${need.distance == null ? need.city : need.city + ' • A ' + need.distance}">Curitiba, PR • A 4.2 km</dd>
                         </div>
                         <div>
                             <dt>Categoria</dt>
@@ -72,7 +72,7 @@
                     <div id="inventory-empty" class="proposal-empty" th:hidden="${!inventoryDonations.isEmpty()}">
                         <span class="icon-frame"><img th:src="@{/images/shared/categories/package.svg}" alt=""></span>
                         <h3>Você ainda não tem uma doação disponível nesta categoria</h3>
-                        <p>Cadastre os itens que possui em <strong th:text="${need.category}">Saúde &amp; Mobilidade</strong>. Eles ficam disponíveis em Minhas doações com o status <strong>Registrado</strong> e podem ser selecionados aqui.</p>
+                        <p>Cadastre os itens que possui em <strong th:text="${need.category}">Saúde &amp; Mobilidade</strong>. Eles ficam disponíveis em Minhas doações com o status <strong>Registrada</strong> e podem ser selecionados aqui.</p>
                         <button class="ui-button ui-button--primary" type="button" data-open-registration disabled>Cadastrar doação</button>
                     </div>
                     <p id="inventory-feedback" class="proposal-inventory-feedback" role="status" hidden></p>
@@ -127,7 +127,7 @@
                         <div class="proposal-next-step">
                             <span class="icon-frame"><img th:src="@{/images/donor/shipping/clock.svg}" alt=""></span>
                             <div><strong>O que acontece depois?</strong>
-                                <p>Ao enviar a proposta, a doação passa de <strong>Registrado</strong> para <strong>Aguardando aceite</strong> em Minhas doações. Após o aceite da ONG, você combina a entrega.</p>
+                                <p>Ao enviar a proposta, a doação passa de <strong>Registrada</strong> para <strong>Aguardando aceite</strong> em Minhas doações. Após o aceite da ONG, você combina a entrega.</p>
                             </div>
                         </div>
                         <div class="proposal-actions">
@@ -213,9 +213,9 @@
                 <div class="title-block">
                     <span class="proposal-eyebrow">Minhas doações</span>
                     <div th:replace="~{fragments/ui/dialog :: heading('registration-title', 'Cadastrar doação', 'Novo cadastro', '', '/images/donor/donation-status/gift.svg')}"></div>
-                    <p id="registration-description">Cadastre os itens que você possui. A doação ficará com o status <strong>Registrado</strong> para você montar a proposta.</p>
+                    <p id="registration-description">Cadastre os itens que você possui. A doação ficará com o status <strong>Registrada</strong> para você montar a proposta.</p>
                 </div>
-                <form id="inventory-registration-form" class="proposal-form" th:action="@{/donor/donation/proposal}" method="post">
+                <form id="inventory-registration-form" th:data-donor-id="${donorId}" class="proposal-form" th:action="@{/donor/donation/proposal}" method="post">
                     <input type="hidden" name="need" th:value="${need.id}">
                     <div class="proposal-field">
                         <label for="registration-category">Categoria</label>
@@ -249,6 +249,7 @@
                         <textarea id="registration-description-input" name="description" rows="3" maxlength="1000" placeholder="Informe características, conservação e outros detalhes dos itens."></textarea>
                     </div>
                     <div class="proposal-actions">
+                        <button class="ui-button ui-button--secondary" type="button" data-reset-registration hidden>Iniciar outro cadastro</button>
                         <button class="ui-button ui-button--secondary" type="button" data-close-registration>Cancelar</button>
                         <button class="ui-button ui-button--primary" type="submit" disabled>Cadastrar e selecionar</button>
                     </div>

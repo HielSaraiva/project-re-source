@@ -40,14 +40,7 @@ public final class MatchSpecifications {
                             builder.lower(root.get("donation").get("donor").get("fullName")),
                             pattern,
                             '\\'),
-                    builder.like(
-                            builder.lower(
-                                    root.get("donation")
-                                            .get("donationPackage")
-                                            .get("item")
-                                            .get("title")),
-                            pattern,
-                            '\\'),
+                    builder.like(builder.lower(root.get("offeredTitle")), pattern, '\\'),
                     builder.like(
                             builder.lower(root.get("necessity").get("itemType").get("name")),
                             pattern,

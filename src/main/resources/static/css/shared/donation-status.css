@@ -23,7 +23,7 @@
 }
 
 .donation-status--completed {
-    color: var(--green);
+    color: var(--color-success-dark);
     background: var(--color-success-soft);
 }
 

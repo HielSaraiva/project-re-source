@@ -199,7 +199,7 @@ public interface DonationMatchRepository
                       and (:filterByStatus = false or m.status = :status)
                       and (:searchPattern is null or lower(m.protocol) like :searchPattern escape '\\'
                         or lower(m.donation.donor.fullName) like :searchPattern escape '\\'
-                        or lower(m.donation.donationPackage.item.title) like :searchPattern escape '\\'
+                        or lower(m.offeredTitle) like :searchPattern escape '\\'
                         or lower(m.necessity.itemType.name) like :searchPattern escape '\\'
                         or lower(m.necessity.institution.legalName) like :searchPattern escape '\\')
                     order by case
@@ -216,7 +216,7 @@ public interface DonationMatchRepository
                       and (:filterByStatus = false or m.status = :status)
                       and (:searchPattern is null or lower(m.protocol) like :searchPattern escape '\\'
                         or lower(m.donation.donor.fullName) like :searchPattern escape '\\'
-                        or lower(m.donation.donationPackage.item.title) like :searchPattern escape '\\'
+                        or lower(m.offeredTitle) like :searchPattern escape '\\'
                         or lower(m.necessity.itemType.name) like :searchPattern escape '\\'
                         or lower(m.necessity.institution.legalName) like :searchPattern escape '\\')
                     """)

@@ -145,7 +145,7 @@ public class MatchViewAssembler {
                         ? "Localização não cadastrada"
                         : n.location().city() + ", " + n.location().state(),
                 "distance",
-                n.distanceKm() == null ? "distância não disponível" : n.distanceKm() + " km");
+                n.distanceKm() == null ? null : n.distanceKm() + " km");
     }
 
     public Map<String, Object> inventory(InventoryDonationResponse d) {
@@ -494,6 +494,19 @@ public class MatchViewAssembler {
                         deadlines.inPersonDelivery(),
                         "deliveryMethod",
                         delivery == null ? null : delivery.method().getValue(),
+                        "deliveredOnLabel",
+                        delivery == null || delivery.deliveredOn() == null
+                                ? null
+                                : delivery.deliveredOn()
+                                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        "receivedByName",
+                        delivery == null ? null : delivery.receivedByName(),
+                        "deliveryNotes",
+                        delivery == null ? null : delivery.notes(),
+                        "receiptConfirmedLabel",
+                        delivery == null || delivery.receiptConfirmedAt() == null
+                                ? null
+                                : time(delivery.receiptConfirmedAt()),
                         "postedOnLabel",
                         delivery == null || delivery.postedOn() == null
                                 ? "Não informada"

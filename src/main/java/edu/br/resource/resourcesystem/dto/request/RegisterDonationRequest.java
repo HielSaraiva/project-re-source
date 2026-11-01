@@ -12,8 +12,32 @@ import jakarta.validation.constraints.Size;
 import org.springframework.web.bind.annotation.BindParam;
 
 public record RegisterDonationRequest(
-        @BindParam("need") @JsonAlias("need") @NotNull @Positive Integer necessityId,
+        @BindParam("need")
+                @JsonAlias("need")
+                @tools.jackson.databind.annotation.JsonDeserialize(
+                        using =
+                                edu.br.resource.resourcesystem.validation.WholeQuantityDeserializer
+                                        .class)
+                @NotNull
+                @Positive
+                Integer necessityId,
         @BindParam("item") @JsonAlias("item") @NotBlank @Size(max = 120) String title,
-        @NotNull @Positive Integer quantity,
+        @tools.jackson.databind.annotation.JsonDeserialize(
+                        using =
+                                edu.br.resource.resourcesystem.validation.WholeQuantityDeserializer
+                                        .class)
+                @NotNull
+                @Positive
+                Integer quantity,
         @NotNull ItemCondition condition,
-        @Size(max = 1000) String description) {}
+        @Size(max = 1000) String description,
+        @NotNull java.util.UUID submissionKey) {
+    public RegisterDonationRequest(
+            Integer necessityId,
+            String title,
+            Integer quantity,
+            ItemCondition condition,
+            String description) {
+        this(necessityId, title, quantity, condition, description, java.util.UUID.randomUUID());
+    }
+}

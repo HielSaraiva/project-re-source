@@ -41,7 +41,7 @@
                     </div>
                     <span class="verified-pill">
                         <img th:src="@{/images/donor/needs/shield.svg}" alt="">
-                        ONGs 100% Verificadas com auditoria ativa
+                        ONGs com cadastro aprovado
                     </span>
                 </div>
                 <th:block th:if="${needs.isEmpty()}" th:with="filtered=${!#strings.isEmpty(filter.query) or filter.category != null or filter.priority != null or filter.stateId != null}">
@@ -58,7 +58,7 @@
                                 <span class="location__icon" aria-hidden="true">
                                     <img th:src="@{/images/donor/needs/map-pin.svg}" alt="">
                                 </span>
-                                <span th:text="${need.city + ' • '}">Curitiba, PR • </span><strong th:text="${'A ' + need.distance}">A 4.2 km</strong>
+                                <span th:text="${need.city}">Curitiba, PR • </span><strong th:if="${need.distance != null}" th:text="${' • A ' + need.distance}"></strong>
                             </div>
                         </div>
                         <div class="card-body">

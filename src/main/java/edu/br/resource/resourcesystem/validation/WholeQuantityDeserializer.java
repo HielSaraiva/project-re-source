@@ -22,6 +22,6 @@ public class WholeQuantityDeserializer extends StdDeserializer<Integer> {
             }
         }
         return context.reportInputMismatch(
-                Integer.class, "Informe uma quantidade inteira entre 1 e 2.147.483.647.");
+                Integer.class, "Informe um número inteiro entre 1 e 2.147.483.647.");
     }
 }

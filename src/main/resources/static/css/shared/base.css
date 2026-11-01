@@ -31,7 +31,7 @@
 
     /* Backward-compatible aliases for page-specific styles. */
     --green: var(--color-brand);
-    --status-waiting-color: var(--color-warning);
+    --status-waiting-color: #92400e;
     --status-waiting-background: var(--color-warning-surface);
     --ink: var(--color-text-primary);
     --slate: var(--color-text-secondary);

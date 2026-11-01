@@ -25,6 +25,8 @@ Rastreabilidade de propostas e doações.
 - A rastreabilidade abrange também operações que não alteram o status da proposta.
 - A escolha da modalidade Correios integra o histórico mesmo quando a proposta permanece aguardando envio.
 
+- Cada proposta preserva nome, categoria, condição, descrição e quantidade cadastrada do item no momento do envio. Editar o saldo remanescente não reescreve os detalhes do protocolo; consultas e buscas usam os dados preservados. A migração de protocolos anteriores preserva os dados disponíveis naquele instante, sem conseguir recuperar edições antigas já sobrescritas.
+
 ## Exceções
 
 O cadastro de itens registra o histórico da doação, pois ainda não existe proposta vinculada.
