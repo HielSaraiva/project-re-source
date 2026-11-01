@@ -76,6 +76,37 @@ public interface DonationMatchRepository
 
     boolean existsByNecessityId(Integer necessityId);
 
+    boolean existsByNecessityIdAndStatusNotIn(
+            Integer necessityId, Collection<MatchStatus> statuses);
+
+    interface NecessityTotals {
+        Integer getNecessityId();
+
+        Long getReceivedQuantity();
+
+        Long getReservedQuantity();
+
+        Long getBlockingProposals();
+
+        Long getProposalCount();
+    }
+
+    @Query(
+            """
+            select m.necessity.id as necessityId,
+              sum(case when m.status = :completed then m.allocatedQuantity else 0 end) as receivedQuantity,
+              sum(case when m.status <> :completed and m.status <> :rejected and m.status <> :cancelled
+                  then m.allocatedQuantity else 0 end) as reservedQuantity,
+              sum(case when m.status <> :cancelled and m.status <> :rejected then 1 else 0 end) as blockingProposals,
+              count(m) as proposalCount
+            from DonationMatch m where m.necessity.id in :ids group by m.necessity.id
+            """)
+    java.util.List<NecessityTotals> summarizeNecessities(
+            @Param("ids") Collection<Integer> ids,
+            @Param("completed") MatchStatus completed,
+            @Param("rejected") MatchStatus rejected,
+            @Param("cancelled") MatchStatus cancelled);
+
     long countByNecessityInstitutionIdAndStatus(Integer institutionId, MatchStatus status);
 
     @Query(
@@ -93,9 +124,14 @@ public interface DonationMatchRepository
             @Param("statuses") Collection<MatchStatus> statuses);
 
     default Page<DonationMatch> findForInstitutionOrderedByDeadline(
-            Integer institutionId, MatchStatus status, String searchPattern, Pageable pageable) {
+            Integer institutionId,
+            Integer necessityId,
+            MatchStatus status,
+            String searchPattern,
+            Pageable pageable) {
         return findForInstitutionOrderedByDeadline(
                 institutionId,
+                necessityId,
                 status != null,
                 status == null ? MatchStatus.AWAITING_ACCEPTANCE : status,
                 searchPattern,
@@ -118,6 +154,7 @@ public interface DonationMatchRepository
                     """
                     select m from DonationMatch m left join Delivery d on d.match = m
                     where m.necessity.institution.id = :institutionId
+                      and (:necessityId is null or m.necessity.id = :necessityId)
                       and (:filterByStatus = false or m.status = :status)
                       and (:searchPattern is null or lower(m.protocol) like :searchPattern escape '\\'
                         or lower(m.donation.donor.fullName) like :searchPattern escape '\\'
@@ -134,6 +171,7 @@ public interface DonationMatchRepository
                     """
                     select count(m) from DonationMatch m
                     where m.necessity.institution.id = :institutionId
+                      and (:necessityId is null or m.necessity.id = :necessityId)
                       and (:filterByStatus = false or m.status = :status)
                       and (:searchPattern is null or lower(m.protocol) like :searchPattern escape '\\'
                         or lower(m.donation.donor.fullName) like :searchPattern escape '\\'
@@ -143,6 +181,7 @@ public interface DonationMatchRepository
                     """)
     Page<DonationMatch> findForInstitutionOrderedByDeadline(
             @Param("institutionId") Integer institutionId,
+            @Param("necessityId") Integer necessityId,
             @Param("filterByStatus") boolean filterByStatus,
             @Param("status") MatchStatus status,
             @Param("searchPattern") String searchPattern,

@@ -9,17 +9,21 @@ import edu.br.resource.resourcesystem.presentation.CategoryIconResolver;
 import edu.br.resource.resourcesystem.repository.*;
 import edu.br.resource.resourcesystem.repository.specification.NecessitySpecifications;
 
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class NecessityManagementService {
     private final NecessityRepository necessities;
@@ -27,76 +31,94 @@ public class NecessityManagementService {
     private final InstitutionRepository institutions;
     private final DonationMatchRepository matches;
     private final CategoryIconResolver icons;
-
-    public NecessityManagementService(
-            NecessityRepository necessities,
-            ItemTypeRepository itemTypes,
-            InstitutionRepository institutions,
-            DonationMatchRepository matches,
-            CategoryIconResolver icons) {
-        this.necessities = necessities;
-        this.itemTypes = itemTypes;
-        this.institutions = institutions;
-        this.matches = matches;
-        this.icons = icons;
-    }
+    private final MatchLockPolicy lockPolicy;
 
     public Page<InstitutionNecessityResponse> list(
             Integer institutionId, NecessityFilterRequest filter) {
         var specification =
-                NecessitySpecifications.forInstitution(institutionId)
+                NecessitySpecifications.notDeleted()
+                        .and(NecessitySpecifications.forInstitution(institutionId))
                         .and(NecessitySpecifications.withCategory(filter.category()))
                         .and(NecessitySpecifications.withPriority(filter.priority()))
                         .and(NecessitySpecifications.withStatus(filter.status()))
                         .and(NecessitySpecifications.search(filter.query()));
-        var sort =
-                Sort.by("createdAt")
-                        .descending()
-                        .and(Sort.by("id").descending());
+        var sort = Sort.by("createdAt").descending().and(Sort.by("id").descending());
         var page =
                 necessities.findAll(
-                        specification,
-                        PageRequest.of(filter.page() - 1, filter.size(), sort));
+                        specification, PageRequest.of(filter.page() - 1, filter.size(), sort));
         if (page.isEmpty() && filter.page() > 1 && page.getTotalPages() > 0)
             page =
                     necessities.findAll(
                             specification,
                             PageRequest.of(page.getTotalPages() - 1, filter.size(), sort));
-        return page.map(this::response);
+        // Fetch aggregates once per page instead of three queries for every card.
+        var totals = totals(page.getContent().stream().map(Necessity::getId).toList());
+        return page.map(n -> response(n, totals.get(n.getId())));
     }
 
     public InstitutionNecessityResponse editDetails(Integer institutionId, Integer necessityId) {
         var necessity = necessities.findById(necessityId).orElseThrow(this::missing);
-        if (!necessity.getInstitution().getId().equals(institutionId)) throw missing();
+        requireOwner(necessity, institutionId);
         return response(necessity);
     }
 
+    private Map<Integer, DonationMatchRepository.NecessityTotals> totals(List<Integer> ids) {
+        if (ids.isEmpty()) return Map.of();
+        return matches
+                .summarizeNecessities(
+                        ids, MatchStatus.COMPLETED, MatchStatus.REJECTED, MatchStatus.CANCELLED)
+                .stream()
+                .collect(
+                        Collectors.toMap(
+                                DonationMatchRepository.NecessityTotals::getNecessityId,
+                                Function.identity()));
+    }
+
     private InstitutionNecessityResponse response(Necessity necessity) {
-        long received =
-                matches.sumAllocatedByNecessity(
-                        necessity.getId(), Set.of(MatchStatus.COMPLETED));
-        long reserved =
-                matches.sumAllocatedByNecessity(
-                        necessity.getId(), MatchStatus.activeStatuses());
-        long minimumQuantity = received + reserved;
+        return response(necessity, totals(List.of(necessity.getId())).get(necessity.getId()));
+    }
+
+    private InstitutionNecessityResponse response(
+            Necessity n, DonationMatchRepository.NecessityTotals totals) {
+        long received = totals == null ? 0 : totals.getReceivedQuantity();
+        long reserved = totals == null ? 0 : totals.getReservedQuantity();
+        boolean blocked = totals != null && totals.getBlockingProposals() > 0;
+        boolean active = n.getStatus() == NecessityStatus.ACTIVE;
+        String restriction =
+                blocked
+                        ? (received > 0
+                                        ? reserved > 0
+                                                ? "Há propostas em andamento e concluídas."
+                                                : "Há propostas concluídas."
+                                        : "Há propostas em andamento.")
+                                + " Edição e exclusão bloqueadas."
+                        : !active
+                                ? "Esta necessidade foi concluída ou cancelada e não pode ser"
+                                        + " editada."
+                                : null;
         return new InstitutionNecessityResponse(
-                necessity.getId(),
-                necessity.getItemType().getName(),
-                icons.resolve(necessity.getItemType().getCategory()),
-                necessity.getItemType().getCategory(),
-                necessity.getDescription(),
-                necessity.getQuantityRequested(),
-                Math.max(0, necessity.getQuantityRequested() - minimumQuantity),
+                n.getId(),
+                n.getItemType().getName(),
+                icons.resolve(n.getItemType().getCategory()),
+                n.getItemType().getCategory(),
+                n.getDescription(),
+                n.getQuantityRequested(),
+                Math.max(0, n.getQuantityRequested() - received - reserved),
                 reserved,
                 received,
-                minimumQuantity,
-                matches.existsByNecessityId(necessity.getId()),
-                necessity.getPriority(),
-                necessity.getStatus());
+                received + reserved,
+                totals != null && totals.getProposalCount() > 0,
+                n.getPriority(),
+                n.getStatus(),
+                active && !blocked,
+                active && !blocked,
+                restriction,
+                n.getVersion());
     }
 
     @Transactional
     public void create(Integer institutionId, ManageNecessityRequest request) {
+        lockPolicy.apply();
         var institution = institutions.findById(institutionId).orElseThrow(this::missing);
         necessities.save(
                 Necessity.builder()
@@ -111,79 +133,65 @@ public class NecessityManagementService {
     @Transactional
     public InstitutionNecessityResponse update(
             Integer institutionId, Integer necessityId, ManageNecessityRequest request) {
+        lockPolicy.apply();
         var necessity = necessities.findForUpdate(necessityId).orElseThrow(this::missing);
-        if (!necessity.getInstitution().getId().equals(institutionId)) throw missing();
-        if (necessity.getStatus() != NecessityStatus.ACTIVE)
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Somente necessidades ativas podem ser editadas.");
-
-        boolean hasProposals = matches.existsByNecessityId(necessityId);
-        if (hasProposals
-                && request.category() != necessity.getItemType().getCategory())
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "A categoria não pode ser alterada enquanto houver propostas associadas.");
-        long allocated =
-                matches.sumAllocatedByNecessity(
-                        necessityId, MatchStatus.allocationConsumingStatuses());
-        int requestedQuantity = request.quantity().intValueExact();
-        if (requestedQuantity < allocated) {
-            long received =
-                    matches.sumAllocatedByNecessity(
-                            necessityId, Set.of(MatchStatus.COMPLETED));
-            long reserved = allocated - received;
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "A quantidade mínima é "
-                            + allocated
-                            + (allocated == 1 ? " unidade: " : " unidades: ")
-                            + received
-                            + (received == 1 ? " unidade recebida e " : " unidades recebidas e ")
-                            + reserved
-                            + (reserved == 1 ? " unidade reservada." : " unidades reservadas."));
-        }
-        long received =
-                matches.sumAllocatedByNecessity(
-                        necessityId, Set.of(MatchStatus.COMPLETED));
-        if (requestedQuantity < necessity.getQuantityRequested()
-                && received >= requestedQuantity
-                && !Boolean.TRUE.equals(request.confirmFulfillment()))
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "A quantidade informada marcará a necessidade como atendida. Confirme essa"
-                            + " alteração antes de salvar.");
-
+        requireOwner(necessity, institutionId);
+        requireManageable(necessity);
+        requireVersion(necessity, request.version());
+        // Any active or completed proposal blocks editing; cancelled/rejected history is retained.
         necessity.setItemType(itemType(request));
         necessity.setDescription(request.description().strip());
-        necessity.setQuantityRequested(requestedQuantity);
+        necessity.setQuantityRequested(request.quantity().intValueExact());
         necessity.setPriority(request.priority());
-        if (received >= requestedQuantity) necessity.setStatus(NecessityStatus.FULFILLED);
+        necessities.flush();
         return response(necessity);
     }
 
     @Transactional
-    public void delete(Integer institutionId, Integer necessityId) {
+    public void delete(Integer institutionId, Integer necessityId, long version) {
+        lockPolicy.apply();
         var necessity = necessities.findForUpdate(necessityId).orElseThrow(this::missing);
-        if (!necessity.getInstitution().getId().equals(institutionId)) throw missing();
-        if (matches.existsByNecessityId(necessityId))
+        requireOwner(necessity, institutionId);
+        requireManageable(necessity);
+        requireVersion(necessity, version);
+        if (matches.existsByNecessityId(necessityId)) {
+            // Never cascade-delete cancelled proposals or their outbox/history records.
+            necessity.setDeletedAt(Instant.now());
+            necessity.setStatus(NecessityStatus.CANCELLED);
+        } else necessities.delete(necessity);
+    }
+
+    private void requireOwner(Necessity necessity, Integer institutionId) {
+        if (necessity.getDeletedAt() != null
+                || !necessity.getInstitution().getId().equals(institutionId)) throw missing();
+    }
+
+    private void requireManageable(Necessity necessity) {
+        if (necessity.getStatus() != NecessityStatus.ACTIVE)
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Esta necessidade não pode ser excluída porque possui propostas associadas.");
+                    "Esta necessidade já foi concluída ou cancelada. Atualize a lista para"
+                            + " consultar seu estado atual.");
+        if (matches.existsByNecessityIdAndStatusNotIn(
+                necessity.getId(), Set.of(MatchStatus.CANCELLED, MatchStatus.REJECTED)))
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Edição e exclusão exigem que todas as propostas estejam canceladas ou"
+                        + " recusadas.");
+    }
 
-        necessities.delete(necessity);
+    private void requireVersion(Necessity necessity, Long version) {
+        if (version == null || version != necessity.getVersion())
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Esta necessidade foi alterada em outra sessão. Seus dados não foram salvos."
+                            + " Recarregue os dados antes de editar novamente.");
     }
 
     private ItemType itemType(ManageNecessityRequest request) {
-        String name = request.description().strip();
-        return itemTypes
-                .findByCategoryAndNameIgnoreCase(request.category(), name)
-                .orElseGet(
-                        () ->
-                                itemTypes.save(
-                                        ItemType.builder()
-                                                .category(request.category())
-                                                .name(name)
-                                                .build()));
+        // The unique normalized index and UPSERT serialize concurrent spelling variants.
+        var id = itemTypes.obtainId(request.category().getValue(), request.description().strip());
+        return itemTypes.findById(id).orElseThrow();
     }
 
     private ResponseStatusException missing() {

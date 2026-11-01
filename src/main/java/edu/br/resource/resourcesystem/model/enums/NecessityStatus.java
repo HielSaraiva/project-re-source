@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum NecessityStatus implements DatabaseEnum {
     ACTIVE("active", "Ativa"),
-    FULFILLED("fulfilled", "Atendida"),
+    FULFILLED("fulfilled", "Concluída"),
     CANCELLED("cancelled", "Cancelada");
 
     @EnumeratedValue private final String value;

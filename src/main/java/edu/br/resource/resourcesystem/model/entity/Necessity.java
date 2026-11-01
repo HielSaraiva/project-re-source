@@ -29,6 +29,14 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @Table(name = "necessities")
 public class Necessity extends AuditedEntity {
+    @jakarta.persistence.Version
+    @Column(nullable = false)
+    private long version;
+
+    // Keep cancelled protocols and their historical relationships when removing a need.
+    @Column(name = "deleted_at")
+    private java.time.Instant deletedAt;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "institution_id", nullable = false)
     private Institution institution;

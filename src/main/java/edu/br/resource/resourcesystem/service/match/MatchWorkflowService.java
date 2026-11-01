@@ -89,7 +89,8 @@ public class MatchWorkflowService {
         var donation =
                 donations.findForUpdate(request.donationId(), donorId).orElseThrow(this::missing);
         var need = necessities.findForUpdate(request.necessityId()).orElseThrow(this::missing);
-        if (need.getStatus() != NecessityStatus.ACTIVE
+        if (need.getDeletedAt() != null
+                || need.getStatus() != NecessityStatus.ACTIVE
                 || need.getInstitution().getStatus() != InstitutionStatus.APPROVED)
             throw conflict("Esta necessidade não está disponível.");
         if (!donation.getDonationPackage()

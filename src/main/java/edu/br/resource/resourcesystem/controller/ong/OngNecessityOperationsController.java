@@ -46,7 +46,8 @@ public class OngNecessityOperationsController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(Authentication authentication, @PathVariable Integer id) {
-        necessities.delete(actors.institution(authentication).getId(), id);
+    public void delete(
+            Authentication authentication, @PathVariable Integer id, @RequestParam long version) {
+        necessities.delete(actors.institution(authentication).getId(), id, version);
     }
 }

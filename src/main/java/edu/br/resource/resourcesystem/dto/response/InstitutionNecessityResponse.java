@@ -17,4 +17,8 @@ public record InstitutionNecessityResponse(
         long minimumQuantity,
         boolean hasProposals,
         NecessityPriority priority,
-        NecessityStatus status) {}
+        NecessityStatus status,
+        boolean editable,
+        boolean deletable,
+        String restrictionReason,
+        long version) {}

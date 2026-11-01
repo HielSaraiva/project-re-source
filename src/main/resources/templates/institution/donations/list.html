@@ -29,6 +29,10 @@
                     aguardando aceite</span
                 >
             </div>
+            <p class="ong-donation-scope" th:if="${filter.necessityId != null}">
+                <span th:text="${'Exibindo propostas da necessidade #' + filter.necessityId + '.'}"></span>
+                <a th:href="@{/institution/donations}" class="ong-donation-link">Ver todas as propostas</a>
+            </p>
             <form
                 id="intention-filters"
                 class="ong-donation-filters"
