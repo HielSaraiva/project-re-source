@@ -71,6 +71,9 @@ public interface DonationMatchRepository
     @EntityGraph(attributePaths = {"donation", "necessity"})
     java.util.List<DonationMatch> findAllByDonationId(Integer donationId);
 
+    @EntityGraph(attributePaths = {"necessity", "necessity.institution"})
+    java.util.List<DonationMatch> findAllByDonationIdIn(Collection<Integer> donationIds);
+
     boolean existsByDonationIdAndNecessityIdAndStatusIn(
             Integer donationId, Integer necessityId, Collection<MatchStatus> statuses);
 

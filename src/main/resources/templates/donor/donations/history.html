@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/layout/head :: head('Minhas Doações', ~{::pageStyles}, 'donor')}">
+        <th:block th:fragment="pageStyles">
+            <link rel="stylesheet" th:href="@{/css/shared/pagination.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/empty-state.css}">
+            <link rel="stylesheet" th:href="@{/css/shared/ui-controls.css}">
+            <link rel="stylesheet" th:href="@{/css/donor/donations-history.css}">
+        </th:block>
+    </head>
+    <body>
+        <header th:replace="~{fragments/layout/donor-header :: header('donations')}"></header>
+
+        <main class="donations-page">
+            <div class="donations-container">
+                <section class="donations-header">
+                    <div class="donations-header__text">
+                        <h1>Minhas Doações</h1>
+                        <p>Acompanhe o histórico e o status dos seus envios.</p>
+                    </div>
+                    <button class="button button--primary" type="button" data-open-new-donation>
+                        <span aria-hidden="true">+</span>
+                        Nova Doação
+                    </button>
+                </section>
+
+                <p class="donations-feedback donations-feedback--success" role="status" th:if="${success != null}" th:text="${success}"></p>
+                <p class="donations-feedback donations-feedback--error" role="alert" th:if="${error != null}" th:text="${error}"></p>
+
+                <section class="donations-content" aria-label="Histórico das minhas doações">
+                    <!-- Sem nenhuma doação -->
+                    <th:block th:if="${pagination.totalElements == 0}">
+                        <div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/package.svg', 'Nenhuma doação encontrada', 'Você ainda não possui doações cadastradas.', 'Fazer minha primeira doação', '/donor/needs')}"></div>
+    </th:block>
+
+                    <!-- Página inexistente: existem doações, mas não nesta página -->
+                    <th:block th:if="${pageOutOfRange}">
+                        <div th:replace="~{fragments/ui/empty-state :: emptyState('/images/shared/categories/package.svg', 'Página não encontrada', ${'A página ' + currentPage + ' não existe. Você possui doações até a página ' + lastPage + '.'}, 'Ir para a última página', ${'/donor/donations?page=' + lastPage})}"></div>
+                    </th:block>
+
+                    <div class="donations-table-wrapper" th:if="${!donations.isEmpty()}">
+                    <table class="donations-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Item doado</th>
+                                <th scope="col">Destinatário</th>
+                                <th scope="col">Data</th>
+                                    <th scope="col">Status da doação</th>
+                                <th scope="col">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr th:each="donation : ${donations}">
+                                <td>
+                                    <div class="donation-item">
+                                        <span class="donation-item__icon">
+                                                <img th:src="@{${donation.iconPath}}" alt="">
+                                        </span>
+                                            <span class="donation-item__text">
+                                                <span class="donation-item__name" th:text="${donation.itemName}" th:title="${donation.itemName}">Monitor Dell 24"</span>
+                                                <small th:text="${donation.quantityLabel()}">10 unidades · 6 disponíveis</small>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                        <span class="donation-recipient" th:if="${!donation.hasProposal()}">—</span>
+                                        <span class="donation-recipient" th:if="${donation.hasProposal()}">
+                                            <span th:text="${donation.recipientName}">Associação Vida</span>
+                                            <small th:text="${donation.proposalCaption}">Proposta INT-2026-1 · Aguardando envio</small>
+                                            <small th:if="${donation.otherActiveProposals > 0}" th:text="${donation.otherProposalsLabel()}">+1 outra proposta ativa</small>
+                                    </span>
+                                </td>
+                                    <td><time th:text="${donation.dateLabel()}">25/08/2026</time></td>
+                                <td>
+                                        <span class="history-status" th:classappend="${' history-status--' + donation.status}" th:text="${donation.statusLabel}">Registrado</span>
+                                </td>
+                                <td>
+                                    <div class="donation-actions">
+                                            <a class="icon-action icon-action--primary" th:if="${donation.actionUrl != null}"
+                                           th:href="@{${donation.actionUrl}}"
+                                               th:attr="aria-label=${donation.actionLabel + (donation.hasProposal() ? ' da proposta ' + donation.proposalProtocol : ' para ' + donation.itemName)},title=${donation.actionLabel}">
+                                                <svg th:replace="~{fragments/ui/icon :: icon(${donation.actionLabel == 'Buscar ONGs' ? 'search' : (donation.actionLabel == 'Continuar envio' ? 'arrow-up-right' : 'eye')})}"></svg>
+                                        </a>
+                                            <button type="button" class="icon-action icon-action--edit" th:if="${donation.editable}" data-edit-donation
+                                                    th:attr="aria-label=${'Editar doação ' + donation.itemName},title='Editar'"
+                                                    th:data-id="${donation.id}" th:data-title="${donation.itemName}"
+                                                    th:data-quantity="${donation.quantity}"
+                                                    th:data-min="${donation.committedQuantity() > 0 ? donation.committedQuantity() : 1}"
+                                                    th:data-condition="${donation.condition}" th:data-description="${donation.description}"
+                                                    th:data-category="${donation.categoryLabel}" th:data-icon="@{${donation.iconPath}}">
+                                                <svg th:replace="~{fragments/ui/icon :: icon('pencil')}"></svg>
+                                            </button>
+                                            <button type="button" class="icon-action icon-action--danger" th:if="${donation.deletable}" data-delete-donation
+                                                    th:attr="aria-label=${'Excluir doação ' + donation.itemName},title='Excluir'"
+                                                    th:data-id="${donation.id}" th:data-title="${donation.itemName}"
+                                                    th:data-quantity="${donation.quantity}">
+                                                <svg th:replace="~{fragments/ui/icon :: icon('trash')}"></svg>
+                                            </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                    <nav th:replace="~{fragments/ui/pagination :: simplePages('/donor/donations', ${pagination})}"></nav>
+                </section>
+            </div>
+        </main>
+
+        <!-- Modal: Nova Doação -->
+        <dialog id="new-donation" class="ui-dialog donation-modal" aria-labelledby="new-donation-title">
+            <form method="post" th:action="@{/donor/donations}">
+                <header class="donation-modal__header">
+                    <h2 id="new-donation-title">Nova Doação</h2>
+                    <button type="button" class="donation-modal__close" data-close-modal aria-label="Fechar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6m0-6 6 6"/></svg></button>
+                </header>
+
+                <div class="donation-modal__body">
+                    <div class="modal-field">
+                        <label for="new-donation-category">Categoria</label>
+                        <select id="new-donation-category" name="category" required>
+                            <option value="" selected disabled>Selecione uma categoria</option>
+                            <option th:each="c : ${categories}" th:value="${c.value}" th:text="${c.label}">Alimentação</option>
+                        </select>
+        </div>
+
+                    <div class="modal-field">
+                        <label for="new-donation-title-input">Título do Item</label>
+                        <input id="new-donation-title-input" name="title" type="text" maxlength="120" placeholder="Ex: Mesa de escritório em L" required>
+                    </div>
+
+                    <div class="modal-field modal-field--quantity">
+                        <label for="new-donation-quantity">Quantidade</label>
+                        <input id="new-donation-quantity" name="quantity" type="number" min="1" step="1" value="1" inputmode="numeric" required>
+                    </div>
+
+                    <fieldset class="segmented">
+                        <legend>Estado de conservação</legend>
+                        <label><input type="radio" name="condition" value="new" required><span>Novo</span></label>
+                        <label><input type="radio" name="condition" value="good" checked><span>Usado (Bom estado)</span></label>
+                        <label><input type="radio" name="condition" value="used"><span>Com marcas de uso</span></label>
+                    </fieldset>
+                </div>
+
+                <footer class="donation-modal__footer">
+                    <button type="button" class="donation-modal__cancel" data-close-modal>Cancelar</button>
+                    <button type="submit" class="button">Registrar Doação</button>
+                </footer>
+            </form>
+        </dialog>
+
+        <!-- Modal: Editar Doação -->
+        <dialog id="edit-donation" class="ui-dialog donation-modal" aria-labelledby="edit-donation-title" th:data-page="${currentPage}">
+            <form method="post" th:action="@{/donor/donations}" data-edit-form>
+                <input type="hidden" name="description" data-edit-description>
+                <header class="donation-modal__header">
+                    <h2 id="edit-donation-title">Editar Doação</h2>
+                    <button type="button" class="donation-modal__close" data-close-modal aria-label="Fechar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6m0-6 6 6"/></svg></button>
+                </header>
+
+                <div class="donation-modal__body">
+                    <div class="modal-field">
+                        <span class="modal-field__label" id="edit-donation-category-label">Categoria</span>
+                        <div class="modal-readonly" aria-labelledby="edit-donation-category-label">
+                            <img src="" alt="" data-edit-icon width="20" height="20">
+                            <span data-edit-category></span>
+                        </div>
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="edit-donation-title-input">Título do Item</label>
+                        <input id="edit-donation-title-input" name="title" type="text" maxlength="120" required data-edit-title>
+                    </div>
+
+                    <div class="modal-field modal-field--quantity">
+                        <label for="edit-donation-quantity">Quantidade</label>
+                        <input id="edit-donation-quantity" name="quantity" type="number" min="1" step="1" inputmode="numeric" required data-edit-quantity>
+                        <small data-edit-min-hint hidden></small>
+                    </div>
+
+                    <fieldset class="segmented">
+                        <legend>Estado de conservação</legend>
+                        <label><input type="radio" name="condition" value="new" required><span>Novo</span></label>
+                        <label><input type="radio" name="condition" value="good"><span>Usado (Bom estado)</span></label>
+                        <label><input type="radio" name="condition" value="used"><span>Com marcas de uso</span></label>
+                        <label data-edit-other hidden><input type="radio" name="condition" value="other"><span>Outro</span></label>
+                    </fieldset>
+                </div>
+
+                <footer class="donation-modal__footer">
+                    <button type="button" class="donation-modal__cancel" data-close-modal>Cancelar</button>
+                    <button type="submit" class="button">Salvar Alterações</button>
+                </footer>
+            </form>
+        </dialog>
+
+        <!-- Modal: Excluir Doação -->
+        <dialog id="delete-donation" class="ui-dialog donation-modal" aria-labelledby="delete-donation-title" th:data-page="${currentPage}">
+            <form method="post" th:action="@{/donor/donations}" data-delete-form>
+                <header class="donation-modal__header">
+                    <h2 id="delete-donation-title">Excluir Doação</h2>
+                    <button type="button" class="donation-modal__close" data-close-modal aria-label="Fechar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6m0-6 6 6"/></svg></button>
+                </header>
+
+                <div class="donation-modal__body">
+                    <p class="donation-modal__text">
+                        Deseja realmente excluir <strong data-delete-title></strong>
+                        (<span data-delete-quantity></span> un.)?
+                    </p>
+                    <p class="donation-modal__hint">
+                        Esta ação não pode ser desfeita. Só é possível excluir doações que nunca tiveram propostas.
+                    </p>
+                </div>
+
+                <footer class="donation-modal__footer">
+                    <button type="button" class="donation-modal__cancel" data-close-modal>Cancelar</button>
+                    <button type="submit" class="button ui-button--danger">Excluir Doação</button>
+                </footer>
+            </form>
+        </dialog>
+
+        <script th:src="@{/js/donations-history.js}" defer></script>
+</body>
+</html>
