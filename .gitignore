@@ -43,3 +43,6 @@ scripts
 # Private uploaded documents
 /var/
 video
+
+# Mac
+.DS_Store
