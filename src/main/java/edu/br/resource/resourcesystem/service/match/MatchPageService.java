@@ -186,6 +186,7 @@ public class MatchPageService {
                 f.order() == MatchSortOrder.DEADLINE
                         ? matches.findForInstitutionOrderedByDeadline(
                                 id,
+                                f.necessityId(),
                                 f.status(),
                                 f.query() == null || f.query().isBlank()
                                         ? null
@@ -193,6 +194,7 @@ public class MatchPageService {
                                 PageRequest.of(f.page() - 1, f.size()))
                         : matches.findAll(
                                 MatchSpecifications.forInstitution(id)
+                                        .and(MatchSpecifications.forNecessity(f.necessityId()))
                                         .and(MatchSpecifications.withStatus(f.status()))
                                         .and(MatchSpecifications.search(f.query())),
                                 PageRequest.of(

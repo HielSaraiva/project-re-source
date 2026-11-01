@@ -1,5 +1,6 @@
 package edu.br.resource.resourcesystem.controller.shared;
 
+import edu.br.resource.resourcesystem.controller.ong.OngNecessityOperationsController;
 import edu.br.resource.resourcesystem.observability.FailureDetails;
 
 import jakarta.validation.ConstraintViolationException;
@@ -10,6 +11,7 @@ import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -20,7 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Order(0)
-@RestControllerAdvice(assignableTypes = MatchOperationsController.class)
+@RestControllerAdvice(
+        assignableTypes = {MatchOperationsController.class, OngNecessityOperationsController.class})
 public class MatchApiExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     ResponseEntity<ProblemDetail> business(ResponseStatusException exception) {
@@ -54,7 +57,8 @@ public class MatchApiExceptionHandler {
 
     @ExceptionHandler({
         DataIntegrityViolationException.class,
-        PessimisticLockingFailureException.class
+        PessimisticLockingFailureException.class,
+        OptimisticLockingFailureException.class
     })
     ResponseEntity<ProblemDetail> concurrent(Exception exception) {
         log.warn("event=operation_conflict failure={}", exception.getClass().getSimpleName());

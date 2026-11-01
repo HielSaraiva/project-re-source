@@ -334,3 +334,18 @@
     place-items: center;
     justify-content: normal;
 }
+
+/* Keep the linked-need scope visible without presenting it as an error. */
+.ong-donation-scope {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px;
+    color: var(--slate);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    line-height: 1.5;
+}

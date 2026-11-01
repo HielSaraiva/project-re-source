@@ -12,6 +12,10 @@ import org.springframework.data.jpa.domain.Specification;
 public final class NecessitySpecifications {
     private NecessitySpecifications() {}
 
+    public static Specification<Necessity> notDeleted() {
+        return (root, query, builder) -> builder.isNull(root.get("deletedAt"));
+    }
+
     public static Specification<Necessity> forInstitution(Integer institutionId) {
         return (root, query, builder) ->
                 builder.equal(root.get("institution").get("id"), institutionId);
@@ -29,6 +33,11 @@ public final class NecessitySpecifications {
                 priority == null
                         ? builder.conjunction()
                         : builder.equal(root.get("priority"), priority);
+    }
+
+    public static Specification<Necessity> withStatus(NecessityStatus status) {
+        return (root, query, builder) ->
+                status == null ? builder.conjunction() : builder.equal(root.get("status"), status);
     }
 
     public static Specification<Necessity> inState(Integer stateId) {
@@ -67,6 +76,7 @@ public final class NecessitySpecifications {
                             builder.equal(match.get("necessity"), root),
                             match.get("status").in(MatchStatus.allocationConsumingStatuses()));
             return builder.and(
+                    builder.isNull(root.get("deletedAt")),
                     builder.equal(root.get("status"), NecessityStatus.ACTIVE),
                     builder.equal(
                             root.get("institution").get("status"),

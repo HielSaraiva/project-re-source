@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,8 +27,21 @@ public interface NecessityRepository
     Page<Necessity> findAll(Specification<Necessity> specification, Pageable pageable);
 
     @EntityGraph(attributePaths = {"institution", "itemType"})
+    @Query(
+            "select n from Necessity n where n.id = :id and n.status = :status and n.deletedAt is"
+                    + " null")
     Optional<Necessity> findByIdAndStatus(Integer id, NecessityStatus status);
 
+    @EntityGraph(attributePaths = "itemType")
+    @Query(
+            "select n from Necessity n where n.institution.id = :institutionId and n.status <>"
+                    + " :status and n.deletedAt is null order by n.createdAt desc")
+    List<Necessity> findAllByInstitutionIdAndStatusNotOrderByCreatedAtDesc(
+            Integer institutionId, NecessityStatus status);
+
+    @Query(
+            "select count(n) from Necessity n where n.institution.id = :institutionId and n.status"
+                    + " = :status and n.deletedAt is null")
     long countByInstitutionIdAndStatus(Integer institutionId, NecessityStatus status);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

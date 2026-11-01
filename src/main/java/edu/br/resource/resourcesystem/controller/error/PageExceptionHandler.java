@@ -13,6 +13,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -69,7 +70,8 @@ public class PageExceptionHandler {
         if (exception instanceof AccessDeniedException) return 403;
         if (exception instanceof ConstraintViolationException) return 400;
         if (exception instanceof DataIntegrityViolationException
-                || exception instanceof PessimisticLockingFailureException) return 409;
+                || exception instanceof PessimisticLockingFailureException
+                || exception instanceof OptimisticLockingFailureException) return 409;
         return 500;
     }
 }
