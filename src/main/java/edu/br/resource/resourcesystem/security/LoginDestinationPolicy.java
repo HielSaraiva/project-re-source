@@ -57,7 +57,7 @@ public final class LoginDestinationPolicy {
 
     private static String role(String path) {
         if (path.matches(
-                "/donor/(dashboard|needs|donation/(proposal|status|shipping(?:/in-person|/carrier)?|completed))"))
+                "/donor/(dashboard|needs|donations|donation/(proposal|status|shipping(?:/in-person|/carrier)?|completed))"))
             return "ROLE_DONOR";
         if (path.matches("/institution/(dashboard|donations(?:/INT-[0-9]{4}-[0-9]+)?)"))
             return "ROLE_ONG";
